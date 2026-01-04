@@ -2,7 +2,9 @@ import { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { Table, Button, Space, Input, Select, Form, Drawer, message, Tag, Upload, Modal } from 'antd';
 import { PlusOutlined, UploadOutlined, EyeOutlined, FileOutlined, FilePdfOutlined, FileWordOutlined, FileImageOutlined } from '@ant-design/icons';
-import type { ColumnsType, TableRowSelection } from 'antd/es/table';
+import type { ColumnsType } from 'antd/es/table';
+import type { TableRowSelection } from 'antd/es/table/interface';
+import type { Key } from 'react';
 import type { UploadFile } from 'antd/es/upload/interface';
 import { docTemplateSampleApi, docTypeApi, DocTemplateSample, QueryParams } from '../../services/api';
 import ActionButtons from '../../components/ActionButtons';
@@ -140,7 +142,7 @@ export default function DocTemplateSamplePage() {
 
   const rowSelection: TableRowSelection<DocTemplateSample> = {
     selectedRowKeys,
-    onChange: (keys, rows) => { setSelectedRowKeys(keys); setSelectedRows(rows); },
+    onChange: (keys: Key[], rows: DocTemplateSample[]) => { setSelectedRowKeys(keys); setSelectedRows(rows); },
   };
 
   const columns: ColumnsType<DocTemplateSample> = [

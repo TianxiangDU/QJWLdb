@@ -18,7 +18,8 @@ import {
   DownloadOutlined,
   UploadOutlined,
 } from '@ant-design/icons';
-import type { ColumnsType, TableRowSelection } from 'antd/es/table';
+import type { ColumnsType } from 'antd/es/table';
+import type { Key } from 'react';
 import { docTypeApi, DocType, QueryParams } from '../../services/api';
 import ActionButtons from '../../components/ActionButtons';
 import FilterToolbar from '../../components/FilterToolbar';
@@ -184,9 +185,9 @@ export default function DocTypePage() {
   };
 
   // 表格行选择配置
-  const rowSelection: TableRowSelection<DocType> = {
+  const rowSelection = {
     selectedRowKeys,
-    onChange: (keys, rows) => {
+    onChange: (keys: Key[], rows: DocType[]) => {
       setSelectedRowKeys(keys);
       setSelectedRows(rows);
     },

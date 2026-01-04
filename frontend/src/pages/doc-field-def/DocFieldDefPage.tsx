@@ -18,7 +18,9 @@ import {
   DownloadOutlined,
   UploadOutlined,
 } from '@ant-design/icons';
-import type { ColumnsType, TableRowSelection } from 'antd/es/table';
+import type { ColumnsType } from 'antd/es/table';
+import type { TableRowSelection } from 'antd/es/table/interface';
+import type { Key } from 'react';
 import { docFieldDefApi, docTypeApi, DocFieldDef, QueryParams } from '../../services/api';
 import ActionButtons from '../../components/ActionButtons';
 import FilterToolbar from '../../components/FilterToolbar';
@@ -182,7 +184,7 @@ export default function DocFieldDefPage() {
 
   const rowSelection: TableRowSelection<DocFieldDef> = {
     selectedRowKeys,
-    onChange: (keys, rows) => { setSelectedRowKeys(keys); setSelectedRows(rows); },
+    onChange: (keys: Key[], rows: DocFieldDef[]) => { setSelectedRowKeys(keys); setSelectedRows(rows); },
   };
 
   const columns: ColumnsType<DocFieldDef> = [

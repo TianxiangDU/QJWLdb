@@ -324,7 +324,7 @@ export const docTypeApi = {
   create: (data: Partial<DocType>) => api.post<any, DocType>('/doc-types', data),
   update: (id: number, data: Partial<DocType>) => api.put<any, DocType>(`/doc-types/${id}`, data),
   delete: (id: number) => api.delete(`/doc-types/${id}`),
-  downloadTemplate: () => downloadFile('/api/v1/doc-types/template', '文件类型模板.html'),
+  downloadTemplate: () => downloadFile('/api/v1/doc-types/template', '文件类型模板.xlsx'),
   import: (file: File) => {
     const formData = new FormData();
     formData.append('file', file);
@@ -342,7 +342,7 @@ export const docFieldDefApi = {
   create: (data: Partial<DocFieldDef>) => api.post<any, DocFieldDef>('/doc-field-defs', data),
   update: (id: number, data: Partial<DocFieldDef>) => api.put<any, DocFieldDef>(`/doc-field-defs/${id}`, data),
   delete: (id: number) => api.delete(`/doc-field-defs/${id}`),
-  downloadTemplate: () => downloadFile('/api/v1/doc-field-defs/template', '关键信息字段模板.html'),
+  downloadTemplate: () => downloadFile('/api/v1/doc-field-defs/template', '关键信息字段模板.xlsx'),
   import: (file: File) => {
     const formData = new FormData();
     formData.append('file', file);
@@ -371,7 +371,7 @@ export const auditRuleApi = {
   create: (data: Partial<AuditRule>) => api.post<any, AuditRule>('/audit-rules', data),
   update: (id: number, data: Partial<AuditRule>) => api.put<any, AuditRule>(`/audit-rules/${id}`, data),
   delete: (id: number) => api.delete(`/audit-rules/${id}`),
-  downloadTemplate: () => downloadFile('/api/v1/audit-rules/template', '审计规则模板.html'),
+  downloadTemplate: () => downloadFile('/api/v1/audit-rules/template', '审计规则模板.xlsx'),
   import: (file: File) => {
     const formData = new FormData();
     formData.append('file', file);
@@ -408,7 +408,7 @@ export const lawDocumentApi = {
   create: (data: Partial<LawDocument>) => api.post<any, LawDocument>('/law-documents', data),
   update: (id: number, data: Partial<LawDocument>) => api.put<any, LawDocument>(`/law-documents/${id}`, data),
   delete: (id: number) => api.delete(`/law-documents/${id}`),
-  downloadTemplate: () => downloadFile('/api/v1/law-documents/template', '法规模板.html'),
+  downloadTemplate: () => downloadFile('/api/v1/law-documents/template', '法规模板.xlsx'),
   import: (file: File) => {
     const formData = new FormData();
     formData.append('file', file);
@@ -427,7 +427,7 @@ export const lawClauseApi = {
   create: (data: Partial<LawClause>) => api.post<any, LawClause>('/law-clauses', data),
   update: (id: number, data: Partial<LawClause>) => api.put<any, LawClause>(`/law-clauses/${id}`, data),
   delete: (id: number) => api.delete(`/law-clauses/${id}`),
-  downloadTemplate: () => downloadFile('/api/v1/law-clauses/template', '法规条款模板.html'),
+  downloadTemplate: () => downloadFile('/api/v1/law-clauses/template', '法规条款模板.xlsx'),
   import: (file: File) => {
     const formData = new FormData();
     formData.append('file', file);

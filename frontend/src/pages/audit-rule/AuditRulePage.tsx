@@ -3,7 +3,8 @@ import { useNavigate } from 'react-router-dom';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { Table, Button, Space, Input, Select, Form, Drawer, message, Tag, Upload, Modal } from 'antd';
 import { PlusOutlined, DownloadOutlined, UploadOutlined } from '@ant-design/icons';
-import type { ColumnsType, TableRowSelection } from 'antd/es/table';
+import type { ColumnsType } from 'antd/es/table';
+import type { Key } from 'react';
 import { auditRuleApi, AuditRule, QueryParams } from '../../services/api';
 import ActionButtons from '../../components/ActionButtons';
 import FilterToolbar from '../../components/FilterToolbar';
@@ -88,7 +89,7 @@ export default function AuditRulePage() {
   const handleBatchExport = (rows: AuditRule[]) => { exportToExcel(rows, auditRuleExportColumns, '审计规则'); };
   const handleViewDetail = (record: AuditRule) => { setDetailRecord(record); setDetailModalOpen(true); };
 
-  const rowSelection: TableRowSelection<AuditRule> = { selectedRowKeys, onChange: (keys, rows) => { setSelectedRowKeys(keys); setSelectedRows(rows); } };
+  const rowSelection = { selectedRowKeys, onChange: (keys: Key[], rows: AuditRule[]) => { setSelectedRowKeys(keys); setSelectedRows(rows); } };
 
   const columns: ColumnsType<AuditRule> = [
     { title: '规则编码', dataIndex: 'ruleCode', key: 'ruleCode', width: 120 },

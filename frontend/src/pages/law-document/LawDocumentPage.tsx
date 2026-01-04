@@ -2,7 +2,8 @@ import { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { Table, Button, Space, Input, Select, Form, Drawer, message, Tag, Upload, Modal, DatePicker } from 'antd';
 import { PlusOutlined, DownloadOutlined, UploadOutlined } from '@ant-design/icons';
-import type { ColumnsType, TableRowSelection } from 'antd/es/table';
+import type { ColumnsType } from 'antd/es/table';
+import type { Key } from 'react';
 import dayjs from 'dayjs';
 import { lawDocumentApi, LawDocument, QueryParams } from '../../services/api';
 import ActionButtons from '../../components/ActionButtons';
@@ -83,7 +84,7 @@ export default function LawDocumentPage() {
   const handleBatchExport = (rows: LawDocument[]) => { exportToExcel(rows, lawDocumentExportColumns, '法规与标准'); };
   const handleViewDetail = (record: LawDocument) => { setDetailRecord(record); setDetailModalOpen(true); };
 
-  const rowSelection: TableRowSelection<LawDocument> = { selectedRowKeys, onChange: (keys, rows) => { setSelectedRowKeys(keys); setSelectedRows(rows); } };
+  const rowSelection = { selectedRowKeys, onChange: (keys: Key[], rows: LawDocument[]) => { setSelectedRowKeys(keys); setSelectedRows(rows); } };
 
   const columns: ColumnsType<LawDocument> = [
     { title: '法规编号', dataIndex: 'lawCode', key: 'lawCode', width: 150 },

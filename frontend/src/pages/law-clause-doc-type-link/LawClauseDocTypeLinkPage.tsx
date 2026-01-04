@@ -2,7 +2,8 @@ import { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { Table, Button, Space, Select, Form, Drawer, message, Tag, Input } from 'antd';
 import { PlusOutlined } from '@ant-design/icons';
-import type { ColumnsType, TableRowSelection } from 'antd/es/table';
+import type { ColumnsType } from 'antd/es/table';
+import type { Key } from 'react';
 import { lawClauseDocTypeLinkApi, lawDocumentApi, lawClauseApi, docTypeApi, LawClauseDocTypeLink, QueryParams } from '../../services/api';
 import ActionButtons from '../../components/ActionButtons';
 import FilterToolbar from '../../components/FilterToolbar';
@@ -87,7 +88,7 @@ export default function LawClauseDocTypeLinkPage() {
   const handleBatchExport = (rows: LawClauseDocTypeLink[]) => { exportToExcel(rows, exportColumns, '条款与文件类型适用关系'); };
   const handleViewDetail = (record: LawClauseDocTypeLink) => { setDetailRecord(record); setDetailModalOpen(true); };
 
-  const rowSelection: TableRowSelection<LawClauseDocTypeLink> = { selectedRowKeys, onChange: (keys, rows) => { setSelectedRowKeys(keys); setSelectedRows(rows); } };
+  const rowSelection = { selectedRowKeys, onChange: (keys: Key[], rows: LawClauseDocTypeLink[]) => { setSelectedRowKeys(keys); setSelectedRows(rows); } };
 
   const columns: ColumnsType<LawClauseDocTypeLink> = [
     { title: '法规编号', dataIndex: 'lawCode', key: 'lawCode', width: 130 },

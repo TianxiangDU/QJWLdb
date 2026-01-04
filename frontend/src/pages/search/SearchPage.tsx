@@ -157,9 +157,9 @@ export default function SearchPage() {
                     }
                     description={
                       <Space size={[0, 4]} wrap style={{ fontSize: 12, color: '#999' }}>
-                        {item.projectPhase && <Tag size="small">{item.projectPhase}</Tag>}
-                        {item.majorCategory && <Tag size="small">{item.majorCategory}</Tag>}
-                        {item.minorCategory && <Tag size="small">{item.minorCategory}</Tag>}
+                        {item.projectPhase && <Tag>{item.projectPhase}</Tag>}
+                        {item.majorCategory && <Tag>{item.majorCategory}</Tag>}
+                        {item.minorCategory && <Tag>{item.minorCategory}</Tag>}
                       </Space>
                     }
                   />

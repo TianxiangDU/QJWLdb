@@ -2,7 +2,8 @@ import { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { Table, Button, Space, Input, Form, Drawer, message, Tag } from 'antd';
 import { PlusOutlined } from '@ant-design/icons';
-import type { ColumnsType, TableRowSelection } from 'antd/es/table';
+import type { ColumnsType } from 'antd/es/table';
+import type { Key } from 'react';
 import { PlaceholderEntity, PaginationResult, QueryParams } from '../../services/api';
 import ActionButtons from '../../components/ActionButtons';
 import FilterToolbar from '../../components/FilterToolbar';
@@ -17,10 +18,10 @@ interface PlaceholderPageProps {
     get: (id: number) => Promise<PlaceholderEntity>;
     create: (data: Partial<PlaceholderEntity>) => Promise<PlaceholderEntity>;
     update: (id: number, data: Partial<PlaceholderEntity>) => Promise<PlaceholderEntity>;
-    delete: (id: number) => Promise<void>;
-    batchEnable?: (ids: number[]) => Promise<void>;
-    batchDisable?: (ids: number[]) => Promise<void>;
-    batchDelete?: (ids: number[]) => Promise<void>;
+    delete: (id: number) => Promise<any>;
+    batchEnable?: (ids: number[]) => Promise<any>;
+    batchDisable?: (ids: number[]) => Promise<any>;
+    batchDelete?: (ids: number[]) => Promise<any>;
   };
   queryKey: string;
 }
@@ -92,7 +93,7 @@ export default function PlaceholderPage({ title, api, queryKey }: PlaceholderPag
   const handleBatchExport = (rows: PlaceholderEntity[]) => { exportToExcel(rows, exportColumns, title); };
   const handleViewDetail = (record: PlaceholderEntity) => { setDetailRecord(record); setDetailModalOpen(true); };
 
-  const rowSelection: TableRowSelection<PlaceholderEntity> = { selectedRowKeys, onChange: (keys, rows) => { setSelectedRowKeys(keys); setSelectedRows(rows); } };
+  const rowSelection = { selectedRowKeys, onChange: (keys: Key[], rows: PlaceholderEntity[]) => { setSelectedRowKeys(keys); setSelectedRows(rows); } };
 
   const columns: ColumnsType<PlaceholderEntity> = [
     { title: '编码', dataIndex: 'code', key: 'code', width: 150 },

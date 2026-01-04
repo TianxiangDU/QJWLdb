@@ -2,7 +2,8 @@ import { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { Table, Button, Space, Input, Select, Form, Drawer, message, Tag, Upload, Modal } from 'antd';
 import { PlusOutlined, DownloadOutlined, UploadOutlined } from '@ant-design/icons';
-import type { ColumnsType, TableRowSelection } from 'antd/es/table';
+import type { ColumnsType } from 'antd/es/table';
+import type { Key } from 'react';
 import { lawClauseApi, lawDocumentApi, LawClause, QueryParams } from '../../services/api';
 import ActionButtons from '../../components/ActionButtons';
 import FilterToolbar from '../../components/FilterToolbar';
@@ -82,7 +83,7 @@ export default function LawClausePage() {
   const handleBatchExport = (rows: LawClause[]) => { exportToExcel(rows, lawClauseExportColumns, '法规条款'); };
   const handleViewDetail = (record: LawClause) => { setDetailRecord(record); setDetailModalOpen(true); };
 
-  const rowSelection: TableRowSelection<LawClause> = { selectedRowKeys, onChange: (keys, rows) => { setSelectedRowKeys(keys); setSelectedRows(rows); } };
+  const rowSelection = { selectedRowKeys, onChange: (keys: Key[], rows: LawClause[]) => { setSelectedRowKeys(keys); setSelectedRows(rows); } };
 
   const columns: ColumnsType<LawClause> = [
     { title: '法规编号', dataIndex: 'lawCode', key: 'lawCode', width: 130 },

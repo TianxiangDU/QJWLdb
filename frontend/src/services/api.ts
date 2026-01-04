@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { message } from 'antd';
 import { getToken, logout } from '../utils/auth';
 
 const api = axios.create({
@@ -31,11 +32,41 @@ api.interceptors.response.use(
       logout();
       return Promise.reject(error);
     }
-    const message = error.response?.data?.message || '请求失败';
-    console.error('API Error:', message);
+    const msg = error.response?.data?.message || '请求失败';
+    console.error('API Error:', msg);
     return Promise.reject(error);
   }
 );
+
+// 通用文件下载函数（携带 token）
+const downloadFile = async (url: string, fileName: string) => {
+  try {
+    const token = getToken();
+    const response = await axios({
+      url,
+      method: 'GET',
+      responseType: 'blob',
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    const blob = new Blob([response.data]);
+    const downloadUrl = window.URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = downloadUrl;
+    a.download = fileName;
+    a.click();
+    window.URL.revokeObjectURL(downloadUrl);
+    message.success('模板下载成功！');
+  } catch (error: any) {
+    const is401 = error?.response?.status === 401;
+    const errorMsg = is401 
+      ? '登录状态失效，请重新登录' 
+      : error?.message || '下载失败：未知错误';
+    message.error(errorMsg);
+    if (is401) logout();
+  }
+};
 
 // 登录响应类型
 export interface LoginResponse {
@@ -289,18 +320,16 @@ export const docTypeApi = {
   list: (params: QueryParams) => api.get<any, PaginationResult<DocType>>('/doc-types/list', { params }),
   all: () => api.get<any, DocType[]>('/doc-types/all'),
   get: (id: number) => api.get<any, DocType>(`/doc-types/${id}`),
-  /** 获取文件类型完整信息（包含关键信息字段和模板/示例） */
   getFullInfo: (idOrCode: string | number) => api.get<any, DocTypeFullInfo>(`/doc-types/full/${idOrCode}`),
   create: (data: Partial<DocType>) => api.post<any, DocType>('/doc-types', data),
   update: (id: number, data: Partial<DocType>) => api.put<any, DocType>(`/doc-types/${id}`, data),
   delete: (id: number) => api.delete(`/doc-types/${id}`),
-  downloadTemplate: () => window.open('/api/v1/doc-types/template', '_blank'),
+  downloadTemplate: () => downloadFile('/api/v1/doc-types/template', '文件类型模板.html'),
   import: (file: File) => {
     const formData = new FormData();
     formData.append('file', file);
     return api.post('/doc-types/import', formData);
   },
-  // 批量操作
   batchEnable: (ids: number[]) => api.post('/doc-types/batch/enable', { ids }),
   batchDisable: (ids: number[]) => api.post('/doc-types/batch/disable', { ids }),
   batchDelete: (ids: number[]) => api.post('/doc-types/batch/delete', { ids }),
@@ -313,7 +342,7 @@ export const docFieldDefApi = {
   create: (data: Partial<DocFieldDef>) => api.post<any, DocFieldDef>('/doc-field-defs', data),
   update: (id: number, data: Partial<DocFieldDef>) => api.put<any, DocFieldDef>(`/doc-field-defs/${id}`, data),
   delete: (id: number) => api.delete(`/doc-field-defs/${id}`),
-  downloadTemplate: () => window.open('/api/v1/doc-field-defs/template', '_blank'),
+  downloadTemplate: () => downloadFile('/api/v1/doc-field-defs/template', '关键信息字段模板.html'),
   import: (file: File) => {
     const formData = new FormData();
     formData.append('file', file);
@@ -342,7 +371,7 @@ export const auditRuleApi = {
   create: (data: Partial<AuditRule>) => api.post<any, AuditRule>('/audit-rules', data),
   update: (id: number, data: Partial<AuditRule>) => api.put<any, AuditRule>(`/audit-rules/${id}`, data),
   delete: (id: number) => api.delete(`/audit-rules/${id}`),
-  downloadTemplate: () => window.open('/api/v1/audit-rules/template', '_blank'),
+  downloadTemplate: () => downloadFile('/api/v1/audit-rules/template', '审计规则模板.html'),
   import: (file: File) => {
     const formData = new FormData();
     formData.append('file', file);
@@ -379,7 +408,7 @@ export const lawDocumentApi = {
   create: (data: Partial<LawDocument>) => api.post<any, LawDocument>('/law-documents', data),
   update: (id: number, data: Partial<LawDocument>) => api.put<any, LawDocument>(`/law-documents/${id}`, data),
   delete: (id: number) => api.delete(`/law-documents/${id}`),
-  downloadTemplate: () => window.open('/api/v1/law-documents/template', '_blank'),
+  downloadTemplate: () => downloadFile('/api/v1/law-documents/template', '法规模板.html'),
   import: (file: File) => {
     const formData = new FormData();
     formData.append('file', file);
@@ -398,7 +427,7 @@ export const lawClauseApi = {
   create: (data: Partial<LawClause>) => api.post<any, LawClause>('/law-clauses', data),
   update: (id: number, data: Partial<LawClause>) => api.put<any, LawClause>(`/law-clauses/${id}`, data),
   delete: (id: number) => api.delete(`/law-clauses/${id}`),
-  downloadTemplate: () => window.open('/api/v1/law-clauses/template', '_blank'),
+  downloadTemplate: () => downloadFile('/api/v1/law-clauses/template', '法规条款模板.html'),
   import: (file: File) => {
     const formData = new FormData();
     formData.append('file', file);
@@ -420,7 +449,7 @@ export const lawClauseDocTypeLinkApi = {
   batchDelete: (ids: number[]) => api.post('/law-clause-doc-type-links/batch/delete', { ids }),
 };
 
-// 占位模块 API - 带批量操作
+// 占位模块 API
 export const costRuleApi = {
   list: (params: QueryParams) => api.get<any, PaginationResult<PlaceholderEntity>>('/cost-rules/list', { params }),
   get: (id: number) => api.get<any, PlaceholderEntity>(`/cost-rules/${id}`),
@@ -485,4 +514,3 @@ export const fileUploadApi = {
 };
 
 export default api;
-

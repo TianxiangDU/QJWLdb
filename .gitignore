@@ -38,6 +38,12 @@ backend/uploads/*
 !backend/uploads/.gitkeep
 !backend/uploads/index.html
 
+# Project directory (persistent storage, keep structure)
+project/uploads/**/*
+!project/uploads/**/.gitkeep
+!project/.gitkeep
+!project/uploads/.gitkeep
+
 # Test coverage
 coverage/
 

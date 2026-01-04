@@ -51,10 +51,14 @@ import { FileUploadModule } from './modules/file-upload/file-upload.module';
       }),
       inject: [ConfigService],
     }),
-    // 静态文件服务
-    ServeStaticModule.forRoot({
-      rootPath: join(__dirname, '..', 'uploads'),
-      serveRoot: '/static',
+    // 静态文件服务 - 从 project/uploads 目录提供文件
+    ServeStaticModule.forRootAsync({
+      imports: [ConfigModule],
+      useFactory: (configService: ConfigService) => [{
+        rootPath: join(process.cwd(), configService.get('UPLOAD_DIR', '../project/uploads')),
+        serveRoot: '/static',
+      }],
+      inject: [ConfigService],
     }),
     // 认证模块
     AuthModule,

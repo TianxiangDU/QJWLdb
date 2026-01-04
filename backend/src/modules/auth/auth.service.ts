@@ -1,0 +1,99 @@
+import { Injectable, UnauthorizedException, ConflictException, NotFoundException } from '@nestjs/common';
+import { JwtService } from '@nestjs/jwt';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import { User } from './entities/user.entity';
+import { LoginDto, RegisterDto, ChangePasswordDto } from './dto/auth.dto';
+
+@Injectable()
+export class AuthService {
+  constructor(
+    @InjectRepository(User)
+    private readonly userRepository: Repository<User>,
+    private readonly jwtService: JwtService,
+  ) {}
+
+  async validateUser(username: string, password: string): Promise<User | null> {
+    const user = await this.userRepository.findOne({ where: { username, status: 1 } });
+    if (user && await user.validatePassword(password)) {
+      return user;
+    }
+    return null;
+  }
+
+  async login(dto: LoginDto) {
+    const user = await this.validateUser(dto.username, dto.password);
+    if (!user) {
+      throw new UnauthorizedException('用户名或密码错误');
+    }
+
+    const payload = { sub: user.id, username: user.username, role: user.role };
+    return {
+      accessToken: this.jwtService.sign(payload),
+      user: {
+        id: user.id,
+        username: user.username,
+        nickname: user.nickname,
+        role: user.role,
+      },
+    };
+  }
+
+  async register(dto: RegisterDto) {
+    const existing = await this.userRepository.findOne({ where: { username: dto.username } });
+    if (existing) {
+      throw new ConflictException('用户名已存在');
+    }
+
+    const user = this.userRepository.create(dto);
+    await this.userRepository.save(user);
+
+    return { message: '注册成功', userId: user.id };
+  }
+
+  async getProfile(userId: number) {
+    const user = await this.userRepository.findOne({ where: { id: userId } });
+    if (!user) {
+      throw new NotFoundException('用户不存在');
+    }
+    return {
+      id: user.id,
+      username: user.username,
+      nickname: user.nickname,
+      email: user.email,
+      role: user.role,
+      createdAt: user.createdAt,
+    };
+  }
+
+  async changePassword(userId: number, dto: ChangePasswordDto) {
+    const user = await this.userRepository.findOne({ where: { id: userId } });
+    if (!user) {
+      throw new NotFoundException('用户不存在');
+    }
+
+    const isValid = await user.validatePassword(dto.oldPassword);
+    if (!isValid) {
+      throw new UnauthorizedException('旧密码错误');
+    }
+
+    user.password = dto.newPassword;
+    await this.userRepository.save(user);
+
+    return { message: '密码修改成功' };
+  }
+
+  async initAdmin() {
+    const admin = await this.userRepository.findOne({ where: { username: 'admin' } });
+    if (!admin) {
+      const user = this.userRepository.create({
+        username: 'admin',
+        password: 'admin123',
+        nickname: '管理员',
+        role: 'admin',
+      });
+      await this.userRepository.save(user);
+      console.log('✅ 初始管理员账号创建成功: admin / admin123');
+    }
+  }
+}

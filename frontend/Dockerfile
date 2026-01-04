@@ -21,8 +21,8 @@ RUN npm run build
 # 生产镜像 - 使用 Nginx
 FROM nginx:alpine AS production
 
-# 复制 Nginx 配置
-COPY nginx.conf /etc/nginx/conf.d/default.conf
+# 复制 Nginx 配置 (Docker 环境使用 docker 专用配置)
+COPY nginx.docker.conf /etc/nginx/conf.d/default.conf
 
 # 从构建阶段复制静态文件
 COPY --from=builder /app/dist /usr/share/nginx/html

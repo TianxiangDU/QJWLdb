@@ -55,7 +55,8 @@ export class DocTypeService {
       queryBuilder.andWhere('dt.code LIKE :code', { code: `%${code}%` });
     }
     if (projectPhase) {
-      queryBuilder.andWhere('dt.projectPhase = :projectPhase', { projectPhase });
+      // 使用 LIKE 模糊匹配，兼容数据格式差异
+      queryBuilder.andWhere('dt.projectPhase LIKE :projectPhase', { projectPhase: `%${projectPhase.replace('阶段', '')}%` });
     }
     if (projectType) {
       queryBuilder.andWhere('dt.projectType LIKE :projectType', { projectType: `%${projectType}%` });

@@ -55,8 +55,7 @@ export class DocTypeService {
       queryBuilder.andWhere('dt.code LIKE :code', { code: `%${code}%` });
     }
     if (projectPhase) {
-      // 使用 LIKE 模糊匹配，兼容数据格式差异
-      queryBuilder.andWhere('dt.projectPhase LIKE :projectPhase', { projectPhase: `%${projectPhase.replace('阶段', '')}%` });
+      queryBuilder.andWhere('dt.projectPhase = :projectPhase', { projectPhase });
     }
     if (projectType) {
       queryBuilder.andWhere('dt.projectType LIKE :projectType', { projectType: `%${projectType}%` });
@@ -324,5 +323,41 @@ export class DocTypeService {
       where: { status: 1 },
       order: { code: 'ASC' },
     });
+  }
+
+  /**
+   * 获取所有筛选选项（从数据库中获取不重复的值）
+   */
+  async getFilterOptions(): Promise<{
+    projectPhases: string[];
+    majorCategories: string[];
+    minorCategories: string[];
+  }> {
+    const projectPhases = await this.docTypeRepository
+      .createQueryBuilder('dt')
+      .select('DISTINCT dt.projectPhase', 'value')
+      .where('dt.projectPhase IS NOT NULL AND dt.projectPhase != ""')
+      .orderBy('dt.projectPhase', 'ASC')
+      .getRawMany();
+
+    const majorCategories = await this.docTypeRepository
+      .createQueryBuilder('dt')
+      .select('DISTINCT dt.majorCategory', 'value')
+      .where('dt.majorCategory IS NOT NULL AND dt.majorCategory != ""')
+      .orderBy('dt.majorCategory', 'ASC')
+      .getRawMany();
+
+    const minorCategories = await this.docTypeRepository
+      .createQueryBuilder('dt')
+      .select('DISTINCT dt.minorCategory', 'value')
+      .where('dt.minorCategory IS NOT NULL AND dt.minorCategory != ""')
+      .orderBy('dt.minorCategory', 'ASC')
+      .getRawMany();
+
+    return {
+      projectPhases: projectPhases.map(r => r.value).filter(Boolean),
+      majorCategories: majorCategories.map(r => r.value).filter(Boolean),
+      minorCategories: minorCategories.map(r => r.value).filter(Boolean),
+    };
   }
 }

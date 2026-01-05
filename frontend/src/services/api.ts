@@ -315,12 +315,20 @@ export interface DocTypeFullInfo {
   }>;
 }
 
+// 筛选选项类型
+export interface DocTypeFilterOptions {
+  projectPhases: string[];
+  majorCategories: string[];
+  minorCategories: string[];
+}
+
 // API 函数
 export const docTypeApi = {
   list: (params: QueryParams) => api.get<any, PaginationResult<DocType>>('/doc-types/list', { params }),
   all: () => api.get<any, DocType[]>('/doc-types/all'),
   get: (id: number) => api.get<any, DocType>(`/doc-types/${id}`),
   getFullInfo: (idOrCode: string | number) => api.get<any, DocTypeFullInfo>(`/doc-types/full/${idOrCode}`),
+  getFilterOptions: () => api.get<any, DocTypeFilterOptions>('/doc-types/filter-options'),
   create: (data: Partial<DocType>) => api.post<any, DocType>('/doc-types', data),
   update: (id: number, data: Partial<DocType>) => api.put<any, DocType>(`/doc-types/${id}`, data),
   delete: (id: number) => api.delete(`/doc-types/${id}`),

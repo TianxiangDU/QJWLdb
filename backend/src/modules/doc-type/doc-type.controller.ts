@@ -45,6 +45,12 @@ export class DocTypeController {
     return this.docTypeService.findAllActive();
   }
 
+  @Get('filter-options')
+  @ApiOperation({ summary: '获取筛选选项（从数据库动态获取）' })
+  getFilterOptions() {
+    return this.docTypeService.getFilterOptions();
+  }
+
   @Get('template')
   @Public()
   @ApiOperation({ summary: '下载Excel导入模板' })

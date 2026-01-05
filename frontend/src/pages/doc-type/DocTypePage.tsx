@@ -27,10 +27,6 @@ import BatchActions from '../../components/BatchActions';
 import DetailModal, { renderStatus } from '../../components/DetailModal';
 import { exportToExcel, docTypeExportColumns } from '../../utils/exportExcel';
 
-const projectPhaseOptions = [
-  '立项阶段', '可研阶段', '设计阶段', '招采阶段', '施工阶段', '竣工阶段', '结算阶段', '审计阶段'
-];
-
 const defaultQueryParams: QueryParams = { page: 1, pageSize: 10 };
 
 // 详情弹窗字段配置
@@ -67,6 +63,12 @@ export default function DocTypePage() {
   const { data, isLoading } = useQuery({
     queryKey: ['docTypes', queryParams],
     queryFn: () => docTypeApi.list(queryParams),
+  });
+
+  // 获取筛选选项（从数据库动态获取）
+  const { data: filterOptions } = useQuery({
+    queryKey: ['docTypeFilterOptions'],
+    queryFn: () => docTypeApi.getFilterOptions(),
   });
 
   const createMutation = useMutation({
@@ -259,7 +261,7 @@ export default function DocTypePage() {
             allowClear
             value={queryParams.projectPhase}
             style={{ width: 140 }}
-            options={projectPhaseOptions.map(p => ({ label: p, value: p }))}
+            options={filterOptions?.projectPhases?.map(p => ({ label: p, value: p })) || []}
             onChange={(v) => setQueryParams({ ...queryParams, projectPhase: v, page: 1 })}
           />
           <Select
@@ -350,7 +352,11 @@ export default function DocTypePage() {
             <Input placeholder="如：SGHT" />
           </Form.Item>
           <Form.Item name="projectPhase" label="所属项目阶段">
-            <Select placeholder="选择阶段" allowClear options={projectPhaseOptions.map(p => ({ label: p, value: p }))} />
+            <Select 
+              placeholder="选择阶段" 
+              allowClear 
+              options={filterOptions?.projectPhases?.map(p => ({ label: p, value: p })) || []} 
+            />
           </Form.Item>
           <Form.Item name="majorCategory" label="所属大类">
             <Input placeholder="如：合同类" />

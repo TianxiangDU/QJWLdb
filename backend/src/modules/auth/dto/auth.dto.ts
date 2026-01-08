@@ -38,10 +38,21 @@ export class RegisterDto {
 }
 
 export class LoginResponseDto {
-  @ApiProperty({ description: '访问令牌' })
+  @ApiProperty({ 
+    description: '访问令牌', 
+    example: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjEsInVzZXJuYW1lIjoiYWRtaW4iLCJyb2xlIjoiYWRtaW4iLCJpYXQiOjE3MDk4ODg4ODgsImV4cCI6MTcxMDQ5MzY4OH0.xxxxx' 
+  })
   accessToken: string;
 
-  @ApiProperty({ description: '用户信息' })
+  @ApiProperty({ 
+    description: '用户信息',
+    example: {
+      id: 1,
+      username: 'admin',
+      nickname: '管理员',
+      role: 'admin'
+    }
+  })
   user: {
     id: number;
     username: string;
@@ -51,12 +62,12 @@ export class LoginResponseDto {
 }
 
 export class ChangePasswordDto {
-  @ApiProperty({ description: '旧密码' })
+  @ApiProperty({ description: '旧密码', example: 'admin123' })
   @IsString()
   @IsNotEmpty({ message: '旧密码不能为空' })
   oldPassword: string;
 
-  @ApiProperty({ description: '新密码' })
+  @ApiProperty({ description: '新密码', example: 'newpassword123' })
   @IsString()
   @IsNotEmpty({ message: '新密码不能为空' })
   @MinLength(6, { message: '密码至少6个字符' })

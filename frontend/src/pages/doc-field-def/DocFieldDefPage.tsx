@@ -29,10 +29,6 @@ import DetailModal, { renderStatus, renderYesNo } from '../../components/DetailM
 import { exportToExcel, docFieldDefExportColumns } from '../../utils/exportExcel';
 
 const fieldCategoryOptions = ['金额', '日期', '数量', '文字', '枚举', '其他'];
-const valueSourceOptions = [
-  '封面', '正文第一条', '正文第二条', '正文条款', '表格第一行',
-  '表格汇总行', '附件清单', '签字盖章处', '落款日期', '其他位置',
-];
 
 const defaultQueryParams: QueryParams = { page: 1, pageSize: 10 };
 
@@ -328,7 +324,7 @@ export default function DocFieldDefPage() {
             <Select placeholder="请选择" options={[{ label: '是', value: 1 }, { label: '否', value: 0 }]} />
           </Form.Item>
           <Form.Item name="valueSource" label="取值方式" extra="指在文件中如何找到这个信息">
-            <Select placeholder="选择或输入取值位置" allowClear showSearch options={valueSourceOptions.map(v => ({ label: v, value: v }))} />
+            <Input placeholder="如：封面、正文第X条、表格第X行、签字盖章处" />
           </Form.Item>
           <Form.Item name="anchorWord" label="定位词" extra="用于在文件中定位该字段的关键词">
             <Input placeholder="如：合同金额、甲方、签订日期" />

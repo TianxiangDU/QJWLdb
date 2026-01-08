@@ -132,6 +132,7 @@ export interface DocFieldDef {
   fieldCategory?: string;
   requiredFlag: number;
   valueSource?: string;
+  anchorWord?: string;
   enumOptions?: string;
   exampleValue?: string;
   fieldDescription?: string;

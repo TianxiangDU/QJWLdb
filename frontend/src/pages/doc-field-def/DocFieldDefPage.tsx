@@ -45,6 +45,7 @@ const detailFields = [
   { key: 'fieldCategory', label: '字段类别' },
   { key: 'requiredFlag', label: '是否必填', render: renderYesNo },
   { key: 'valueSource', label: '取值方式' },
+  { key: 'anchorWord', label: '定位词' },
   { key: 'status', label: '状态', render: renderStatus },
   { key: 'enumOptions', label: '枚举值', span: 2 },
   { key: 'exampleValue', label: '示例数据', span: 2 },
@@ -201,6 +202,7 @@ export default function DocFieldDefPage() {
     { title: '字段类别', dataIndex: 'fieldCategory', key: 'fieldCategory', width: 90 },
     { title: '是否必填', dataIndex: 'requiredFlag', key: 'requiredFlag', width: 90, render: (v) => v === 1 ? <Tag color="red">是</Tag> : <Tag>否</Tag> },
     { title: '取值方式', dataIndex: 'valueSource', key: 'valueSource', width: 100 },
+    { title: '定位词', dataIndex: 'anchorWord', key: 'anchorWord', width: 120, ellipsis: true },
     { title: '枚举值', dataIndex: 'enumOptions', key: 'enumOptions', width: 120, ellipsis: true },
     { title: '示例数据', dataIndex: 'exampleValue', key: 'exampleValue', width: 120, ellipsis: true },
     { title: '状态', dataIndex: 'status', key: 'status', width: 80, render: (v) => v === 1 ? <Tag color="green">启用</Tag> : <Tag color="default">停用</Tag> },
@@ -327,6 +329,9 @@ export default function DocFieldDefPage() {
           </Form.Item>
           <Form.Item name="valueSource" label="取值方式" extra="指在文件中如何找到这个信息">
             <Select placeholder="选择或输入取值位置" allowClear showSearch options={valueSourceOptions.map(v => ({ label: v, value: v }))} />
+          </Form.Item>
+          <Form.Item name="anchorWord" label="定位词" extra="用于在文件中定位该字段的关键词">
+            <Input placeholder="如：合同金额、甲方、签订日期" />
           </Form.Item>
           {fieldCategory === '枚举' && (
             <Form.Item name="enumOptions" label="枚举值" rules={[{ required: true, message: '字段类别为枚举时，必须填写枚举值' }]} extra="多个枚举值用逗号分隔">

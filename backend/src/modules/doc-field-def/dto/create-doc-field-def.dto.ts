@@ -48,4 +48,10 @@ export class CreateDocFieldDefDto {
   @IsOptional()
   @IsString()
   fieldDescription?: string;
+
+  @ApiPropertyOptional({ description: '定位词' })
+  @IsOptional()
+  @IsString()
+  @MaxLength(500)
+  anchorWord?: string;
 }

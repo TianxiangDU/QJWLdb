@@ -43,6 +43,10 @@ export class DocFieldDef extends BaseEntity {
   @Column({ name: 'field_description', type: 'text', nullable: true, comment: '字段说明' })
   fieldDescription: string;
 
+  @ApiProperty({ description: '定位词' })
+  @Column({ name: 'anchor_word', type: 'varchar', length: 500, nullable: true, comment: '定位词（用于在文件中定位该字段）' })
+  anchorWord: string;
+
   @ManyToOne(() => DocType, (docType) => docType.fields, { onDelete: 'CASCADE' })
   @JoinColumn({ name: 'doc_type_id' })
   docType: DocType;

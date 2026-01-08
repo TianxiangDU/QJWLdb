@@ -143,6 +143,7 @@ export class DocFieldDefService {
       { header: '字段类别', key: 'fieldCategory', width: 15 },
       { header: '是否必填(1/0)', key: 'requiredFlag', width: 15 },
       { header: '取值方式', key: 'valueSource', width: 25 },
+      { header: '定位词', key: 'anchorWord', width: 30 },
       { header: '枚举值', key: 'enumOptions', width: 30 },
       { header: '示例数据', key: 'exampleValue', width: 25 },
       { header: '字段说明', key: 'fieldDescription', width: 40 },
@@ -163,6 +164,7 @@ export class DocFieldDefService {
       fieldCategory: '如：金额、日期、枚举',
       requiredFlag: '1=必填，0=非必填',
       valueSource: '如：封面、正文第X条',
+      anchorWord: '用于定位字段的关键词',
       enumOptions: '枚举类型时填写，如：是,否',
       exampleValue: '如：100000.00',
       fieldDescription: '',
@@ -210,9 +212,10 @@ export class DocFieldDefService {
           fieldCategory: row.getCell(4).text?.trim() || undefined,
           requiredFlag: parseInt(row.getCell(5).text) || 0,
           valueSource: row.getCell(6).text?.trim() || undefined,
-          enumOptions: row.getCell(7).text?.trim() || undefined,
-          exampleValue: row.getCell(8).text?.trim() || undefined,
-          fieldDescription: row.getCell(9).text?.trim() || undefined,
+          anchorWord: row.getCell(7).text?.trim() || undefined,
+          enumOptions: row.getCell(8).text?.trim() || undefined,
+          exampleValue: row.getCell(9).text?.trim() || undefined,
+          fieldDescription: row.getCell(10).text?.trim() || undefined,
         };
 
         const existing = await this.repository.findOne({

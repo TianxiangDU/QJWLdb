@@ -43,4 +43,11 @@ export class AuthController {
   ) {
     return this.authService.changePassword(userId, dto);
   }
+
+  @Post('reset-admin')
+  @Public()
+  @ApiOperation({ summary: '重置管理员密码（紧急恢复用）' })
+  async resetAdminPassword() {
+    return this.authService.resetAdminPassword();
+  }
 }

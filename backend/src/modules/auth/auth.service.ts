@@ -91,9 +91,31 @@ export class AuthService {
         password: 'admin123',
         nickname: '管理员',
         role: 'admin',
+        status: 1,
       });
       await this.userRepository.save(user);
       console.log('✅ 初始管理员账号创建成功: admin / admin123');
+    } else {
+      // 确保管理员账号处于启用状态
+      if (admin.status !== 1) {
+        admin.status = 1;
+        await this.userRepository.save(admin);
+        console.log('✅ 管理员账号已启用');
+      }
+      console.log('✅ 管理员账号已存在');
     }
+  }
+
+  // 重置管理员密码（用于紧急恢复）
+  async resetAdminPassword() {
+    const admin = await this.userRepository.findOne({ where: { username: 'admin' } });
+    if (admin) {
+      admin.password = 'admin123';
+      admin.status = 1;
+      await this.userRepository.save(admin);
+      console.log('✅ 管理员密码已重置为: admin123');
+      return { message: '管理员密码已重置' };
+    }
+    return { message: '管理员账号不存在' };
   }
 }

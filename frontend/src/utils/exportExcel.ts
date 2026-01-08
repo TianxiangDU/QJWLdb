@@ -72,6 +72,7 @@ export const docFieldDefExportColumns = [
   { key: 'fieldCategory', title: '字段类别' },
   { key: 'requiredFlag', title: '是否必填' },
   { key: 'valueSource', title: '取值方式' },
+  { key: 'anchorWord', title: '定位词' },
   { key: 'enumOptions', title: '枚举值' },
   { key: 'exampleValue', title: '示例数据' },
   { key: 'fieldDescription', title: '字段说明' },

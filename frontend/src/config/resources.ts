@@ -130,8 +130,9 @@ export const docFieldDefConfig: ResourceConfig<DocFieldDef> = {
       type: "select", 
       required: true,
       optionsLoader: async () => {
+        const token = localStorage.getItem('qjwl_token');
         const res = await fetch('/api/v1/doc-types/list?pageSize=1000&status=1', {
-          headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
+          headers: { 'Authorization': `Bearer ${token}` }
         });
         const data = await res.json();
         return (data.data || []).map((d: any) => ({ label: `${d.code} - ${d.name}`, value: d.id }));
@@ -166,8 +167,9 @@ export const docFieldDefConfig: ResourceConfig<DocFieldDef> = {
       label: "文件类型", 
       type: "select",
       optionsLoader: async () => {
+        const token = localStorage.getItem('qjwl_token');
         const res = await fetch('/api/v1/doc-types/list?pageSize=1000&status=1', {
-          headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
+          headers: { 'Authorization': `Bearer ${token}` }
         });
         const data = await res.json();
         return (data.data || []).map((d: any) => ({ label: d.name, value: d.id }));

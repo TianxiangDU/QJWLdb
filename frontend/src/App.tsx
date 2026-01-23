@@ -3,13 +3,14 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query"
 import { Toaster } from "@/components/ui/toaster"
 import { MainLayout } from "@/layouts/MainLayout"
 import { LoginPage } from "@/pages/auth/LoginPage"
-import { HomePage } from "@/pages/home/HomePage"
 import { DocTypesPage } from "@/pages/resources/DocTypesPage"
 import { DocFieldDefsPage } from "@/pages/resources/DocFieldDefsPage"
 import { AuditRulesPage } from "@/pages/resources/AuditRulesPage"
 import { LawDocumentsPage } from "@/pages/resources/LawDocumentsPage"
 import { LawClausesPage } from "@/pages/resources/LawClausesPage"
 import { SchemaExplorerPage } from "@/pages/schema/SchemaExplorerPage"
+import { SearchPage } from "@/pages/search/SearchPage"
+import EnumManagePage from "@/pages/system/EnumManagePage"
 import { getToken } from "@/services/api-client"
 
 const queryClient = new QueryClient({
@@ -46,7 +47,7 @@ function App() {
               </ProtectedRoute>
             }
           >
-            <Route index element={<HomePage />} />
+            <Route index element={<SearchPage />} />
             <Route path="doc-types" element={<DocTypesPage />} />
             <Route path="doc-field-defs" element={<DocFieldDefsPage />} />
             <Route path="doc-template-samples" element={<DocTypesPage />} />
@@ -54,6 +55,7 @@ function App() {
             <Route path="law-documents" element={<LawDocumentsPage />} />
             <Route path="law-clauses" element={<LawClausesPage />} />
             <Route path="schema" element={<SchemaExplorerPage />} />
+            <Route path="system/enums" element={<EnumManagePage />} />
           </Route>
         </Routes>
       </BrowserRouter>

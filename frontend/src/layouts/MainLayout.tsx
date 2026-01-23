@@ -5,12 +5,15 @@ import {
   FileCheck,
   Scale,
   Database,
-  Home,
   ChevronDown,
   LogOut,
   User,
   Menu,
   X,
+  Search,
+  Info,
+  ExternalLink,
+  Settings,
 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import {
@@ -32,7 +35,7 @@ interface NavItem {
 }
 
 const navItems: NavItem[] = [
-  { title: "首页", href: "/", icon: Home },
+  { title: "首页", href: "/", icon: Search },
   {
     title: "文件与资料库",
     icon: FileText,
@@ -58,6 +61,7 @@ const navItems: NavItem[] = [
     ],
   },
   { title: "数据库结构", href: "/schema", icon: Database },
+  { title: "枚举管理", href: "/system/enums", icon: Settings },
 ]
 
 function NavLink({ item, isActive }: { item: NavItem; isActive: boolean }) {
@@ -197,10 +201,38 @@ export function MainLayout() {
                 <ChevronDown className="h-4 w-4" />
               </Button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
+            <DropdownMenuContent align="end" className="w-64">
               <DropdownMenuItem disabled>
                 <User className="mr-2 h-4 w-4" />
                 {user?.username}
+              </DropdownMenuItem>
+              <DropdownMenuSeparator />
+              <div className="px-2 py-1.5">
+                <div className="flex items-center gap-2 text-sm font-medium mb-2">
+                  <Info className="h-4 w-4" />
+                  系统信息
+                </div>
+                <div className="space-y-1 text-xs text-muted-foreground">
+                  <div className="flex justify-between">
+                    <span>版本</span>
+                    <span className="font-medium text-foreground">v1.0</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span>前端</span>
+                    <span>React + shadcn/ui</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span>后端</span>
+                    <span>NestJS + MySQL</span>
+                  </div>
+                </div>
+              </div>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem asChild>
+                <a href="/api-docs" target="_blank" rel="noopener noreferrer">
+                  <ExternalLink className="mr-2 h-4 w-4" />
+                  API 文档
+                </a>
               </DropdownMenuItem>
               <DropdownMenuSeparator />
               <DropdownMenuItem onClick={handleLogout}>

@@ -138,7 +138,8 @@ export default function DocFieldDefPage() {
 
   const handleImport = async (file: File) => {
     try {
-      const result: any = await docFieldDefApi.import(file);
+      const response: any = await docFieldDefApi.import(file);
+      const result = response.data || response; // 处理 { data: {...} } 结构
       message.success(`导入完成：成功 ${result.success} 条，失败 ${result.failed} 条`);
       queryClient.invalidateQueries({ queryKey: ['docFieldDefs'] });
       setImportModalOpen(false);

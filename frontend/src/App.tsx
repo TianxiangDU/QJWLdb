@@ -9,7 +9,7 @@ import { AuditRulesPage } from "@/pages/resources/AuditRulesPage"
 import { LawDocumentsPage } from "@/pages/resources/LawDocumentsPage"
 import { LawClausesPage } from "@/pages/resources/LawClausesPage"
 import { SchemaExplorerPage } from "@/pages/schema/SchemaExplorerPage"
-import SearchPage from "@/pages/search/SearchPage"
+import { HomePage } from "@/pages/home/HomePage"
 import SystemSettingsPage from "@/pages/system/SystemSettingsPage"
 import { getToken } from "@/services/api-client"
 
@@ -47,7 +47,7 @@ function App() {
               </ProtectedRoute>
             }
           >
-            <Route index element={<SearchPage />} />
+            <Route index element={<HomePage />} />
             <Route path="doc-types" element={<DocTypesPage />} />
             <Route path="doc-field-defs" element={<DocFieldDefsPage />} />
             <Route path="doc-template-samples" element={<DocTypesPage />} />

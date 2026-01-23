@@ -1,4 +1,4 @@
-import { Entity, Column, ManyToOne, JoinColumn, Index } from 'typeorm';
+import { Entity, Column, ManyToOne, JoinColumn, Index, VersionColumn } from 'typeorm';
 import { ApiProperty } from '@nestjs/swagger';
 import { BaseEntity } from '../../../common/entities/base.entity';
 import { DocType } from '../../doc-type/entities/doc-type.entity';
@@ -46,6 +46,10 @@ export class DocFieldDef extends BaseEntity {
   @ApiProperty({ description: '定位词' })
   @Column({ name: 'anchor_word', type: 'varchar', length: 500, nullable: true, comment: '定位词（用于在文件中定位该字段）' })
   anchorWord: string;
+
+  @ApiProperty({ description: '数据版本号（乐观锁）', example: 1 })
+  @VersionColumn({ name: 'row_version', default: 1 })
+  rowVersion: number;
 
   @ManyToOne(() => DocType, (docType) => docType.fields, { onDelete: 'CASCADE' })
   @JoinColumn({ name: 'doc_type_id' })

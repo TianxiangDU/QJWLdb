@@ -8,6 +8,11 @@ export class UpdateDocTypeDto extends PartialType(CreateDocTypeDto) {
   @IsOptional()
   @IsInt()
   status?: number;
+
+  @ApiPropertyOptional({ description: '数据版本号（乐观锁）' })
+  @IsOptional()
+  @IsInt()
+  rowVersion?: number;
 }
 
 

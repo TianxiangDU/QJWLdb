@@ -35,6 +35,8 @@ import { CaseLibraryModule } from './modules/case-library/case-library.module';
 import { KnowledgeSnippetModule } from './modules/knowledge-snippet/knowledge-snippet.module';
 import { MonitorMetricModule } from './modules/monitor-metric/monitor-metric.module';
 import { FileUploadModule } from './modules/file-upload/file-upload.module';
+import { CommonModule } from './common/common.module';
+import { FileAssetModule } from './modules/file-asset/file-asset.module';
 
 @Module({
   imports: [
@@ -69,11 +71,15 @@ import { FileUploadModule } from './modules/file-upload/file-upload.module';
       }],
       inject: [ConfigService],
     }),
+    // 通用服务模块（全局）
+    CommonModule,
     // 系统模块
     HealthModule,
     MetaModule,
     // 认证模块
     AuthModule,
+    // 文件资产模块
+    FileAssetModule,
     // 业务模块
     DocTypeModule,
     DocFieldDefModule,

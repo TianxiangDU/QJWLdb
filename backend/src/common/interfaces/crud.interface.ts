@@ -1,17 +1,22 @@
-import { DeepPartial, FindOptionsWhere, ObjectLiteral } from 'typeorm';
+/**
+ * API 响应格式
+ */
+export interface ApiResponse<T> {
+  code: number;
+  message: string;
+  data: T;
+}
 
 /**
- * 统一响应格式
+ * 错误响应格式
  */
-export interface ApiResponse<T = any> {
-  data: T;
-  meta?: {
-    page?: number;
-    pageSize?: number;
-    total?: number;
-    totalPages?: number;
-    [key: string]: any;
-  };
+export interface ErrorResponse {
+  code: string | number;
+  message: string;
+  traceId?: string;
+  details?: any;
+  timestamp?: string;
+  path?: string;
 }
 
 /**
@@ -33,26 +38,67 @@ export interface BatchOperationResult {
 }
 
 /**
+ * 导入模式
+ */
+export type ImportMode = 'upsert' | 'insertOnly' | 'updateOnly';
+
+/**
  * 导入结果
  */
 export interface ImportResult {
   success: number;
   failed: number;
+  created: number;
+  updated: number;
+  skipped: number;
   errors: Array<{
     row: number;
     field?: string;
     message: string;
   }>;
+  duplicateRows?: Array<{
+    row: number;
+    duplicateOf: number;
+    uniqueKey: string;
+  }>;
 }
 
 /**
- * 错误响应格式
+ * 导入选项
  */
-export interface ErrorResponse {
-  code: string;
-  message: string;
-  traceId: string;
-  details?: any;
+export interface ImportOptions {
+  mode: ImportMode;
+  dryRun: boolean;
+}
+
+/**
+ * Excel 列配置
+ */
+export interface ExcelColumnConfig<T> {
+  key: keyof T | string;
+  header: string;
+  width?: number;
+  required?: boolean;
+  description?: string;
+  transform?: (value: string) => any;
+  format?: (value: any) => string;
+}
+
+/**
+ * 资源配置
+ */
+export interface ResourceConfig<T> {
+  resourceName: string;
+  resourceType: string; // 用于编码生成
+  uniqueKey?: keyof T | (keyof T)[]; // 唯一键（用于 upsert）
+  secondaryUniqueKey?: (keyof T)[]; // 备用唯一键
+  searchFields?: (keyof T)[]; // 关键字搜索字段
+  defaultSortField?: keyof T;
+  defaultSortOrder?: 'ASC' | 'DESC';
+  excelColumns?: ExcelColumnConfig<T>[];
+  supportsAutoCode?: boolean; // 是否支持自动编码
+  codeField?: keyof T; // 编码字段名（默认 'code'）
+  parentCodeField?: keyof T; // 父级编码字段（子资源用）
 }
 
 /**
@@ -68,71 +114,26 @@ export interface BaseQueryParams {
 }
 
 /**
- * 资源配置接口 - 用于元数据驱动的 CRUD
+ * 乐观锁更新 DTO 基类
  */
-export interface ResourceConfig<T extends ObjectLiteral> {
-  /**
-   * 资源名称（中文）
-   */
-  resourceName: string;
-
-  /**
-   * 唯一键字段名（用于导入时判断是否已存在）
-   */
-  uniqueKey?: keyof T | (keyof T)[];
-
-  /**
-   * 关键字搜索字段
-   */
-  searchFields?: (keyof T)[];
-
-  /**
-   * 默认排序字段
-   */
-  defaultSortField?: keyof T;
-
-  /**
-   * 默认排序方向
-   */
-  defaultSortOrder?: 'ASC' | 'DESC';
-
-  /**
-   * Excel 导入/导出列配置
-   */
-  excelColumns?: ExcelColumnConfig<T>[];
+export interface VersionedUpdateDto {
+  rowVersion?: number;
 }
 
 /**
- * Excel 列配置
+ * 代码关联字段
+ * 用于支持既可以用 ID 也可以用 Code 关联
  */
-export interface ExcelColumnConfig<T> {
-  /**
-   * 列标题
-   */
-  header: string;
+export interface CodeRelation {
+  id?: number;
+  code?: string;
+}
 
-  /**
-   * 对应实体字段
-   */
-  key: keyof T;
-
-  /**
-   * 列宽
-   */
-  width?: number;
-
-  /**
-   * 是否必填
-   */
-  required?: boolean;
-
-  /**
-   * 值转换函数（导入时）
-   */
-  transform?: (value: any) => any;
-
-  /**
-   * 格式化函数（导出时）
-   */
-  format?: (value: any) => any;
+/**
+ * 解析后的关联信息
+ */
+export interface ResolvedRelation {
+  id: number;
+  code: string;
+  name?: string;
 }

@@ -1,4 +1,4 @@
-import { Entity, Column, OneToMany, Index } from 'typeorm';
+import { Entity, Column, OneToMany, Index, VersionColumn } from 'typeorm';
 import { ApiProperty } from '@nestjs/swagger';
 import { BaseEntity } from '../../../common/entities/base.entity';
 import { DocFieldDef } from '../../doc-field-def/entities/doc-field-def.entity';
@@ -50,6 +50,10 @@ export class DocType extends BaseEntity {
   @ApiProperty({ description: '备注' })
   @Column({ type: 'text', nullable: true, comment: '备注' })
   remark: string;
+
+  @ApiProperty({ description: '数据版本号（乐观锁）', example: 1 })
+  @VersionColumn({ name: 'row_version', default: 1 })
+  rowVersion: number;
 
   @OneToMany(() => DocFieldDef, (field) => field.docType)
   fields: DocFieldDef[];

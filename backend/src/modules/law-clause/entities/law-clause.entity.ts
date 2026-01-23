@@ -1,4 +1,4 @@
-import { Entity, Column, ManyToOne, JoinColumn, Index } from 'typeorm';
+import { Entity, Column, ManyToOne, JoinColumn, Index, VersionColumn } from 'typeorm';
 import { ApiProperty } from '@nestjs/swagger';
 import { BaseEntity } from '../../../common/entities/base.entity';
 import { LawDocument } from '../../law-document/entities/law-document.entity';
@@ -67,9 +67,11 @@ export class LawClause extends BaseEntity {
   @Column({ type: 'text', nullable: true, comment: '备注' })
   remark: string;
 
+  @ApiProperty({ description: '数据版本号（乐观锁）', example: 1 })
+  @VersionColumn({ name: 'row_version', default: 1 })
+  rowVersion: number;
+
   @ManyToOne(() => LawDocument, (doc) => doc.clauses, { onDelete: 'CASCADE' })
   @JoinColumn({ name: 'law_document_id' })
   lawDocument: LawDocument;
 }
-
-

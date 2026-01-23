@@ -18,6 +18,7 @@ export interface DocType {
   bizDescription?: string
   remark?: string
   status: number
+  rowVersion: number
   createdAt: string
   updatedAt: string
 }
@@ -38,8 +39,22 @@ export const docTypeConfig: ResourceConfig<DocType> = {
     { key: "updatedAt", title: "更新时间", type: "datetime", width: 150 },
   ],
   
+  codeField: {
+    field: "code",
+    autoGenerate: true,
+    readOnlyOnEdit: true,
+    prefix: "DT",
+  },
+  
+  uniqueKeys: ["code"],
+  
+  importConfig: {
+    modeOptions: ["upsert", "insertOnly", "updateOnly"],
+    dryRunSupported: true,
+  },
+  
   formFields: [
-    { key: "code", label: "编码", type: "text", required: true, placeholder: "如：CONTRACT-001" },
+    { key: "code", label: "编码", type: "text", required: false, placeholder: "留空自动生成，如：DT-202601-000001", help: "编码留空时将自动生成" },
     { key: "name", label: "名称", type: "text", required: true, placeholder: "如：施工合同" },
     { key: "projectPhase", label: "项目阶段", type: "text", placeholder: "如：施工阶段" },
     { key: "majorCategory", label: "大类", type: "text" },
@@ -102,7 +117,19 @@ export const docFieldDefConfig: ResourceConfig<DocFieldDef> = {
   ],
   
   formFields: [
-    { key: "docTypeId", label: "所属文件类型", type: "number", required: true },
+    { 
+      key: "docTypeId", 
+      label: "所属文件类型", 
+      type: "select", 
+      required: true,
+      optionsLoader: async () => {
+        const res = await fetch('/api/v1/doc-types/list?pageSize=1000', {
+          headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
+        });
+        const data = await res.json();
+        return (data.data || []).map((d: any) => ({ label: `${d.code} - ${d.name}`, value: d.id }));
+      }
+    },
     { key: "fieldCode", label: "字段编码", type: "text", required: true },
     { key: "fieldName", label: "字段名称", type: "text", required: true },
     { key: "fieldCategory", label: "字段类别", type: "select", options: [

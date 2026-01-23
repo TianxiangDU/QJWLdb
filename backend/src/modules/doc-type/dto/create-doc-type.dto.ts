@@ -2,10 +2,11 @@ import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { IsString, IsOptional, IsInt, MaxLength } from 'class-validator';
 
 export class CreateDocTypeDto {
-  @ApiProperty({ description: '文件类型编码', example: 'CONTRACT_001' })
+  @ApiPropertyOptional({ description: '文件类型编码（留空自动生成）', example: 'DT-202601-000001' })
+  @IsOptional()
   @IsString()
   @MaxLength(50)
-  code: string;
+  code?: string;
 
   @ApiProperty({ description: '文件类型名称', example: '施工合同' })
   @IsString()

@@ -6,6 +6,8 @@ import { CreateDocTypeDto } from './dto/create-doc-type.dto';
 import { UpdateDocTypeDto } from './dto/update-doc-type.dto';
 import { QueryDocTypeDto } from './dto/query-doc-type.dto';
 import { PaginationResultDto } from '../../common/dto/pagination.dto';
+import { CodeService } from '../../common/services/code.service';
+import { ImportResult, ImportMode } from '../../common/interfaces/crud.interface';
 import * as ExcelJS from 'exceljs';
 
 @Injectable()
@@ -13,18 +15,26 @@ export class DocTypeService {
   constructor(
     @InjectRepository(DocType)
     private readonly docTypeRepository: Repository<DocType>,
+    private readonly codeService: CodeService,
   ) {}
 
   async create(createDto: CreateDocTypeDto): Promise<DocType> {
-    // 检查编码唯一性
-    const existing = await this.docTypeRepository.findOne({
-      where: { code: createDto.code },
-    });
-    if (existing) {
-      throw new ConflictException(`文件类型编码 ${createDto.code} 已存在`);
+    const dto = { ...createDto };
+
+    // 自动生成编码（如果未提供）
+    if (!dto.code) {
+      dto.code = await this.codeService.next('docType', 'PREFIX-YYYYMM-SEQ6');
+    } else {
+      // 检查编码唯一性
+      const existing = await this.docTypeRepository.findOne({
+        where: { code: dto.code },
+      });
+      if (existing) {
+        throw new ConflictException(`文件类型编码 ${dto.code} 已存在`);
+      }
     }
 
-    const entity = this.docTypeRepository.create(createDto);
+    const entity = this.docTypeRepository.create(dto);
     return this.docTypeRepository.save(entity);
   }
 
@@ -173,20 +183,23 @@ export class DocTypeService {
     };
   }
 
-  async update(id: number, updateDto: UpdateDocTypeDto): Promise<DocType> {
+  async update(id: number, updateDto: UpdateDocTypeDto & { rowVersion?: number }): Promise<DocType> {
     const entity = await this.findOne(id);
 
-    // 如果要更新编码，检查唯一性
-    if (updateDto.code && updateDto.code !== entity.code) {
-      const existing = await this.docTypeRepository.findOne({
-        where: { code: updateDto.code },
-      });
-      if (existing) {
-        throw new ConflictException(`文件类型编码 ${updateDto.code} 已存在`);
-      }
+    // 乐观锁检查
+    if (updateDto.rowVersion !== undefined && entity.rowVersion !== updateDto.rowVersion) {
+      throw new ConflictException('数据已被他人更新，请刷新后重试');
     }
 
-    Object.assign(entity, updateDto);
+    // 不允许修改编码
+    if (updateDto.code && updateDto.code !== entity.code) {
+      throw new ConflictException('编码不允许修改');
+    }
+
+    // 移除 rowVersion，让 TypeORM 自动处理
+    const { rowVersion, ...dto } = updateDto;
+
+    Object.assign(entity, dto);
     return this.docTypeRepository.save(entity);
   }
 
@@ -234,7 +247,7 @@ export class DocTypeService {
 
     sheet.columns = [
       { header: '文件类型名称*', key: 'name', width: 25 },
-      { header: '文件类型编码*', key: 'code', width: 20 },
+      { header: '文件类型编码（留空自动生成）', key: 'code', width: 25 },
       { header: '所属项目阶段', key: 'projectPhase', width: 15 },
       { header: '所属大类', key: 'majorCategory', width: 15 },
       { header: '所属小类', key: 'minorCategory', width: 15 },
@@ -257,7 +270,12 @@ export class DocTypeService {
     return workbook;
   }
 
-  async importFromExcel(buffer: Buffer): Promise<{ success: number; failed: number; errors: string[] }> {
+  async importFromExcel(
+    buffer: Buffer,
+    options: { mode?: ImportMode; dryRun?: boolean } = {},
+  ): Promise<ImportResult> {
+    const { mode = 'upsert', dryRun = false } = options;
+    
     const workbook = new ExcelJS.Workbook();
     await workbook.xlsx.load(buffer as unknown as ArrayBuffer);
 
@@ -266,28 +284,50 @@ export class DocTypeService {
       throw new Error('Excel文件格式错误');
     }
 
-    let success = 0;
-    let failed = 0;
-    const errors: string[] = [];
+    const result: ImportResult = {
+      success: 0,
+      failed: 0,
+      created: 0,
+      updated: 0,
+      skipped: 0,
+      errors: [],
+      duplicateRows: [],
+    };
 
     const rows = sheet.getRows(2, sheet.rowCount - 1) || [];
+    const codeMap = new Map<string, number>(); // 用于文件内去重
 
     for (const row of rows) {
+      const rowNum = row.number;
       try {
         const name = row.getCell(1).text?.trim();
-        const code = row.getCell(2).text?.trim();
+        let code = row.getCell(2).text?.trim();
 
-        if (!code || !name) {
-          if (code || name) {
-            errors.push(`第${row.number}行：编码和名称为必填项`);
-            failed++;
+        if (!name) {
+          if (code) {
+            result.errors.push({ row: rowNum, field: 'name', message: '名称为必填项' });
+            result.failed++;
           }
           continue;
         }
 
+        // 文件内编码去重检查
+        if (code && codeMap.has(code)) {
+          result.duplicateRows!.push({
+            row: rowNum,
+            duplicateOf: codeMap.get(code)!,
+            uniqueKey: `code=${code}`,
+          });
+          result.failed++;
+          continue;
+        }
+        if (code) {
+          codeMap.set(code, rowNum);
+        }
+
         const dto: CreateDocTypeDto = {
           name,
-          code,
+          code: code || '',
           projectPhase: row.getCell(3).text?.trim() || undefined,
           majorCategory: row.getCell(4).text?.trim() || undefined,
           minorCategory: row.getCell(5).text?.trim() || undefined,
@@ -300,22 +340,50 @@ export class DocTypeService {
         };
 
         // 检查是否已存在
-        const existing = await this.docTypeRepository.findOne({ where: { code } });
+        const existing = code
+          ? await this.docTypeRepository.findOne({ where: { code } })
+          : null;
+
         if (existing) {
-          Object.assign(existing, dto);
-          await this.docTypeRepository.save(existing);
+          // 记录已存在
+          if (mode === 'insertOnly') {
+            result.errors.push({ row: rowNum, message: '记录已存在（insertOnly 模式）' });
+            result.failed++;
+            continue;
+          }
+
+          if (!dryRun) {
+            Object.assign(existing, dto);
+            await this.docTypeRepository.save(existing);
+          }
+          result.updated++;
+          result.success++;
         } else {
-          const entity = this.docTypeRepository.create(dto);
-          await this.docTypeRepository.save(entity);
+          // 记录不存在
+          if (mode === 'updateOnly') {
+            result.errors.push({ row: rowNum, message: '记录不存在（updateOnly 模式）' });
+            result.failed++;
+            continue;
+          }
+
+          if (!dryRun) {
+            // 自动生成编码
+            if (!dto.code) {
+              dto.code = await this.codeService.next('docType', 'PREFIX-YYYYMM-SEQ6');
+            }
+            const entity = this.docTypeRepository.create(dto);
+            await this.docTypeRepository.save(entity);
+          }
+          result.created++;
+          result.success++;
         }
-        success++;
       } catch (error) {
-        errors.push(`第${row.number}行：${error.message}`);
-        failed++;
+        result.errors.push({ row: rowNum, message: error.message });
+        result.failed++;
       }
     }
 
-    return { success, failed, errors };
+    return result;
   }
 
   async findAllActive(): Promise<DocType[]> {

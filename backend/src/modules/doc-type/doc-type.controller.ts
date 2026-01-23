@@ -66,19 +66,31 @@ export class DocTypeController {
   }
 
   @Post('import')
-  @ApiOperation({ summary: 'Excel批量导入' })
+  @ApiOperation({ 
+    summary: 'Excel批量导入',
+    description: '支持 upsert（默认）、insertOnly、updateOnly 三种模式，dryRun=true 时只校验不落库',
+  })
   @ApiConsumes('multipart/form-data')
   @ApiBody({
     schema: {
       type: 'object',
       properties: {
         file: { type: 'string', format: 'binary' },
+        mode: { type: 'string', enum: ['upsert', 'insertOnly', 'updateOnly'], default: 'upsert' },
+        dryRun: { type: 'boolean', default: false },
       },
     },
   })
   @UseInterceptors(FileInterceptor('file'))
-  async importExcel(@UploadedFile() file: Express.Multer.File) {
-    return this.docTypeService.importFromExcel(file.buffer);
+  async importExcel(
+    @UploadedFile() file: Express.Multer.File,
+    @Body('mode') mode?: 'upsert' | 'insertOnly' | 'updateOnly',
+    @Body('dryRun') dryRun?: string,
+  ) {
+    return this.docTypeService.importFromExcel(file.buffer, {
+      mode: mode || 'upsert',
+      dryRun: dryRun === 'true',
+    });
   }
 
   @Get('full/:idOrCode')

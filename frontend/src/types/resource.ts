@@ -150,6 +150,20 @@ export interface ResourceConfig<T = any> {
   
   /** 自定义操作按钮 */
   actions?: ResourceAction[]
+  
+  /** 编码字段配置 */
+  codeField?: CodeFieldConfig
+  
+  /** 唯一键（用于导入去重） */
+  uniqueKeys?: string[]
+  
+  /** 导入配置 */
+  importConfig?: {
+    /** 支持的导入模式 */
+    modeOptions?: ImportMode[]
+    /** 是否支持 dryRun */
+    dryRunSupported?: boolean
+  }
 }
 
 /**
@@ -166,6 +180,54 @@ export interface ResourceAction {
 }
 
 /**
+ * 导入模式
+ */
+export type ImportMode = 'upsert' | 'insertOnly' | 'updateOnly'
+
+/**
+ * 导入结果
+ */
+export interface ImportResult {
+  success: number
+  failed: number
+  created: number
+  updated: number
+  skipped: number
+  errors: Array<{
+    row: number
+    field?: string
+    message: string
+  }>
+  duplicateRows?: Array<{
+    row: number
+    duplicateOf: number
+    uniqueKey: string
+  }>
+}
+
+/**
+ * 导入选项
+ */
+export interface ImportOptions {
+  mode: ImportMode
+  dryRun: boolean
+}
+
+/**
+ * 编码字段配置
+ */
+export interface CodeFieldConfig {
+  /** 编码字段名 */
+  field: string
+  /** 是否自动生成 */
+  autoGenerate: boolean
+  /** 编辑时是否只读 */
+  readOnlyOnEdit: boolean
+  /** 编码前缀（用于提示） */
+  prefix?: string
+}
+
+/**
  * 资源 API 接口
  */
 export interface ResourceApi<T = any> {
@@ -178,6 +240,6 @@ export interface ResourceApi<T = any> {
   batchDisable?: (ids: number[]) => Promise<void>
   batchDelete?: (ids: number[]) => Promise<void>
   downloadTemplate?: () => Promise<void>
-  import?: (file: File) => Promise<{ success: number; failed: number; errors: any[] }>
+  import?: (file: File, options?: ImportOptions) => Promise<ImportResult>
   export?: (params: Record<string, any>) => Promise<void>
 }

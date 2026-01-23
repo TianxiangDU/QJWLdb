@@ -261,7 +261,7 @@ export default function DocTypePage() {
             allowClear
             value={queryParams.projectPhase}
             style={{ width: 140 }}
-            options={filterOptions?.projectPhases?.map(p => ({ label: p, value: p })) || []}
+            options={filterOptions?.data?.projectPhases?.map(p => ({ label: p, value: p })) || []}
             onChange={(v) => setQueryParams({ ...queryParams, projectPhase: v, page: 1 })}
           />
           <Select
@@ -355,7 +355,7 @@ export default function DocTypePage() {
             <Select 
               placeholder="选择阶段" 
               allowClear 
-              options={filterOptions?.projectPhases?.map(p => ({ label: p, value: p })) || []} 
+              options={filterOptions?.data?.projectPhases?.map(p => ({ label: p, value: p })) || []} 
             />
           </Form.Item>
           <Form.Item name="majorCategory" label="所属大类">

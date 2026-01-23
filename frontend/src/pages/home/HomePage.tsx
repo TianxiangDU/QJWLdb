@@ -108,8 +108,8 @@ export function HomePage() {
   const { data: fullInfo, isLoading: isLoadingFullInfo } = useQuery({
     queryKey: ["docTypeFullInfo", selectedDocTypeId],
     queryFn: async () => {
-      const { data } = await apiClient.get<DocTypeFullInfo>(`/doc-types/full/${selectedDocTypeId}`)
-      return data
+      const response = await apiClient.get<{ data: DocTypeFullInfo }>(`/doc-types/full/${selectedDocTypeId}`)
+      return response.data.data // 提取 response.data.data
     },
     enabled: !!selectedDocTypeId,
   })

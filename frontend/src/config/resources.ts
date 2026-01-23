@@ -1,5 +1,5 @@
 import { ResourceConfig } from "@/types/resource"
-import { FileText, List, FileCheck, Scale, BookOpen, ScrollText, Link2 } from "lucide-react"
+import { FileText, List, FileCheck, Scale, ScrollText } from "lucide-react"
 
 /**
  * 文件类型

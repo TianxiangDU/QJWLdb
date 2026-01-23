@@ -1,11 +1,9 @@
-import React from "react"
 import { useQuery } from "@tanstack/react-query"
 import { Link } from "react-router-dom"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { apiClient } from "@/services/api-client"
 import { FileText, FileCheck, Scale, Database, ArrowRight } from "lucide-react"
-import { PageLoading } from "@/components/ui/loading"
 
 interface StatCard {
   title: string

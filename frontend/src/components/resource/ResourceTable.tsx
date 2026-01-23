@@ -1,4 +1,3 @@
-import React from "react"
 import { ColumnConfig } from "@/types/resource"
 import { Checkbox } from "@/components/ui/checkbox"
 import { Badge } from "@/components/ui/badge"
@@ -35,7 +34,8 @@ export function ResourceTable<T extends { id: number }>({
   const visibleColumns = columns.filter((col) => !col.hidden)
 
   const allSelected = data.length > 0 && data.every((item) => selectedIds.includes(item[primaryKey] as number))
-  const someSelected = data.some((item) => selectedIds.includes(item[primaryKey] as number))
+  const _someSelected = data.some((item) => selectedIds.includes(item[primaryKey] as number))
+  void _someSelected // 保留以备后用
 
   const handleSelectAll = (checked: boolean) => {
     if (checked) {

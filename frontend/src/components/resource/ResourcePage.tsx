@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useMemo } from "react"
+import { useState, useCallback, useMemo } from "react"
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query"
 import { ResourceConfig, ResourceApi, DetailFieldConfig } from "@/types/resource"
 import { ResourceTable } from "./ResourceTable"
@@ -45,7 +45,7 @@ export function ResourcePage<T extends { id: number; status?: number }>({
   const [deleteConfirm, setDeleteConfirm] = useState<{ type: "single" | "batch"; id?: number } | null>(null)
 
   // 查询数据
-  const { data, isLoading, refetch } = useQuery({
+  const { data, isLoading } = useQuery({
     queryKey: [config.key, page, pageSize, appliedFilters],
     queryFn: () => api.list({ page, pageSize, ...appliedFilters }),
   })

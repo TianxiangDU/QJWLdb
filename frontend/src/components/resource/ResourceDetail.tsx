@@ -1,4 +1,3 @@
-import React from "react"
 import { DetailFieldConfig } from "@/types/resource"
 import {
   Dialog,

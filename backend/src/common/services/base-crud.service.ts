@@ -87,7 +87,7 @@ export abstract class BaseCrudService<T extends ObjectLiteral> {
     const qb = this.repository.createQueryBuilder('entity');
 
     // 状态筛选
-    if (status !== undefined && status !== null && status !== '') {
+    if (status !== undefined && status !== null) {
       qb.andWhere('entity.status = :status', { status: Number(status) });
     }
 

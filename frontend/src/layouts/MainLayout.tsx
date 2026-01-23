@@ -1,11 +1,9 @@
-import React, { useState } from "react"
+import { useState } from "react"
 import { Outlet, Link, useLocation, useNavigate } from "react-router-dom"
 import {
   FileText,
-  List,
   FileCheck,
   Scale,
-  ScrollText,
   Database,
   Home,
   ChevronDown,
@@ -23,7 +21,6 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { ScrollArea } from "@/components/ui/scroll-area"
-import { Separator } from "@/components/ui/separator"
 import { cn } from "@/lib/utils"
 import { getUser, logout } from "@/services/api-client"
 
@@ -119,7 +116,8 @@ function NavGroup({ item }: { item: NavItem }) {
 
 export function MainLayout() {
   const location = useLocation()
-  const navigate = useNavigate()
+  const _navigate = useNavigate()
+  void _navigate // 保留以备后用
   const [sidebarOpen, setSidebarOpen] = useState(false)
   const user = getUser()
 

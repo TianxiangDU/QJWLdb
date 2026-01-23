@@ -1,4 +1,4 @@
-import axios, { AxiosError, AxiosInstance, AxiosRequestConfig } from "axios"
+import axios, { AxiosError, AxiosInstance } from "axios"
 import { ApiResponse, PaginatedResult, ResourceApi } from "@/types/resource"
 
 // Token 管理

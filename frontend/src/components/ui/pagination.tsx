@@ -126,11 +126,12 @@ interface SimplePaginationProps {
 
 export function SimplePagination({
   page,
-  pageSize,
+  pageSize: _pageSize,
   total,
   totalPages,
   onPageChange,
 }: SimplePaginationProps) {
+  void _pageSize // 保留参数以备后用
   return (
     <div className="flex items-center justify-between px-2">
       <div className="text-sm text-muted-foreground">

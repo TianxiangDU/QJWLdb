@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react"
+import { useState, useEffect } from "react"
 import { FormFieldConfig } from "@/types/resource"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"

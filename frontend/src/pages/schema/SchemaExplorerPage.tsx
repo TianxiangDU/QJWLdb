@@ -1,4 +1,4 @@
-import React, { useState } from "react"
+import { useState } from "react"
 import { useQuery } from "@tanstack/react-query"
 import { metaApi } from "@/services/api-client"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"

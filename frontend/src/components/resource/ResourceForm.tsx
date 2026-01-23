@@ -13,6 +13,7 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 import { EnumSelect } from "@/components/EnumSelect"
+import { SearchableSelect } from "@/components/SearchableSelect"
 import {
   Sheet,
   SheetContent,
@@ -156,30 +157,38 @@ export function ResourceForm<T>({
             className={cn(error && "border-destructive")}
           />
         ) : field.type === "select" ? (
-          <Select
-            value={value !== undefined ? String(value) : ""}
-            onValueChange={(v) => handleChange(String(field.key), v)}
-            disabled={optionsLoading[field.key as string]}
-          >
-            <SelectTrigger className={cn(error && "border-destructive")}>
-              <SelectValue placeholder={
-                optionsLoading[field.key as string] 
-                  ? "加载中..." 
-                  : (field.placeholder || `选择${field.label}`)
-              } />
-            </SelectTrigger>
-            <SelectContent>
-              {options.length === 0 && !optionsLoading[field.key as string] ? (
-                <div className="py-2 px-2 text-sm text-muted-foreground">暂无选项</div>
-              ) : (
-                options.map((opt) => (
-                  <SelectItem key={String(opt.value)} value={String(opt.value)}>
-                    {opt.label}
-                  </SelectItem>
-                ))
-              )}
-            </SelectContent>
-          </Select>
+          // 如果有 optionsLoader（动态加载）则使用可搜索选择器
+          field.optionsLoader ? (
+            <SearchableSelect
+              options={options}
+              value={value}
+              onChange={(v) => handleChange(String(field.key), v)}
+              placeholder={field.placeholder || `选择${field.label}`}
+              searchPlaceholder={`搜索${field.label}...`}
+              loading={optionsLoading[field.key as string]}
+              className={cn(error && "border-destructive")}
+            />
+          ) : (
+            <Select
+              value={value !== undefined ? String(value) : ""}
+              onValueChange={(v) => handleChange(String(field.key), v)}
+            >
+              <SelectTrigger className={cn(error && "border-destructive")}>
+                <SelectValue placeholder={field.placeholder || `选择${field.label}`} />
+              </SelectTrigger>
+              <SelectContent>
+                {options.length === 0 ? (
+                  <div className="py-2 px-2 text-sm text-muted-foreground">暂无选项</div>
+                ) : (
+                  options.map((opt) => (
+                    <SelectItem key={String(opt.value)} value={String(opt.value)}>
+                      {opt.label}
+                    </SelectItem>
+                  ))
+                )}
+              </SelectContent>
+            </Select>
+          )
         ) : field.type === "enumSelect" ? (
           (() => {
             const parentVal = field.parentField ? (values as any)[field.parentField] : undefined

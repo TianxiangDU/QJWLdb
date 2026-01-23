@@ -376,12 +376,12 @@ export function EnumSettingsPanel() {
                     (c) => c.key === currentCategoryConfig.parentCategory
                   )?.label}
                 </Label>
-                <Select value={selectedParent} onValueChange={setSelectedParent}>
+                <Select value={selectedParent || '__all__'} onValueChange={(v) => setSelectedParent(v === '__all__' ? '' : v)}>
                   <SelectTrigger className="mt-2 max-w-xs">
                     <SelectValue placeholder="全部" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="">全部</SelectItem>
+                    <SelectItem value="__all__">全部</SelectItem>
                     {parentOptions.map((opt) => (
                       <SelectItem key={opt.value} value={opt.value}>
                         {opt.label || opt.value}

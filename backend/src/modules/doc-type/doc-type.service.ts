@@ -25,7 +25,7 @@ export class DocTypeService {
 
     // 自动生成编码（如果未提供）
     if (!dto.code) {
-      dto.code = await this.codeService.next('docType', 'PREFIX-YYYYMM-SEQ6');
+      dto.code = await this.generateDocTypeCode(dto);
     } else {
       // 检查编码唯一性
       const existing = await this.docTypeRepository.findOne({
@@ -38,6 +38,78 @@ export class DocTypeService {
 
     const entity = this.docTypeRepository.create(dto);
     return this.docTypeRepository.save(entity);
+  }
+
+  /**
+   * 生成文件类型编码
+   * 格式：{阶段缩写}-{大类缩写}-{小类序号}-{地区序号}-{业主序号}-{序号}
+   * 示例：QQ-TZ-01-01-01-001
+   */
+  private async generateDocTypeCode(dto: Partial<CreateDocTypeDto>): Promise<string> {
+    const { projectPhase, majorCategory, minorCategory, region, ownerOrg } = dto;
+
+    // 获取阶段缩写
+    let phaseCode = 'XX';
+    if (projectPhase) {
+      const phaseOption = await this.enumOptionService.getOptionByValue('projectPhase', projectPhase);
+      phaseCode = phaseOption?.shortCode || 'XX';
+    }
+
+    // 获取大类缩写
+    let majorCode = 'XX';
+    if (majorCategory) {
+      const majorOption = await this.enumOptionService.getOptionByValue('majorCategory', majorCategory);
+      majorCode = majorOption?.shortCode || 'XX';
+    }
+
+    // 获取小类序号（2位）
+    let minorSeq = '00';
+    if (minorCategory) {
+      const minorOption = await this.enumOptionService.getOptionByValue('minorCategory', minorCategory);
+      minorSeq = String(minorOption?.sortOrder || 0).padStart(2, '0');
+    }
+
+    // 获取地区序号（2位）
+    let regionSeq = '00';
+    if (region) {
+      const regionOption = await this.enumOptionService.getOptionByValue('region', region);
+      regionSeq = String(regionOption?.sortOrder || 0).padStart(2, '0');
+    }
+
+    // 获取业主序号（2位）
+    let ownerSeq = '00';
+    if (ownerOrg) {
+      const ownerOption = await this.enumOptionService.getOptionByValue('ownerOrg', ownerOrg);
+      ownerSeq = String(ownerOption?.sortOrder || 0).padStart(2, '0');
+    }
+
+    // 生成前缀
+    const prefix = `${phaseCode}-${majorCode}-${minorSeq}-${regionSeq}-${ownerSeq}`;
+
+    // 获取该前缀下的序号
+    const seq = await this.getNextSeqForPrefix(prefix);
+
+    return `${prefix}-${String(seq).padStart(3, '0')}`;
+  }
+
+  /**
+   * 获取指定前缀下的下一个序号
+   */
+  private async getNextSeqForPrefix(prefix: string): Promise<number> {
+    // 查找以该前缀开头的最大编码
+    const maxCode = await this.docTypeRepository
+      .createQueryBuilder('dt')
+      .select('dt.code')
+      .where('dt.code LIKE :prefix', { prefix: `${prefix}-%` })
+      .orderBy('dt.code', 'DESC')
+      .getOne();
+
+    if (!maxCode) return 1;
+
+    // 提取序号部分
+    const parts = maxCode.code.split('-');
+    const lastSeq = parseInt(parts[parts.length - 1], 10);
+    return isNaN(lastSeq) ? 1 : lastSeq + 1;
   }
 
   async findAll(query: QueryDocTypeDto): Promise<PaginationResultDto<DocType>> {

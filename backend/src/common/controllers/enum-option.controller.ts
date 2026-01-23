@@ -38,6 +38,8 @@ export class EnumOptionController {
       value: o.value,
       label: o.label || o.value,
       parentValue: o.parentValue,
+      shortCode: o.shortCode,
+      sortOrder: o.sortOrder,
     }));
   }
 
@@ -83,7 +85,15 @@ export class EnumOptionController {
       value: option.value,
       label: option.label || option.value,
       parentValue: option.parentValue,
+      shortCode: option.shortCode,
+      sortOrder: option.sortOrder,
     };
+  }
+
+  @Post('generate-short-codes')
+  @ApiOperation({ summary: '为现有选项生成缩写编码' })
+  async generateShortCodes() {
+    return this.enumOptionService.generateAllShortCodes();
   }
 
   private getCategoryLabel(category: string): string {

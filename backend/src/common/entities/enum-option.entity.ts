@@ -36,6 +36,13 @@ export class EnumOption {
   label: string;
 
   /**
+   * 缩写编码（用于生成文件类型编码，如 QQ=前期准备阶段）
+   */
+  @ApiProperty({ description: '缩写编码' })
+  @Column({ name: 'short_code', type: 'varchar', length: 10, nullable: true, comment: '缩写编码' })
+  shortCode: string;
+
+  /**
    * 父级值（用于级联，如小类的父级是大类的值）
    */
   @ApiProperty({ description: '父级值（用于级联）' })

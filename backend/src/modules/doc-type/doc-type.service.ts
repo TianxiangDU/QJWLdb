@@ -42,8 +42,8 @@ export class DocTypeService {
 
   /**
    * 生成文件类型编码
-   * 格式：{阶段缩写}-{大类缩写}-{小类序号}-{地区序号}-{业主序号}-{序号}
-   * 示例：QQ-TZ-01-01-01-001
+   * 格式：{阶段缩写}{大类缩写}{小类序号}{地区序号}{业主序号}{序号}
+   * 示例：QQTZ0101001
    */
   private async generateDocTypeCode(dto: Partial<CreateDocTypeDto>): Promise<string> {
     const { projectPhase, majorCategory, minorCategory, region, ownerOrg } = dto;
@@ -83,13 +83,13 @@ export class DocTypeService {
       ownerSeq = String(ownerOption?.sortOrder || 0).padStart(2, '0');
     }
 
-    // 生成前缀
-    const prefix = `${phaseCode}-${majorCode}-${minorSeq}-${regionSeq}-${ownerSeq}`;
+    // 生成前缀（无分隔符）
+    const prefix = `${phaseCode}${majorCode}${minorSeq}${regionSeq}${ownerSeq}`;
 
     // 获取该前缀下的序号
     const seq = await this.getNextSeqForPrefix(prefix);
 
-    return `${prefix}-${String(seq).padStart(3, '0')}`;
+    return `${prefix}${String(seq).padStart(3, '0')}`;
   }
 
   /**
@@ -97,19 +97,51 @@ export class DocTypeService {
    */
   private async getNextSeqForPrefix(prefix: string): Promise<number> {
     // 查找以该前缀开头的最大编码
-    const maxCode = await this.docTypeRepository
+    const result = await this.docTypeRepository
       .createQueryBuilder('dt')
       .select('dt.code')
-      .where('dt.code LIKE :prefix', { prefix: `${prefix}-%` })
+      .where('dt.code LIKE :prefix', { prefix: `${prefix}%` })
       .orderBy('dt.code', 'DESC')
       .getOne();
 
-    if (!maxCode) return 1;
+    if (!result) return 1;
 
-    // 提取序号部分
-    const parts = maxCode.code.split('-');
-    const lastSeq = parseInt(parts[parts.length - 1], 10);
+    // 提取最后3位作为序号
+    const code = result.code;
+    const seqStr = code.slice(-3);
+    const lastSeq = parseInt(seqStr, 10);
     return isNaN(lastSeq) ? 1 : lastSeq + 1;
+  }
+
+  /**
+   * 重新生成所有文件类型的编码
+   */
+  async regenerateAllCodes(): Promise<{ updated: number; errors: string[] }> {
+    const allDocTypes = await this.docTypeRepository.find();
+    let updated = 0;
+    const errors: string[] = [];
+
+    for (const docType of allDocTypes) {
+      try {
+        const newCode = await this.generateDocTypeCode({
+          projectPhase: docType.projectPhase,
+          majorCategory: docType.majorCategory,
+          minorCategory: docType.minorCategory,
+          region: docType.region,
+          ownerOrg: docType.ownerOrg,
+        });
+        
+        if (docType.code !== newCode) {
+          docType.code = newCode;
+          await this.docTypeRepository.save(docType);
+          updated++;
+        }
+      } catch (err) {
+        errors.push(`ID ${docType.id}: ${err.message}`);
+      }
+    }
+
+    return { updated, errors };
   }
 
   async findAll(query: QueryDocTypeDto): Promise<PaginationResultDto<DocType>> {

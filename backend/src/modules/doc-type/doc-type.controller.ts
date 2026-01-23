@@ -60,6 +60,15 @@ export class DocTypeController {
     return this.docTypeService.syncEnumOptions();
   }
 
+  @Post('regenerate-codes')
+  @ApiOperation({
+    summary: '重新生成所有编码',
+    description: '根据新的编码规则重新生成所有文件类型的编码',
+  })
+  regenerateCodes() {
+    return this.docTypeService.regenerateAllCodes();
+  }
+
   @Get('template')
   @Public()
   @ApiOperation({ summary: '下载Excel导入模板' })

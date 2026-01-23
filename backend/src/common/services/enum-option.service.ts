@@ -57,6 +57,7 @@ export class EnumOptionService {
    */
   async generateShortCode(category: string, value: string): Promise<string> {
     // 简单实现：取前两个字的首字母拼音（去重版本）
+    // 常用汉字拼音首字母映射（可扩展）
     const pinyinMap: Record<string, string> = {
       '组': 'Z', '织': 'Z', '治': 'Z', '理': 'L', '资': 'Z', '料': 'L',
       '前': 'Q', '期': 'Q', '准': 'Z', '备': 'B', '阶': 'J', '段': 'D',
@@ -98,14 +99,39 @@ export class EnumOptionService {
       '试': 'S', '行': 'X',
       '固': 'G', '定': 'D', '产': 'C',
       '通': 'T', '用': 'Y',
+      // 新增常用字（去重后）
+      '测': 'C', '新': 'X', '增': 'Z', '删': 'S',
+      '数': 'S', '据': 'J', '库': 'K',
+      '类': 'L', '型': 'X', '名': 'M', '称': 'C',
+      '状': 'Z', '态': 'T', '日': 'R',
+      '人': 'R', '门': 'M', '单': 'D',
+      '区': 'Q', '域': 'Y', '省': 'S',
+      '县': 'X', '镇': 'Z', '村': 'C', '街': 'J',
+      '号': 'H', '楼': 'L', '层': 'C', '室': 'S', '栋': 'D', '幢': 'Z',
+      '内': 'N', '容': 'R', '描': 'M', '述': 'S',
+      '附': 'F', '片': 'P', '视': 'S', '频': 'P',
+      '链': 'L', '接': 'J', '址': 'Z',
+      '电': 'D', '话': 'H', '邮': 'Y', '箱': 'X', '网': 'W', '站': 'Z',
+      '登': 'D', '退': 'T', '册': 'C',
+      '密': 'M', '修': 'X', '存': 'C',
+      '确': 'Q', '认': 'R', '消': 'X',
+      '返': 'F', '首': 'S', '页': 'Y', '下': 'X',
+      '左': 'Z', '右': 'Y', '底': 'D',
     };
 
-    // 获取前两个字符的拼音首字母
+    // 获取前两个字符的拼音首字母，跳过不在映射中的汉字
     let code = '';
-    for (let i = 0; i < Math.min(2, value.length); i++) {
+    for (let i = 0; i < value.length && code.length < 2; i++) {
       const char = value[i];
-      code += pinyinMap[char]?.[0] || char.toUpperCase();
+      if (pinyinMap[char]) {
+        code += pinyinMap[char];
+      } else if (/^[A-Za-z0-9]$/.test(char)) {
+        // 英文字母或数字直接使用
+        code += char.toUpperCase();
+      }
+      // 跳过不在映射中的汉字，不将其加入编码
     }
+    // 如果编码不足2位，用X补齐
     if (code.length < 2) code = code.padEnd(2, 'X');
     code = code.substring(0, 2).toUpperCase();
 

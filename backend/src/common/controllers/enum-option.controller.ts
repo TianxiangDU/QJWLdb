@@ -74,6 +74,7 @@ export class EnumOptionController {
     const options = await this.enumOptionService.getOptions(category, parentValue);
     // 直接返回数组，让拦截器包装
     return options.map((o) => ({
+      id: o.id,
       value: o.value,
       label: o.label || o.value,
       parentValue: o.parentValue,
@@ -99,12 +100,15 @@ export class EnumOptionController {
     const categoryList = categories.split(',').map((c) => c.trim());
     const result = await this.enumOptionService.getMultipleOptions(categoryList);
 
-    const formatted: Record<string, { value: string; label: string; parentValue?: string }[]> = {};
+    const formatted: Record<string, { id: number; value: string; label: string; parentValue?: string; shortCode?: string; sortOrder: number }[]> = {};
     for (const [cat, options] of Object.entries(result)) {
       formatted[cat] = options.map((o) => ({
+        id: o.id,
         value: o.value,
         label: o.label || o.value,
         parentValue: o.parentValue,
+        shortCode: o.shortCode,
+        sortOrder: o.sortOrder,
       }));
     }
 

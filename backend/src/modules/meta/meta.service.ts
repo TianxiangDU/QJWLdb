@@ -98,13 +98,32 @@ export class MetaService {
 
     const result = await this.dataSource.query(sql, [dbName]);
 
-    return result.map((row: any) => ({
-      tableName: row.tableName,
-      tableComment: row.tableComment || '',
-      estimatedRows: Number(row.estimatedRows) || 0,
-      createTime: row.createTime?.toISOString?.() || '',
-      updateTime: row.updateTime?.toISOString?.() || '',
-    }));
+    // 获取精确行数（对小表使用 COUNT）
+    const tables = await Promise.all(
+      result.map(async (row: any) => {
+        let exactRows = Number(row.estimatedRows) || 0;
+        // 对估计行数小于 10000 的表获取精确行数
+        if (exactRows < 10000) {
+          try {
+            const countResult = await this.dataSource.query(
+              `SELECT COUNT(*) as cnt FROM \`${row.tableName}\``
+            );
+            exactRows = Number(countResult[0]?.cnt) || 0;
+          } catch {
+            // 忽略错误，使用估计值
+          }
+        }
+        return {
+          tableName: row.tableName,
+          tableComment: row.tableComment || '',
+          estimatedRows: exactRows,
+          createTime: row.createTime?.toISOString?.() || '',
+          updateTime: row.updateTime?.toISOString?.() || '',
+        };
+      })
+    );
+
+    return tables;
   }
 
   /**

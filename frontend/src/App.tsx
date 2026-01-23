@@ -9,7 +9,7 @@ import { AuditRulesPage } from "@/pages/resources/AuditRulesPage"
 import { LawDocumentsPage } from "@/pages/resources/LawDocumentsPage"
 import { LawClausesPage } from "@/pages/resources/LawClausesPage"
 import { SchemaExplorerPage } from "@/pages/schema/SchemaExplorerPage"
-import { SearchPage } from "@/pages/search/SearchPage"
+import SearchPage from "@/pages/search/SearchPage"
 import SystemSettingsPage from "@/pages/system/SystemSettingsPage"
 import { getToken } from "@/services/api-client"
 

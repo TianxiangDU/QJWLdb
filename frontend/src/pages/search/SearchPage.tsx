@@ -33,18 +33,27 @@ export default function SearchPage() {
   const [selectedDocType, setSelectedDocType] = useState<string | null>(null);
 
   // 搜索文件类型列表
-  const { data: searchResults, isLoading: isSearching } = useQuery({
+  const { data: searchResponse, isLoading: isSearching } = useQuery({
     queryKey: ['docTypeSearch', searchKeyword],
     queryFn: () => docTypeApi.list({ keyword: searchKeyword, pageSize: 20 }),
     enabled: searchKeyword.length > 0,
   });
+  
+  // 处理响应数据（后端返回 { data: [], meta: { total } }）
+  const searchResults = searchResponse ? {
+    list: (searchResponse as any).data || searchResponse.list || [],
+    total: (searchResponse as any).meta?.total || (searchResponse as any).total || 0,
+  } : undefined;
 
   // 获取选中文件类型的完整信息
-  const { data: fullInfo, isLoading: isLoadingFullInfo } = useQuery({
+  const { data: fullInfoResponse, isLoading: isLoadingFullInfo } = useQuery({
     queryKey: ['docTypeFullInfo', selectedDocType],
     queryFn: () => docTypeApi.getFullInfo(selectedDocType!),
     enabled: !!selectedDocType,
   });
+  
+  // 提取 data 字段
+  const fullInfo = (fullInfoResponse as any)?.data as typeof fullInfoResponse | undefined;
 
   const handleSearch = (value: string) => {
     setSearchKeyword(value);

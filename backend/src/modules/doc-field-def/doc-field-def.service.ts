@@ -265,7 +265,12 @@ export class DocFieldDefService {
             .getRawOne();
           
           const lastNum = maxCode?.max ? parseInt(maxCode.max.split('-').pop() || '0') : 0;
-          const docType = await this.docTypeService.findOne(docTypeId);
+          const docType = await this.docTypeRepository.findOne({ where: { id: docTypeId } });
+          if (!docType) {
+            errors.push(`第${row.number}行：文件类型ID ${docTypeId} 不存在`);
+            failed++;
+            continue;
+          }
           fieldCode = `${docType.code}-${String(lastNum + 1).padStart(3, '0')}`;
         }
 

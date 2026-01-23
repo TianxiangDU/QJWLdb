@@ -157,15 +157,22 @@ export function ResourceForm<T>({
             </SelectContent>
           </Select>
         ) : field.type === "enumSelect" ? (
-          <EnumSelect
-            category={field.enumCategory || String(field.key)}
-            value={value || ""}
-            onChange={(v) => handleChange(String(field.key), v)}
-            parentValue={field.parentField ? (values as any)[field.parentField] : undefined}
-            placeholder={field.placeholder}
-            allowAdd={field.allowAdd !== false}
-            disabled={false}
-          />
+          (() => {
+            const parentVal = field.parentField ? (values as any)[field.parentField] : undefined
+            const needsParent = !!field.parentField
+            const parentMissing = needsParent && !parentVal
+            return (
+              <EnumSelect
+                category={field.enumCategory || String(field.key)}
+                value={value || ""}
+                onChange={(v) => handleChange(String(field.key), v)}
+                parentValue={parentVal}
+                placeholder={parentMissing ? "请先选择上级" : field.placeholder}
+                allowAdd={field.allowAdd !== false && !parentMissing}
+                disabled={parentMissing}
+              />
+            )
+          })()
         ) : field.type === "switch" ? (
           <div className="flex items-center space-x-2">
             <Switch

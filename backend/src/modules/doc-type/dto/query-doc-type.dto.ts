@@ -13,6 +13,16 @@ export class QueryDocTypeDto extends PaginationDto {
   @IsString()
   projectPhase?: string;
 
+  @ApiPropertyOptional({ description: '所属大类' })
+  @IsOptional()
+  @IsString()
+  majorCategory?: string;
+
+  @ApiPropertyOptional({ description: '所属小类' })
+  @IsOptional()
+  @IsString()
+  minorCategory?: string;
+
   @ApiPropertyOptional({ description: '适用项目类型' })
   @IsOptional()
   @IsString()

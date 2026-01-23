@@ -41,7 +41,7 @@ export class DocTypeService {
   }
 
   async findAll(query: QueryDocTypeDto): Promise<PaginationResultDto<DocType>> {
-    const { page = 1, pageSize = 10, keyword, status, code, projectPhase, projectType } = query;
+    const { page = 1, pageSize = 10, keyword, status, code, projectPhase, majorCategory, minorCategory, projectType } = query;
 
     const where: FindOptionsWhere<DocType> = {};
 
@@ -68,6 +68,12 @@ export class DocTypeService {
     }
     if (projectPhase) {
       queryBuilder.andWhere('dt.projectPhase = :projectPhase', { projectPhase });
+    }
+    if (majorCategory) {
+      queryBuilder.andWhere('dt.majorCategory = :majorCategory', { majorCategory });
+    }
+    if (minorCategory) {
+      queryBuilder.andWhere('dt.minorCategory = :minorCategory', { minorCategory });
     }
     if (projectType) {
       queryBuilder.andWhere('dt.projectType LIKE :projectType', { projectType: `%${projectType}%` });

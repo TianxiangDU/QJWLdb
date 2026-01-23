@@ -6,10 +6,11 @@ export class CreateDocFieldDefDto {
   @IsInt()
   docTypeId: number;
 
-  @ApiProperty({ description: '字段编码', example: 'CONTRACT_AMOUNT' })
+  @ApiPropertyOptional({ description: '字段编码（留空自动生成）', example: 'DT001-001' })
+  @IsOptional()
   @IsString()
   @MaxLength(50)
-  fieldCode: string;
+  fieldCode?: string;
 
   @ApiProperty({ description: '字段名称', example: '合同金额' })
   @IsString()
@@ -54,4 +55,10 @@ export class CreateDocFieldDefDto {
   @IsString()
   @MaxLength(500)
   anchorWord?: string;
+
+  @ApiPropertyOptional({ description: '处理方式', example: 'default', default: 'default' })
+  @IsOptional()
+  @IsString()
+  @MaxLength(100)
+  processMethod?: string;
 }

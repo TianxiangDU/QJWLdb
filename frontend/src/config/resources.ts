@@ -90,6 +90,7 @@ export const docTypeConfig: ResourceConfig<DocType> = {
 export interface DocFieldDef {
   id: number
   docTypeId: number
+  docType?: { id: number; code: string; name: string }
   fieldCode: string
   fieldName: string
   fieldCategory?: string
@@ -99,6 +100,7 @@ export interface DocFieldDef {
   enumOptions?: string
   exampleValue?: string
   fieldDescription?: string
+  processMethod?: string
   status: number
   createdAt: string
   updatedAt: string
@@ -111,54 +113,71 @@ export const docFieldDefConfig: ResourceConfig<DocFieldDef> = {
   apiPath: "/doc-field-defs",
   
   columns: [
-    { key: "fieldCode", title: "字段编码", width: 120 },
+    { key: "docType.name", title: "文件类型", width: 150, render: (_, row: any) => row.docType?.name || '-' },
+    { key: "fieldCode", title: "字段编码", width: 150 },
     { key: "fieldName", title: "字段名称", type: "link" },
     { key: "fieldCategory", title: "类别", width: 80 },
     { key: "requiredFlag", title: "必填", type: "boolean", width: 60 },
     { key: "valueSource", title: "取值方式", width: 150 },
+    { key: "exampleValue", title: "示例数据", width: 120 },
     { key: "status", title: "状态", type: "status", width: 80 },
   ],
   
   formFields: [
     { 
       key: "docTypeId", 
-      label: "所属文件类型", 
+      label: "文件类型", 
       type: "select", 
       required: true,
       optionsLoader: async () => {
-        const res = await fetch('/api/v1/doc-types/list?pageSize=1000', {
+        const res = await fetch('/api/v1/doc-types/list?pageSize=1000&status=1', {
           headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
         });
         const data = await res.json();
         return (data.data || []).map((d: any) => ({ label: `${d.code} - ${d.name}`, value: d.id }));
       }
     },
-    { key: "fieldCode", label: "字段编码", type: "text", required: true },
+    { key: "fieldCode", label: "字段编码", type: "text", placeholder: "留空自动生成（格式：文件类型编码-序号）" },
     { key: "fieldName", label: "字段名称", type: "text", required: true },
-    { key: "fieldCategory", label: "字段类别", type: "select", options: [
-      { label: "金额", value: "金额" },
-      { label: "日期", value: "日期" },
-      { label: "数量", value: "数量" },
+    { key: "fieldCategory", label: "字段类别", type: "select", required: true, options: [
       { label: "文字", value: "文字" },
+      { label: "日期", value: "日期" },
+      { label: "金额", value: "金额" },
+      { label: "数量", value: "数量" },
       { label: "枚举", value: "枚举" },
       { label: "其他", value: "其他" },
     ]},
-    { key: "requiredFlag", label: "是否必填", type: "switch", defaultValue: 0 },
-    { key: "valueSource", label: "取值方式", type: "text", placeholder: "在文件中的位置" },
-    { key: "anchorWord", label: "定位词", type: "text", placeholder: "用于定位该字段的关键词" },
-    { key: "enumOptions", label: "枚举值", type: "text", placeholder: "逗号分隔" },
-    { key: "exampleValue", label: "示例值", type: "text" },
-    { key: "fieldDescription", label: "字段说明", type: "textarea" },
+    { key: "requiredFlag", label: "是否必填", type: "select", defaultValue: 0, options: [
+      { label: "是", value: 1 },
+      { label: "否", value: 0 },
+    ]},
+    { key: "valueSource", label: "取值方式", type: "text", placeholder: "描述如何从文件中获取该字段值" },
+    { key: "anchorWord", label: "定位词", type: "text", placeholder: "用于定位该字段的关键词，逗号分隔" },
+    { key: "enumOptions", label: "枚举值", type: "text", placeholder: "如字段类别为枚举则填写，逗号分隔" },
+    { key: "exampleValue", label: "示例数据", type: "text", placeholder: "字段的示例值" },
+    { key: "fieldDescription", label: "字段说明", type: "textarea", placeholder: "详细描述该字段的含义和用途" },
+    { key: "processMethod", label: "处理方式", type: "text", defaultValue: "default", placeholder: "默认为 default" },
   ],
   
   filters: [
-    { key: "keyword", label: "关键词", type: "text", placeholder: "名称/编码" },
-    { key: "docTypeId", label: "文件类型ID", type: "number" },
+    { key: "keyword", label: "关键词", type: "text", placeholder: "名称/编码/说明" },
+    { 
+      key: "docTypeId", 
+      label: "文件类型", 
+      type: "select",
+      optionsLoader: async () => {
+        const res = await fetch('/api/v1/doc-types/list?pageSize=1000&status=1', {
+          headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
+        });
+        const data = await res.json();
+        return (data.data || []).map((d: any) => ({ label: d.name, value: d.id }));
+      }
+    },
     { key: "fieldCategory", label: "类别", type: "select", options: [
-      { label: "金额", value: "金额" },
-      { label: "日期", value: "日期" },
-      { label: "数量", value: "数量" },
       { label: "文字", value: "文字" },
+      { label: "日期", value: "日期" },
+      { label: "金额", value: "金额" },
+      { label: "数量", value: "数量" },
       { label: "枚举", value: "枚举" },
       { label: "其他", value: "其他" },
     ]},

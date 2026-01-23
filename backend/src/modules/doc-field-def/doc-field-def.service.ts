@@ -2,6 +2,7 @@ import { Injectable, ConflictException, NotFoundException } from '@nestjs/common
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, In } from 'typeorm';
 import { DocFieldDef } from './entities/doc-field-def.entity';
+import { DocType } from '../doc-type/entities/doc-type.entity';
 import { CreateDocFieldDefDto } from './dto/create-doc-field-def.dto';
 import { UpdateDocFieldDefDto } from './dto/update-doc-field-def.dto';
 import { QueryDocFieldDefDto } from './dto/query-doc-field-def.dto';
@@ -13,24 +14,71 @@ export class DocFieldDefService {
   constructor(
     @InjectRepository(DocFieldDef)
     private readonly repository: Repository<DocFieldDef>,
+    @InjectRepository(DocType)
+    private readonly docTypeRepository: Repository<DocType>,
   ) {}
 
   async create(createDto: CreateDocFieldDefDto): Promise<DocFieldDef> {
-    // 检查同一文件类型下字段编码唯一性
-    const existing = await this.repository.findOne({
-      where: {
-        docTypeId: createDto.docTypeId,
-        fieldCode: createDto.fieldCode,
-      },
-    });
-    if (existing) {
-      throw new ConflictException(
-        `该文件类型下字段编码 ${createDto.fieldCode} 已存在`,
-      );
+    // 如果没有提供 fieldCode，自动生成
+    let fieldCode = createDto.fieldCode;
+    if (!fieldCode) {
+      fieldCode = await this.generateFieldCode(createDto.docTypeId);
+    } else {
+      // 检查同一文件类型下字段编码唯一性
+      const existing = await this.repository.findOne({
+        where: {
+          docTypeId: createDto.docTypeId,
+          fieldCode: fieldCode,
+        },
+      });
+      if (existing) {
+        throw new ConflictException(
+          `该文件类型下字段编码 ${fieldCode} 已存在`,
+        );
+      }
     }
 
-    const entity = this.repository.create(createDto);
+    const entity = this.repository.create({
+      ...createDto,
+      fieldCode,
+      processMethod: createDto.processMethod || 'default',
+    });
     return this.repository.save(entity);
+  }
+
+  /**
+   * 生成字段编码
+   * 格式：{文件类型编码}-{序号3位}
+   * 例如：QQTZ0101001-001
+   */
+  private async generateFieldCode(docTypeId: number): Promise<string> {
+    // 获取文件类型编码
+    const docType = await this.docTypeRepository.findOne({ where: { id: docTypeId } });
+    if (!docType) {
+      throw new NotFoundException(`文件类型 ID ${docTypeId} 不存在`);
+    }
+
+    const prefix = docType.code || `DT${docTypeId}`;
+
+    // 获取该文件类型下的最大序号
+    const maxField = await this.repository
+      .createQueryBuilder('df')
+      .select('df.fieldCode')
+      .where('df.docTypeId = :docTypeId', { docTypeId })
+      .andWhere('df.fieldCode LIKE :prefix', { prefix: `${prefix}-%` })
+      .orderBy('df.fieldCode', 'DESC')
+      .getOne();
+
+    let seq = 1;
+    if (maxField && maxField.fieldCode) {
+      const parts = maxField.fieldCode.split('-');
+      const lastSeq = parseInt(parts[parts.length - 1], 10);
+      if (!isNaN(lastSeq)) {
+        seq = lastSeq + 1;
+      }
+    }
+
+    return `${prefix}-${String(seq).padStart(3, '0')}`;
   }
 
   async findAll(query: QueryDocFieldDefDto): Promise<PaginationResultDto<DocFieldDef>> {

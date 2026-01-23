@@ -237,22 +237,93 @@ export class DocFieldDefService {
     let failed = 0;
     const errors: string[] = [];
 
+    // 读取表头，建立列名到列号的映射
+    const headerRow = sheet.getRow(1);
+    const columnMap: Record<string, number> = {};
+    headerRow.eachCell((cell, colNumber) => {
+      const headerText = cell.text?.trim().toLowerCase() || '';
+      // 根据表头关键字匹配列
+      if (headerText.includes('文件类型') && headerText.includes('id')) {
+        columnMap['docTypeId'] = colNumber;
+      } else if (headerText.includes('字段编码') || headerText.includes('编码')) {
+        columnMap['fieldCode'] = colNumber;
+      } else if (headerText.includes('字段名称') || headerText.includes('名称')) {
+        columnMap['fieldName'] = colNumber;
+      } else if (headerText.includes('字段类别') || headerText.includes('类别')) {
+        columnMap['fieldCategory'] = colNumber;
+      } else if (headerText.includes('必填')) {
+        columnMap['requiredFlag'] = colNumber;
+      } else if (headerText.includes('取值') || headerText.includes('位置')) {
+        columnMap['valueSource'] = colNumber;
+      } else if (headerText.includes('定位词')) {
+        columnMap['anchorWord'] = colNumber;
+      } else if (headerText.includes('枚举')) {
+        columnMap['enumOptions'] = colNumber;
+      } else if (headerText.includes('示例')) {
+        columnMap['exampleValue'] = colNumber;
+      } else if (headerText.includes('说明') || headerText.includes('描述')) {
+        columnMap['fieldDescription'] = colNumber;
+      } else if (headerText.includes('处理')) {
+        columnMap['processMethod'] = colNumber;
+      }
+    });
+
+    // 如果没有找到关键列，使用默认列序
+    if (!columnMap['docTypeId']) columnMap['docTypeId'] = 1;
+    if (!columnMap['fieldCode']) columnMap['fieldCode'] = 2;
+    if (!columnMap['fieldName']) columnMap['fieldName'] = 3;
+    if (!columnMap['fieldCategory']) columnMap['fieldCategory'] = 4;
+    if (!columnMap['requiredFlag']) columnMap['requiredFlag'] = 5;
+    if (!columnMap['valueSource']) columnMap['valueSource'] = 6;
+    if (!columnMap['anchorWord']) columnMap['anchorWord'] = 7;
+    if (!columnMap['enumOptions']) columnMap['enumOptions'] = 8;
+    if (!columnMap['exampleValue']) columnMap['exampleValue'] = 9;
+    if (!columnMap['fieldDescription']) columnMap['fieldDescription'] = 10;
+    if (!columnMap['processMethod']) columnMap['processMethod'] = 11;
+
+    // 辅助函数：获取单元格文本
+    const getCellText = (row: ExcelJS.Row, key: string): string => {
+      const colNum = columnMap[key];
+      if (!colNum) return '';
+      return row.getCell(colNum).text?.trim() || '';
+    };
+
     const rows = sheet.getRows(2, sheet.rowCount - 1) || [];
 
     for (const row of rows) {
       try {
-        const docTypeId = parseInt(row.getCell(1).text);
-        let fieldCode = row.getCell(2).text?.trim();
-        const fieldName = row.getCell(3).text?.trim();
+        const docTypeIdText = getCellText(row, 'docTypeId');
+        let fieldCode = getCellText(row, 'fieldCode');
+        const fieldName = getCellText(row, 'fieldName');
 
         // 跳过说明行或空行
-        if (row.getCell(1).text?.includes('说明') || row.getCell(1).text?.includes('填写')) continue;
+        if (docTypeIdText.includes('说明') || docTypeIdText.includes('填写') || docTypeIdText.includes('ID')) continue;
         
-        if (!docTypeId || !fieldName) {
-          if (docTypeId || fieldCode || fieldName) {
-            errors.push(`第${row.number}行：文件类型ID和字段名称为必填项`);
-            failed++;
-          }
+        // 检查是否为空行
+        if (!docTypeIdText && !fieldCode && !fieldName) {
+          continue;
+        }
+
+        // 验证文件类型ID
+        const docTypeId = parseInt(docTypeIdText);
+        if (isNaN(docTypeId)) {
+          errors.push(`第${row.number}行：文件类型ID "${docTypeIdText}" 不是有效数字`);
+          failed++;
+          continue;
+        }
+
+        // 验证字段名称
+        if (!fieldName) {
+          errors.push(`第${row.number}行：字段名称为必填项`);
+          failed++;
+          continue;
+        }
+
+        // 验证文件类型是否存在
+        const docType = await this.docTypeRepository.findOne({ where: { id: docTypeId } });
+        if (!docType) {
+          errors.push(`第${row.number}行：文件类型ID ${docTypeId} 不存在`);
+          failed++;
           continue;
         }
 
@@ -265,27 +336,28 @@ export class DocFieldDefService {
             .getRawOne();
           
           const lastNum = maxCode?.max ? parseInt(maxCode.max.split('-').pop() || '0') : 0;
-          const docType = await this.docTypeRepository.findOne({ where: { id: docTypeId } });
-          if (!docType) {
-            errors.push(`第${row.number}行：文件类型ID ${docTypeId} 不存在`);
-            failed++;
-            continue;
-          }
           fieldCode = `${docType.code}-${String(lastNum + 1).padStart(3, '0')}`;
+        }
+
+        // 解析是否必填
+        const requiredFlagText = getCellText(row, 'requiredFlag');
+        let requiredFlag = 0;
+        if (requiredFlagText === '1' || requiredFlagText === '是' || requiredFlagText.toLowerCase() === 'yes') {
+          requiredFlag = 1;
         }
 
         const dto: CreateDocFieldDefDto = {
           docTypeId,
           fieldCode,
           fieldName,
-          fieldCategory: row.getCell(4).text?.trim() || undefined,
-          requiredFlag: parseInt(row.getCell(5).text) || 0,
-          valueSource: row.getCell(6).text?.trim() || undefined,
-          anchorWord: row.getCell(7).text?.trim() || undefined,
-          enumOptions: row.getCell(8).text?.trim() || undefined,
-          exampleValue: row.getCell(9).text?.trim() || undefined,
-          fieldDescription: row.getCell(10).text?.trim() || undefined,
-          processMethod: row.getCell(11).text?.trim() || 'default',
+          fieldCategory: getCellText(row, 'fieldCategory') || undefined,
+          requiredFlag,
+          valueSource: getCellText(row, 'valueSource') || undefined,
+          anchorWord: getCellText(row, 'anchorWord') || undefined,
+          enumOptions: getCellText(row, 'enumOptions') || undefined,
+          exampleValue: getCellText(row, 'exampleValue') || undefined,
+          fieldDescription: getCellText(row, 'fieldDescription') || undefined,
+          processMethod: getCellText(row, 'processMethod') || 'default',
         };
 
         const existing = await this.repository.findOne({

@@ -253,7 +253,7 @@ export class EnumOptionService {
    */
   async updateOption(
     id: number,
-    updates: { label?: string; sortOrder?: number; parentValue?: string },
+    updates: { value?: string; label?: string; sortOrder?: number; parentValue?: string; shortCode?: string },
   ): Promise<EnumOption> {
     const option = await this.enumOptionRepo.findOne({ where: { id } });
     if (!option) {
@@ -261,6 +261,18 @@ export class EnumOptionService {
     }
     Object.assign(option, updates);
     return this.enumOptionRepo.save(option);
+  }
+
+  /**
+   * 删除选项（软删除，将 status 设为 0）
+   */
+  async deleteOption(id: number): Promise<void> {
+    const option = await this.enumOptionRepo.findOne({ where: { id } });
+    if (!option) {
+      throw new Error('选项不存在');
+    }
+    option.status = 0;
+    await this.enumOptionRepo.save(option);
   }
 
   /**

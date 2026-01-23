@@ -2,19 +2,58 @@ import {
   Controller,
   Get,
   Post,
+  Put,
+  Delete,
   Body,
   Query,
+  Param,
   UseGuards,
 } from '@nestjs/common';
-import { ApiTags, ApiOperation, ApiBearerAuth, ApiQuery } from '@nestjs/swagger';
+import { ApiTags, ApiOperation, ApiBearerAuth, ApiQuery, ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
+import { IsString, IsOptional } from 'class-validator';
 import { JwtAuthGuard } from '../../modules/auth/guards/jwt-auth.guard';
 import { EnumOptionService, ENUM_CATEGORIES } from '../services/enum-option.service';
 
 class AddEnumOptionDto {
+  @ApiProperty({ description: '枚举分类' })
+  @IsString()
   category: string;
+
+  @ApiProperty({ description: '枚举值' })
+  @IsString()
   value: string;
+
+  @ApiPropertyOptional({ description: '父级值' })
+  @IsOptional()
+  @IsString()
   parentValue?: string;
+
+  @ApiPropertyOptional({ description: '显示标签' })
+  @IsOptional()
+  @IsString()
   label?: string;
+}
+
+class UpdateEnumOptionDto {
+  @ApiPropertyOptional({ description: '枚举值' })
+  @IsOptional()
+  @IsString()
+  value?: string;
+
+  @ApiPropertyOptional({ description: '显示标签' })
+  @IsOptional()
+  @IsString()
+  label?: string;
+
+  @ApiPropertyOptional({ description: '缩写编码' })
+  @IsOptional()
+  @IsString()
+  shortCode?: string;
+
+  @ApiPropertyOptional({ description: '父级值' })
+  @IsOptional()
+  @IsString()
+  parentValue?: string;
 }
 
 @ApiTags('枚举选项')
@@ -94,6 +133,28 @@ export class EnumOptionController {
   @ApiOperation({ summary: '为现有选项生成缩写编码' })
   async generateShortCodes() {
     return this.enumOptionService.generateAllShortCodes();
+  }
+
+  @Put(':id')
+  @ApiOperation({ summary: '更新枚举选项' })
+  async updateOption(
+    @Param('id') id: string,
+    @Body() dto: UpdateEnumOptionDto,
+  ) {
+    const option = await this.enumOptionService.updateOption(parseInt(id, 10), dto);
+    return {
+      value: option.value,
+      label: option.label || option.value,
+      shortCode: option.shortCode,
+      sortOrder: option.sortOrder,
+    };
+  }
+
+  @Delete(':id')
+  @ApiOperation({ summary: '删除枚举选项（软删除）' })
+  async deleteOption(@Param('id') id: string) {
+    await this.enumOptionService.deleteOption(parseInt(id, 10));
+    return { message: '删除成功' };
   }
 
   private getCategoryLabel(category: string): string {

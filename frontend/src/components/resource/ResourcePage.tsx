@@ -127,12 +127,21 @@ export function ResourcePage<T extends { id: number; status?: number }>({
   const importMutation = useMutation({
     mutationFn: (file: File) => api.import?.(file) || Promise.resolve({ success: 0, failed: 0, created: 0, updated: 0, skipped: 0, errors: [] }),
     onSuccess: (response: any) => {
-      // 处理 API 返回的 { data: { success, failed }, meta: {} } 结构
+      // 处理 API 返回的 { data: { success, failed, errors }, meta: {} } 结构
       const result = response?.data || response
+      const errors = result?.errors || []
+      const errorMsg = errors.length > 0 ? `\n失败原因：${errors.slice(0, 5).join('；')}${errors.length > 5 ? '...' : ''}` : ''
+      
+      // 在控制台打印详细错误
+      if (errors.length > 0) {
+        console.log('导入失败详情:', errors)
+      }
+      
       toast({
         title: "导入完成",
-        description: `成功 ${result?.success ?? 0} 条，失败 ${result?.failed ?? 0} 条`,
+        description: `成功 ${result?.success ?? 0} 条，失败 ${result?.failed ?? 0} 条${errorMsg}`,
         variant: (result?.failed ?? 0) > 0 ? "destructive" : "default",
+        duration: errors.length > 0 ? 10000 : 3000, // 有错误时显示更久
       })
       queryClient.invalidateQueries({ queryKey: [config.key] })
     },

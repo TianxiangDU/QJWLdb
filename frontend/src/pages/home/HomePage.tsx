@@ -9,7 +9,7 @@ import { ScrollArea } from "@/components/ui/scroll-area"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { apiClient } from "@/services/api-client"
-import { FileText, FileCheck, Scale, Database, Search, Loader2, FolderOpen, List } from "lucide-react"
+import { FileText, FileCheck, Scale, Database, Search, Loader2, FolderOpen, List, ArrowRight } from "lucide-react"
 
 interface StatCard {
   title: string

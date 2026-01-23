@@ -126,11 +126,13 @@ export function ResourcePage<T extends { id: number; status?: number }>({
   // 导入
   const importMutation = useMutation({
     mutationFn: (file: File) => api.import?.(file) || Promise.resolve({ success: 0, failed: 0, created: 0, updated: 0, skipped: 0, errors: [] }),
-    onSuccess: (result) => {
+    onSuccess: (response: any) => {
+      // 处理 API 返回的 { data: { success, failed }, meta: {} } 结构
+      const result = response?.data || response
       toast({
         title: "导入完成",
-        description: `成功 ${result.success} 条，失败 ${result.failed} 条`,
-        variant: result.failed > 0 ? "destructive" : "success",
+        description: `成功 ${result?.success ?? 0} 条，失败 ${result?.failed ?? 0} 条`,
+        variant: (result?.failed ?? 0) > 0 ? "destructive" : "default",
       })
       queryClient.invalidateQueries({ queryKey: [config.key] })
     },

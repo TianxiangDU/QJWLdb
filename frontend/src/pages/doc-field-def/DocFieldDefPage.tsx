@@ -139,11 +139,15 @@ export default function DocFieldDefPage() {
   const handleImport = async (file: File) => {
     try {
       const response: any = await docFieldDefApi.import(file);
-      const result = response.data || response; // 处理 { data: {...} } 结构
-      message.success(`导入完成：成功 ${result.success} 条，失败 ${result.failed} 条`);
+      console.log('导入响应:', response);
+      // 处理嵌套的 data 结构：response 可能是 { data: { success, failed }, meta } 或直接是 { success, failed }
+      const result = response?.data?.success !== undefined ? response.data : response;
+      console.log('提取结果:', result);
+      message.success(`导入完成：成功 ${result?.success ?? 0} 条，失败 ${result?.failed ?? 0} 条`);
       queryClient.invalidateQueries({ queryKey: ['docFieldDefs'] });
       setImportModalOpen(false);
     } catch (error) {
+      console.error('导入错误:', error);
       message.error('导入失败');
     }
     return false;

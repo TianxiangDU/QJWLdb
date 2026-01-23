@@ -91,11 +91,13 @@ export interface FilterConfig {
   /** 筛选标签 */
   label: string
   /** 筛选类型 */
-  type: "text" | "number" | "select" | "date" | "dateRange"
+  type: "text" | "number" | "select" | "date" | "dateRange" | "enumSelect"
   /** 选项（用于 select 类型） */
   options?: { label: string; value: string | number }[]
   /** 选项获取函数 */
   optionsLoader?: () => Promise<{ label: string; value: string | number }[]>
+  /** 枚举分类（用于 enumSelect 类型） */
+  enumCategory?: string
   /** 占位符 */
   placeholder?: string
 }

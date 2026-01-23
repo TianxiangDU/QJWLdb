@@ -30,11 +30,14 @@ export const docTypeConfig: ResourceConfig<DocType> = {
   apiPath: "/doc-types",
   
   columns: [
-    { key: "code", title: "编码", width: 120 },
-    { key: "name", title: "名称", type: "link" },
-    { key: "projectPhase", title: "项目阶段", width: 100 },
-    { key: "majorCategory", title: "大类", width: 100 },
-    { key: "minorCategory", title: "小类", width: 100 },
+    { key: "code", title: "编码", width: 140 },
+    { key: "name", title: "名称", type: "link", width: 180 },
+    { key: "projectPhase", title: "项目阶段", width: 120 },
+    { key: "majorCategory", title: "大类", width: 120 },
+    { key: "minorCategory", title: "小类", width: 140 },
+    { key: "region", title: "适用地区", width: 100 },
+    { key: "ownerOrg", title: "适用业主", width: 120 },
+    { key: "bizDescription", title: "业务说明", width: 200 },
     { key: "status", title: "状态", type: "status", width: 80 },
     { key: "updatedAt", title: "更新时间", type: "datetime", width: 150 },
   ],
@@ -56,9 +59,9 @@ export const docTypeConfig: ResourceConfig<DocType> = {
   formFields: [
     { key: "code", label: "编码", type: "text", required: false, placeholder: "点击生成或留空自动生成", help: "编码留空时将自动生成，格式：DT-YYYYMM-XXXXXX" },
     { key: "name", label: "名称", type: "text", required: true, placeholder: "如：施工合同" },
-    { key: "projectPhase", label: "所属项目阶段", type: "enumSelect", enumCategory: "projectPhase", allowAdd: true, placeholder: "选择或新增项目阶段" },
-    { key: "majorCategory", label: "所属大类", type: "enumSelect", enumCategory: "majorCategory", allowAdd: true, placeholder: "选择或新增大类" },
-    { key: "minorCategory", label: "所属小类", type: "enumSelect", enumCategory: "minorCategory", parentField: "majorCategory", allowAdd: true, placeholder: "选择或新增小类（依赖大类）" },
+    { key: "projectPhase", label: "所属项目阶段", type: "enumSelect", enumCategory: "projectPhase", required: true, allowAdd: true, placeholder: "选择或新增项目阶段" },
+    { key: "majorCategory", label: "所属大类", type: "enumSelect", enumCategory: "majorCategory", required: true, allowAdd: true, placeholder: "选择或新增大类" },
+    { key: "minorCategory", label: "所属小类", type: "enumSelect", enumCategory: "minorCategory", parentField: "majorCategory", required: true, allowAdd: true, placeholder: "选择或新增小类（依赖大类）" },
     { key: "region", label: "适用地区", type: "enumSelect", enumCategory: "region", allowAdd: true, placeholder: "选择或新增地区" },
     { key: "ownerOrg", label: "适用业主", type: "enumSelect", enumCategory: "ownerOrg", allowAdd: true, placeholder: "选择或新增业主" },
     { key: "bizDescription", label: "业务说明/使用场景", type: "textarea", placeholder: "描述该文件类型的业务用途和使用场景" },
@@ -68,7 +71,8 @@ export const docTypeConfig: ResourceConfig<DocType> = {
   
   filters: [
     { key: "keyword", label: "关键词", type: "text", placeholder: "名称/说明" },
-    { key: "projectPhase", label: "项目阶段", type: "text" },
+    { key: "projectPhase", label: "项目阶段", type: "enumSelect", enumCategory: "projectPhase" },
+    { key: "majorCategory", label: "大类", type: "enumSelect", enumCategory: "majorCategory" },
     { key: "status", label: "状态", type: "select", options: [
       { label: "启用", value: "1" },
       { label: "停用", value: "0" },

@@ -1,4 +1,5 @@
 import { useState , useEffect } from "react"
+import { useQuery } from "@tanstack/react-query"
 import { FilterConfig } from "@/types/resource"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
@@ -10,6 +11,52 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 import { Search, X } from "lucide-react"
+
+// 获取枚举选项
+async function fetchEnumOptions(category: string) {
+  const token = localStorage.getItem('token')
+  const res = await fetch(`/api/v1/enum-options?category=${category}`, {
+    headers: { Authorization: `Bearer ${token}` },
+  })
+  const json = await res.json()
+  return json.data || []
+}
+
+// 枚举筛选器组件
+function EnumFilter({ 
+  filter, 
+  value, 
+  onChange 
+}: { 
+  filter: FilterConfig
+  value: string
+  onChange: (v: string) => void 
+}) {
+  const { data: options = [], isLoading } = useQuery({
+    queryKey: ['enumOptions', filter.enumCategory],
+    queryFn: () => fetchEnumOptions(filter.enumCategory!),
+    enabled: !!filter.enumCategory,
+  })
+
+  return (
+    <Select
+      value={value || ""}
+      onValueChange={(v) => onChange(v === "__all__" ? "" : v)}
+    >
+      <SelectTrigger className="w-40">
+        <SelectValue placeholder={isLoading ? "加载中..." : (filter.placeholder || `选择${filter.label}`)} />
+      </SelectTrigger>
+      <SelectContent>
+        <SelectItem value="__all__">全部</SelectItem>
+        {options.map((opt: any) => (
+          <SelectItem key={opt.value} value={opt.value}>
+            {opt.label}
+          </SelectItem>
+        ))}
+      </SelectContent>
+    </Select>
+  )
+}
 
 interface ResourceFiltersProps {
   filters: FilterConfig[]
@@ -50,6 +97,9 @@ export function ResourceFilters({
     const options = filter.options || optionsMap[filter.key] || []
 
     switch (filter.type) {
+      case "enumSelect":
+        return <EnumFilter filter={filter} value={values[filter.key]} onChange={(v) => handleValueChange(filter.key, v)} />
+
       case "select":
         return (
           <Select

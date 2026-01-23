@@ -125,7 +125,7 @@ export function ResourcePage<T extends { id: number; status?: number }>({
 
   // 导入
   const importMutation = useMutation({
-    mutationFn: (file: File) => api.import?.(file) || Promise.resolve({ success: 0, failed: 0, errors: [] }),
+    mutationFn: (file: File) => api.import?.(file) || Promise.resolve({ success: 0, failed: 0, created: 0, updated: 0, skipped: 0, errors: [] }),
     onSuccess: (result) => {
       toast({
         title: "导入完成",

@@ -1,10 +1,14 @@
 import { NestFactory } from '@nestjs/core';
-import { ValidationPipe } from '@nestjs/common';
+import { ValidationPipe, Logger } from '@nestjs/common';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { AppModule } from './app.module';
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
+  const logger = new Logger('Bootstrap');
+  
+  const app = await NestFactory.create(AppModule, {
+    logger: ['error', 'warn', 'log', 'debug', 'verbose'],
+  });
 
   // 全局前缀
   app.setGlobalPrefix('api/v1');
@@ -17,10 +21,12 @@ async function bootstrap() {
       transformOptions: {
         enableImplicitConversion: true,
       },
+      forbidNonWhitelisted: true,
+      forbidUnknownValues: true,
     }),
   );
 
-  // 启用 CORS - 允许局域网访问
+  // 启用 CORS
   app.enableCors({
     origin: true,
     credentials: true,
@@ -29,20 +35,37 @@ async function bootstrap() {
   // Swagger 文档配置
   const config = new DocumentBuilder()
     .setTitle('工程咨询全业务数据库平台 API')
-    .setDescription('工程咨询全业务数据库平台后端接口文档')
+    .setDescription(`
+## 概述
+工程咨询全业务数据库平台后端接口文档 v1.0
+
+## 认证
+所有接口（除登录、注册、健康检查外）均需要 JWT 认证。
+请在请求头中添加：\`Authorization: Bearer <token>\`
+
+## 响应格式
+- 成功：\`{ data: T, meta?: { page, pageSize, total, totalPages } }\`
+- 失败：\`{ code: string, message: string, traceId: string, details?: any }\`
+
+## 分页
+- 默认 page=1, pageSize=10
+- 最大 pageSize=100
+    `)
     .setVersion('1.0')
     .addBearerAuth(
       {
         type: 'http',
         scheme: 'bearer',
         bearerFormat: 'JWT',
-        description: '输入JWT Token进行认证',
+        description: '输入 JWT Token 进行认证',
       },
       'JWT',
     )
-    .addTag('认证', '用户认证相关接口')
-    .addTag('doc-type', '文件类型管理')
-    .addTag('关键信息字段', '关键信息字段管理')
+    .addTag('health', '健康检查')
+    .addTag('meta', '数据库结构')
+    .addTag('认证', '用户认证')
+    .addTag('doc-type', '文件类型')
+    .addTag('doc-field-def', '关键信息字段')
     .addTag('doc-template-sample', '文件模板/示例')
     .addTag('audit-rule', '审计规则')
     .addTag('law-document', '法规与标准')
@@ -51,13 +74,22 @@ async function bootstrap() {
     .build();
 
   const document = SwaggerModule.createDocument(app, config);
-  SwaggerModule.setup('api-docs', app, document);
+  SwaggerModule.setup('api-docs', app, document, {
+    swaggerOptions: {
+      persistAuthorization: true,
+      docExpansion: 'none',
+      filter: true,
+      showRequestDuration: true,
+    },
+  });
 
   const port = process.env.PORT || 3000;
   await app.listen(port, '0.0.0.0');
-  console.log(`🚀 应用已启动: http://localhost:${port}`);
-  console.log(`🌐 局域网访问: http://10.9.17.159:${port}`);
-  console.log(`📚 Swagger 文档: http://10.9.17.159:${port}/api-docs`);
-  console.log(`🔐 默认管理员账号: admin / admin123`);
+
+  logger.log(`🚀 应用已启动: http://localhost:${port}`);
+  logger.log(`📚 Swagger 文档: http://localhost:${port}/api-docs`);
+  logger.log(`❤️ 健康检查: http://localhost:${port}/api/v1/healthz`);
+  logger.log(`🔐 默认账号: admin / admin123`);
 }
+
 bootstrap();

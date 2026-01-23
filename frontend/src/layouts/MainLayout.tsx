@@ -1,228 +1,223 @@
-import { useState } from 'react';
-import { Outlet, useNavigate, useLocation } from 'react-router-dom';
-import { Layout, Menu, theme, Button, Tooltip, Dropdown, Space, Avatar, message } from 'antd';
+import React, { useState } from "react"
+import { Outlet, Link, useLocation, useNavigate } from "react-router-dom"
 import {
-  FileTextOutlined,
-  AuditOutlined,
-  BookOutlined,
-  DollarOutlined,
-  ApartmentOutlined,
-  FolderOpenOutlined,
-  BulbOutlined,
-  LineChartOutlined,
-  MenuFoldOutlined,
-  MenuUnfoldOutlined,
-  ApiOutlined,
-  SearchOutlined,
-  UserOutlined,
-  LogoutOutlined,
-  KeyOutlined,
-} from '@ant-design/icons';
-import { getUser, logout } from '../utils/auth';
+  FileText,
+  List,
+  FileCheck,
+  Scale,
+  ScrollText,
+  Database,
+  Home,
+  ChevronDown,
+  LogOut,
+  User,
+  Menu,
+  X,
+} from "lucide-react"
+import { Button } from "@/components/ui/button"
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
+import { ScrollArea } from "@/components/ui/scroll-area"
+import { Separator } from "@/components/ui/separator"
+import { cn } from "@/lib/utils"
+import { getUser, logout } from "@/services/api-client"
 
-const { Header, Sider, Content } = Layout;
+interface NavItem {
+  title: string
+  href?: string
+  icon?: React.ElementType
+  children?: NavItem[]
+}
 
-const menuItems = [
+const navItems: NavItem[] = [
+  { title: "首页", href: "/", icon: Home },
   {
-    key: '/search',
-    icon: <SearchOutlined />,
-    label: '搜索主页',
-  },
-  {
-    key: 'doc-system',
-    icon: <FileTextOutlined />,
-    label: '文件与资料库',
+    title: "文件与资料库",
+    icon: FileText,
     children: [
-      { key: '/doc-types', label: '文件类型' },
-      { key: '/doc-field-defs', label: '关键信息字段' },
-      { key: '/doc-template-samples', label: '文件模板/示例' },
+      { title: "文件类型", href: "/doc-types" },
+      { title: "关键信息字段", href: "/doc-field-defs" },
+      { title: "文件模板/示例", href: "/doc-template-samples" },
     ],
   },
   {
-    key: 'audit-system',
-    icon: <AuditOutlined />,
-    label: '审计逻辑库',
+    title: "审计逻辑库",
+    icon: FileCheck,
     children: [
-      { key: '/audit-rules', label: '审计规则' },
+      { title: "审计规则", href: "/audit-rules" },
     ],
   },
   {
-    key: 'law-system',
-    icon: <BookOutlined />,
-    label: '法律法规与标准库',
+    title: "法规与标准库",
+    icon: Scale,
     children: [
-      { key: '/law-documents', label: '法规与标准' },
-      { key: '/law-clauses', label: '法规条款' },
-      { key: '/law-clause-doc-type-links', label: '条款与文件类型适用' },
+      { title: "法规与标准", href: "/law-documents" },
+      { title: "法规条款", href: "/law-clauses" },
     ],
   },
-  {
-    key: '/cost-rules',
-    icon: <DollarOutlined />,
-    label: '工程造价规则库',
-  },
-  {
-    key: '/biz-processes',
-    icon: <ApartmentOutlined />,
-    label: '工程咨询业务流程库',
-  },
-  {
-    key: '/case-libraries',
-    icon: <FolderOpenOutlined />,
-    label: '工程案例库',
-  },
-  {
-    key: '/knowledge-snippets',
-    icon: <BulbOutlined />,
-    label: '工程碎片知识库',
-  },
-  {
-    key: '/monitor-metrics',
-    icon: <LineChartOutlined />,
-    label: '工程数据监测',
-  },
-];
+  { title: "数据库结构", href: "/schema", icon: Database },
+]
 
-export default function MainLayout() {
-  const [collapsed, setCollapsed] = useState(false);
-  const navigate = useNavigate();
-  const location = useLocation();
-  const { token } = theme.useToken();
-  const user = getUser();
-
-  const handleMenuClick = ({ key }: { key: string }) => {
-    if (key.startsWith('/')) {
-      navigate(key);
-    }
-  };
-
-  const getOpenKeys = () => {
-    const path = location.pathname;
-    if (path.startsWith('/doc-')) return ['doc-system'];
-    if (path.startsWith('/audit-')) return ['audit-system'];
-    if (path.startsWith('/law-')) return ['law-system'];
-    return [];
-  };
-
-  const openApiDocs = () => {
-    const apiHost = window.location.hostname === 'localhost' 
-      ? 'http://localhost:3000' 
-      : `http://${window.location.hostname}:3000`;
-    window.open(`${apiHost}/api-docs`, '_blank');
-  };
-
-  const handleLogout = () => {
-    message.success('已退出登录');
-    logout();
-  };
-
-  const userMenuItems = [
-    {
-      key: 'profile',
-      icon: <UserOutlined />,
-      label: `${user?.nickname || user?.username || '用户'}`,
-      disabled: true,
-    },
-    { type: 'divider' as const },
-    {
-      key: 'change-password',
-      icon: <KeyOutlined />,
-      label: '修改密码',
-      onClick: () => message.info('功能开发中'),
-    },
-    {
-      key: 'logout',
-      icon: <LogoutOutlined />,
-      label: '退出登录',
-      onClick: handleLogout,
-    },
-  ];
+function NavLink({ item, isActive }: { item: NavItem; isActive: boolean }) {
+  const Icon = item.icon
 
   return (
-    <Layout style={{ minHeight: '100vh' }}>
-      <Sider 
-        trigger={null} 
-        collapsible 
-        collapsed={collapsed}
-        width={256}
-        style={{
-          background: '#001529',
-          position: 'fixed',
-          left: 0,
-          top: 0,
-          bottom: 0,
-          zIndex: 100,
-        }}
+    <Link
+      to={item.href!}
+      className={cn(
+        "flex items-center gap-3 rounded-lg px-3 py-2 text-sm transition-all hover:bg-accent",
+        isActive && "bg-accent text-accent-foreground"
+      )}
+    >
+      {Icon && <Icon className="h-4 w-4" />}
+      {item.title}
+    </Link>
+  )
+}
+
+function NavGroup({ item }: { item: NavItem }) {
+  const location = useLocation()
+  const [open, setOpen] = useState(
+    item.children?.some((child) => child.href === location.pathname) || false
+  )
+
+  const Icon = item.icon
+
+  return (
+    <div>
+      <button
+        onClick={() => setOpen(!open)}
+        className="flex w-full items-center justify-between rounded-lg px-3 py-2 text-sm font-medium hover:bg-accent"
       >
-        <div className={`logo ${collapsed ? 'logo-collapsed' : ''}`}>
-          {collapsed ? '咨询库' : '工程咨询全业务数据库'}
-        </div>
-        <Menu
-          theme="dark"
-          mode="inline"
-          selectedKeys={[location.pathname]}
-          defaultOpenKeys={getOpenKeys()}
-          items={menuItems}
-          onClick={handleMenuClick}
-          style={{ borderRight: 0 }}
+        <span className="flex items-center gap-3">
+          {Icon && <Icon className="h-4 w-4" />}
+          {item.title}
+        </span>
+        <ChevronDown
+          className={cn("h-4 w-4 transition-transform", open && "rotate-180")}
         />
-      </Sider>
-      <Layout style={{ marginLeft: collapsed ? 80 : 256, transition: 'margin-left 0.2s' }}>
-        <Header 
-          style={{ 
-            padding: 0, 
-            background: token.colorBgContainer,
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-            boxShadow: '0 1px 4px rgba(0,0,0,0.08)',
-            position: 'sticky',
-            top: 0,
-            zIndex: 99,
-          }}
-        >
-          <div style={{ display: 'flex', alignItems: 'center' }}>
-            {collapsed ? (
-              <MenuUnfoldOutlined 
-                style={{ fontSize: 18, padding: '0 24px', cursor: 'pointer' }}
-                onClick={() => setCollapsed(false)}
-              />
-            ) : (
-              <MenuFoldOutlined 
-                style={{ fontSize: 18, padding: '0 24px', cursor: 'pointer' }}
-                onClick={() => setCollapsed(true)}
-              />
+      </button>
+      {open && (
+        <div className="ml-4 mt-1 space-y-1 border-l pl-4">
+          {item.children?.map((child) => (
+            <NavLink
+              key={child.href}
+              item={child}
+              isActive={location.pathname === child.href}
+            />
+          ))}
+        </div>
+      )}
+    </div>
+  )
+}
+
+export function MainLayout() {
+  const location = useLocation()
+  const navigate = useNavigate()
+  const [sidebarOpen, setSidebarOpen] = useState(false)
+  const user = getUser()
+
+  const handleLogout = () => {
+    logout()
+  }
+
+  return (
+    <div className="flex min-h-screen">
+      {/* Mobile sidebar backdrop */}
+      {sidebarOpen && (
+        <div
+          className="fixed inset-0 z-40 bg-black/50 lg:hidden"
+          onClick={() => setSidebarOpen(false)}
+        />
+      )}
+
+      {/* Sidebar */}
+      <aside
+        className={cn(
+          "fixed inset-y-0 left-0 z-50 w-64 transform bg-background border-r transition-transform lg:static lg:translate-x-0",
+          sidebarOpen ? "translate-x-0" : "-translate-x-full"
+        )}
+      >
+        <div className="flex h-16 items-center justify-between border-b px-4">
+          <Link to="/" className="flex items-center gap-2 font-semibold">
+            <Database className="h-6 w-6 text-primary" />
+            <span>数据中台</span>
+          </Link>
+          <Button
+            variant="ghost"
+            size="icon"
+            className="lg:hidden"
+            onClick={() => setSidebarOpen(false)}
+          >
+            <X className="h-5 w-5" />
+          </Button>
+        </div>
+
+        <ScrollArea className="h-[calc(100vh-64px)]">
+          <div className="space-y-1 p-4">
+            {navItems.map((item) =>
+              item.children ? (
+                <NavGroup key={item.title} item={item} />
+              ) : (
+                <NavLink
+                  key={item.href}
+                  item={item}
+                  isActive={location.pathname === item.href}
+                />
+              )
             )}
-            <span className="header-title">工程咨询全业务数据库平台</span>
           </div>
-          <div style={{ paddingRight: 24 }}>
-            <Space size="middle">
-              <Tooltip title="接口文档 (Swagger)">
-                <Button 
-                  type="text" 
-                  icon={<ApiOutlined />} 
-                  onClick={openApiDocs}
-                >
-                  接口文档
-                </Button>
-              </Tooltip>
-              <Dropdown menu={{ items: userMenuItems }} placement="bottomRight">
-                <Space style={{ cursor: 'pointer' }}>
-                  <Avatar 
-                    size="small" 
-                    icon={<UserOutlined />} 
-                    style={{ backgroundColor: '#1677ff' }}
-                  />
-                  <span>{user?.nickname || user?.username || '用户'}</span>
-                </Space>
-              </Dropdown>
-            </Space>
-          </div>
-        </Header>
-        <Content className="site-layout-content">
+        </ScrollArea>
+      </aside>
+
+      {/* Main content */}
+      <div className="flex flex-1 flex-col">
+        {/* Header */}
+        <header className="flex h-16 items-center justify-between border-b px-4 lg:px-6">
+          <Button
+            variant="ghost"
+            size="icon"
+            className="lg:hidden"
+            onClick={() => setSidebarOpen(true)}
+          >
+            <Menu className="h-5 w-5" />
+          </Button>
+
+          <div className="flex-1" />
+
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="ghost" className="gap-2">
+                <User className="h-4 w-4" />
+                {user?.nickname || user?.username || "用户"}
+                <ChevronDown className="h-4 w-4" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+              <DropdownMenuItem disabled>
+                <User className="mr-2 h-4 w-4" />
+                {user?.username}
+              </DropdownMenuItem>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem onClick={handleLogout}>
+                <LogOut className="mr-2 h-4 w-4" />
+                退出登录
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </header>
+
+        {/* Page content */}
+        <main className="flex-1 p-4 lg:p-6">
           <Outlet />
-        </Content>
-      </Layout>
-    </Layout>
-  );
+        </main>
+      </div>
+    </div>
+  )
 }

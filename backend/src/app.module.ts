@@ -1,13 +1,22 @@
-import { Module } from '@nestjs/common';
+import { Module, MiddlewareConsumer, NestModule } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ServeStaticModule } from '@nestjs/serve-static';
-import { APP_GUARD } from '@nestjs/core';
+import { APP_GUARD, APP_FILTER, APP_INTERCEPTOR } from '@nestjs/core';
 import { join } from 'path';
+
+// 通用模块
+import { LoggerMiddleware } from './common/middleware/logger.middleware';
+import { GlobalExceptionFilter } from './common/filters/http-exception.filter';
+import { ResponseInterceptor } from './common/interceptors/response.interceptor';
 
 // 认证模块
 import { AuthModule } from './modules/auth/auth.module';
 import { JwtAuthGuard } from './modules/auth/guards/jwt-auth.guard';
+
+// 系统模块
+import { HealthModule } from './modules/health/health.module';
+import { MetaModule } from './modules/meta/meta.module';
 
 // 业务模块
 import { DocTypeModule } from './modules/doc-type/doc-type.module';
@@ -60,6 +69,9 @@ import { FileUploadModule } from './modules/file-upload/file-upload.module';
       }],
       inject: [ConfigService],
     }),
+    // 系统模块
+    HealthModule,
+    MetaModule,
     // 认证模块
     AuthModule,
     // 业务模块
@@ -81,6 +93,16 @@ import { FileUploadModule } from './modules/file-upload/file-upload.module';
     FileUploadModule,
   ],
   providers: [
+    // 全局异常过滤器
+    {
+      provide: APP_FILTER,
+      useClass: GlobalExceptionFilter,
+    },
+    // 全局响应拦截器
+    {
+      provide: APP_INTERCEPTOR,
+      useClass: ResponseInterceptor,
+    },
     // 全局启用 JWT 鉴权守卫
     {
       provide: APP_GUARD,
@@ -88,4 +110,8 @@ import { FileUploadModule } from './modules/file-upload/file-upload.module';
     },
   ],
 })
-export class AppModule {}
+export class AppModule implements NestModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer.apply(LoggerMiddleware).forRoutes('*');
+  }
+}

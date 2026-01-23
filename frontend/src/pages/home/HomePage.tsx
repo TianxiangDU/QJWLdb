@@ -84,10 +84,10 @@ export function HomePage() {
     },
   })
 
-  const { data: tablesData } = useQuery({
-    queryKey: ["meta-tables-count"],
+  const { data: docFieldDefsData } = useQuery({
+    queryKey: ["doc-field-defs-count"],
     queryFn: async () => {
-      const { data } = await apiClient.get("/meta/tables")
+      const { data } = await apiClient.get("/doc-field-defs/list", { params: { pageSize: 1 } })
       return data
     },
   })
@@ -128,6 +128,13 @@ export function HomePage() {
       description: "工程全阶段文件体系",
     },
     {
+      title: "关键信息字段",
+      value: docFieldDefsData?.meta?.total || 0,
+      icon: List,
+      href: "/doc-field-defs",
+      description: "文件关键信息定义",
+    },
+    {
       title: "审计规则",
       value: auditRulesData?.meta?.total || 0,
       icon: FileCheck,
@@ -140,13 +147,6 @@ export function HomePage() {
       icon: Scale,
       href: "/law-documents",
       description: "法律法规与行业标准",
-    },
-    {
-      title: "数据表",
-      value: tablesData?.data?.length || 0,
-      icon: Database,
-      href: "/schema",
-      description: "数据库结构与元数据",
     },
   ]
 
@@ -361,78 +361,6 @@ export function HomePage() {
         )}
       </Card>
 
-      {/* 快捷入口 */}
-      <div className="grid gap-4 md:grid-cols-2">
-        <Card>
-          <CardHeader>
-            <CardTitle>快速开始</CardTitle>
-            <CardDescription>常用操作入口</CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-2">
-            <Link
-              to="/doc-types"
-              className="flex items-center justify-between p-3 rounded-lg hover:bg-accent"
-            >
-              <div className="flex items-center gap-3">
-                <FileText className="h-5 w-5 text-primary" />
-                <span>管理文件类型</span>
-              </div>
-              <ArrowRight className="h-4 w-4 text-muted-foreground" />
-            </Link>
-            <Link
-              to="/audit-rules"
-              className="flex items-center justify-between p-3 rounded-lg hover:bg-accent"
-            >
-              <div className="flex items-center gap-3">
-                <FileCheck className="h-5 w-5 text-primary" />
-                <span>管理审计规则</span>
-              </div>
-              <ArrowRight className="h-4 w-4 text-muted-foreground" />
-            </Link>
-            <Link
-              to="/schema"
-              className="flex items-center justify-between p-3 rounded-lg hover:bg-accent"
-            >
-              <div className="flex items-center gap-3">
-                <Database className="h-5 w-5 text-primary" />
-                <span>查看数据库结构</span>
-              </div>
-              <ArrowRight className="h-4 w-4 text-muted-foreground" />
-            </Link>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader>
-            <CardTitle>系统信息</CardTitle>
-            <CardDescription>版本与技术栈</CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-3">
-            <div className="flex items-center justify-between">
-              <span className="text-muted-foreground">版本</span>
-              <Badge>v1.0</Badge>
-            </div>
-            <div className="flex items-center justify-between">
-              <span className="text-muted-foreground">前端</span>
-              <span className="text-sm">React + shadcn/ui + Tailwind</span>
-            </div>
-            <div className="flex items-center justify-between">
-              <span className="text-muted-foreground">后端</span>
-              <span className="text-sm">NestJS + TypeORM + MySQL</span>
-            </div>
-            <div className="flex items-center justify-between">
-              <span className="text-muted-foreground">API 文档</span>
-              <a
-                href="/api-docs"
-                target="_blank"
-                className="text-sm text-primary hover:underline"
-              >
-                Swagger UI
-              </a>
-            </div>
-          </CardContent>
-        </Card>
-      </div>
     </div>
   )
 }

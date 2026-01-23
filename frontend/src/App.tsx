@@ -10,7 +10,7 @@ import { LawDocumentsPage } from "@/pages/resources/LawDocumentsPage"
 import { LawClausesPage } from "@/pages/resources/LawClausesPage"
 import { SchemaExplorerPage } from "@/pages/schema/SchemaExplorerPage"
 import { SearchPage } from "@/pages/search/SearchPage"
-import EnumManagePage from "@/pages/system/EnumManagePage"
+import SystemSettingsPage from "@/pages/system/SystemSettingsPage"
 import { getToken } from "@/services/api-client"
 
 const queryClient = new QueryClient({
@@ -55,7 +55,7 @@ function App() {
             <Route path="law-documents" element={<LawDocumentsPage />} />
             <Route path="law-clauses" element={<LawClausesPage />} />
             <Route path="schema" element={<SchemaExplorerPage />} />
-            <Route path="system/enums" element={<EnumManagePage />} />
+            <Route path="system/settings" element={<SystemSettingsPage />} />
           </Route>
         </Routes>
       </BrowserRouter>

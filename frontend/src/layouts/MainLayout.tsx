@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { Outlet, Link, useLocation, useNavigate } from "react-router-dom"
 import {
   FileText,
@@ -26,6 +26,23 @@ import {
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { cn } from "@/lib/utils"
 import { getUser, logout } from "@/services/api-client"
+
+// UI 配置
+const UI_CONFIG_KEY = 'app_ui_config'
+interface UIConfig {
+  siteName: string
+  logoUrl: string
+}
+const defaultUIConfig: UIConfig = { siteName: '数据中台', logoUrl: '' }
+
+function getUIConfig(): UIConfig {
+  try {
+    const stored = localStorage.getItem(UI_CONFIG_KEY)
+    return stored ? { ...defaultUIConfig, ...JSON.parse(stored) } : defaultUIConfig
+  } catch {
+    return defaultUIConfig
+  }
+}
 
 interface NavItem {
   title: string
@@ -61,7 +78,7 @@ const navItems: NavItem[] = [
     ],
   },
   { title: "数据库结构", href: "/schema", icon: Database },
-  { title: "枚举管理", href: "/system/enums", icon: Settings },
+  { title: "系统设置", href: "/system/settings", icon: Settings },
 ]
 
 function NavLink({ item, isActive }: { item: NavItem; isActive: boolean }) {
@@ -123,7 +140,24 @@ export function MainLayout() {
   const _navigate = useNavigate()
   void _navigate // 保留以备后用
   const [sidebarOpen, setSidebarOpen] = useState(false)
+  const [uiConfig, setUiConfig] = useState<UIConfig>(getUIConfig)
   const user = getUser()
+
+  // 监听 UI 配置变化
+  useEffect(() => {
+    const handleConfigChange = (e: CustomEvent<UIConfig>) => {
+      setUiConfig(e.detail)
+    }
+    window.addEventListener('ui-config-changed', handleConfigChange as EventListener)
+    return () => {
+      window.removeEventListener('ui-config-changed', handleConfigChange as EventListener)
+    }
+  }, [])
+
+  // 更新页面标题
+  useEffect(() => {
+    document.title = uiConfig.siteName || '数据中台'
+  }, [uiConfig.siteName])
 
   const handleLogout = () => {
     logout()
@@ -148,8 +182,12 @@ export function MainLayout() {
       >
         <div className="flex h-16 items-center justify-between border-b px-4">
           <Link to="/" className="flex items-center gap-2 font-semibold">
-            <Database className="h-6 w-6 text-primary" />
-            <span>数据中台</span>
+            {uiConfig.logoUrl ? (
+              <img src={uiConfig.logoUrl} alt="Logo" className="h-6 w-6 object-contain" />
+            ) : (
+              <Database className="h-6 w-6 text-primary" />
+            )}
+            <span>{uiConfig.siteName || '数据中台'}</span>
           </Link>
           <Button
             variant="ghost"

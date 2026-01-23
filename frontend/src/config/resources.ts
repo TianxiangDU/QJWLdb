@@ -131,7 +131,7 @@ export const docFieldDefConfig: ResourceConfig<DocFieldDef> = {
       required: true,
       optionsLoader: async () => {
         const token = localStorage.getItem('qjwl_token');
-        const res = await fetch('/api/v1/doc-types/list?pageSize=1000&status=1', {
+        const res = await fetch('/api/v1/doc-types/list?pageSize=100&status=1', {
           headers: { 'Authorization': `Bearer ${token}` }
         });
         const data = await res.json();
@@ -168,7 +168,7 @@ export const docFieldDefConfig: ResourceConfig<DocFieldDef> = {
       type: "select",
       optionsLoader: async () => {
         const token = localStorage.getItem('qjwl_token');
-        const res = await fetch('/api/v1/doc-types/list?pageSize=1000&status=1', {
+        const res = await fetch('/api/v1/doc-types/list?pageSize=100&status=1', {
           headers: { 'Authorization': `Bearer ${token}` }
         });
         const data = await res.json();

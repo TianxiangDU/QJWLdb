@@ -45,6 +45,7 @@ export function ResourceForm<T>({
 }: ResourceFormProps<T>) {
   const [values, setValues] = useState<Partial<T>>({})
   const [optionsMap, setOptionsMap] = useState<Record<string, any[]>>({})
+  const [optionsLoading, setOptionsLoading] = useState<Record<string, boolean>>({})
   const [loading, setLoading] = useState(false)
   const [errors, setErrors] = useState<Record<string, string>>({})
 
@@ -61,22 +62,37 @@ export function ResourceForm<T>({
       })
       setValues(initial)
       setErrors({})
+      setOptionsMap({})
     }
   }, [open, initialValues, fields])
 
   // 加载动态选项
   useEffect(() => {
     if (open) {
-      fields.forEach(async (field) => {
-        if (field.optionsLoader && !field.options) {
-          try {
-            const options = await field.optionsLoader()
-            setOptionsMap((prev) => ({ ...prev, [field.key as string]: options }))
-          } catch (error) {
-            console.error(`Failed to load options for ${String(field.key)}:`, error)
-          }
-        }
-      })
+      const loadOptions = async () => {
+        const fieldsToLoad = fields.filter((f) => f.optionsLoader && !f.options)
+        if (fieldsToLoad.length === 0) return
+
+        // 设置加载状态
+        const loadingState: Record<string, boolean> = {}
+        fieldsToLoad.forEach((f) => { loadingState[f.key as string] = true })
+        setOptionsLoading(loadingState)
+
+        // 并行加载所有选项
+        await Promise.all(
+          fieldsToLoad.map(async (field) => {
+            try {
+              const options = await field.optionsLoader!()
+              setOptionsMap((prev) => ({ ...prev, [field.key as string]: options }))
+            } catch (error) {
+              console.error(`Failed to load options for ${String(field.key)}:`, error)
+            } finally {
+              setOptionsLoading((prev) => ({ ...prev, [field.key as string]: false }))
+            }
+          })
+        )
+      }
+      loadOptions()
     }
   }, [open, fields])
 
@@ -129,7 +145,6 @@ export function ResourceForm<T>({
       <div key={String(field.key)} className="space-y-2">
         <Label htmlFor={String(field.key)} className={cn(error && "text-destructive")}>
           {field.label}
-          {field.required && <span className="text-destructive"> *</span>}
         </Label>
 
         {field.type === "textarea" ? (
@@ -144,16 +159,25 @@ export function ResourceForm<T>({
           <Select
             value={value !== undefined ? String(value) : ""}
             onValueChange={(v) => handleChange(String(field.key), v)}
+            disabled={optionsLoading[field.key as string]}
           >
             <SelectTrigger className={cn(error && "border-destructive")}>
-              <SelectValue placeholder={field.placeholder || `选择${field.label}`} />
+              <SelectValue placeholder={
+                optionsLoading[field.key as string] 
+                  ? "加载中..." 
+                  : (field.placeholder || `选择${field.label}`)
+              } />
             </SelectTrigger>
             <SelectContent>
-              {options.map((opt) => (
-                <SelectItem key={String(opt.value)} value={String(opt.value)}>
-                  {opt.label}
-                </SelectItem>
-              ))}
+              {options.length === 0 && !optionsLoading[field.key as string] ? (
+                <div className="py-2 px-2 text-sm text-muted-foreground">暂无选项</div>
+              ) : (
+                options.map((opt) => (
+                  <SelectItem key={String(opt.value)} value={String(opt.value)}>
+                    {opt.label}
+                  </SelectItem>
+                ))
+              )}
             </SelectContent>
           </Select>
         ) : field.type === "enumSelect" ? (

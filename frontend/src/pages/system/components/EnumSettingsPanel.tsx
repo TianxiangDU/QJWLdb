@@ -90,7 +90,7 @@ const TABLE_ENUM_MAP: {
 ]
 
 async function fetchOptions(category: string, parentValue?: string): Promise<EnumOption[]> {
-  const token = localStorage.getItem('token')
+  const token = localStorage.getItem('qjwl_token')
   let url = `${API_BASE}/enum-options?category=${category}`
   if (parentValue) {
     url += `&parentValue=${encodeURIComponent(parentValue)}`
@@ -109,7 +109,7 @@ async function addOption(data: {
   label?: string
   parentValue?: string
 }): Promise<EnumOption> {
-  const token = localStorage.getItem('token')
+  const token = localStorage.getItem('qjwl_token')
   const res = await fetch(`${API_BASE}/enum-options`, {
     method: 'POST',
     headers: {
@@ -130,7 +130,7 @@ async function updateOption(
   id: number,
   data: { value?: string; label?: string; shortCode?: string }
 ): Promise<EnumOption> {
-  const token = localStorage.getItem('token')
+  const token = localStorage.getItem('qjwl_token')
   const res = await fetch(`${API_BASE}/enum-options/${id}`, {
     method: 'PUT',
     headers: {
@@ -148,7 +148,7 @@ async function updateOption(
 }
 
 async function deleteOption(id: number): Promise<void> {
-  const token = localStorage.getItem('token')
+  const token = localStorage.getItem('qjwl_token')
   const res = await fetch(`${API_BASE}/enum-options/${id}`, {
     method: 'DELETE',
     headers: { Authorization: `Bearer ${token}` },

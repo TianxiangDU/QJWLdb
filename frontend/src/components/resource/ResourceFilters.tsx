@@ -14,7 +14,7 @@ import { Search, X } from "lucide-react"
 
 // 获取枚举选项
 async function fetchEnumOptions(category: string) {
-  const token = localStorage.getItem('token')
+  const token = localStorage.getItem('qjwl_token')
   const res = await fetch(`/api/v1/enum-options?category=${category}`, {
     headers: { Authorization: `Bearer ${token}` },
   })

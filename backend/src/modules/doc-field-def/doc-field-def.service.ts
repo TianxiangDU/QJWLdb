@@ -185,7 +185,7 @@ export class DocFieldDefService {
     const sheet = workbook.addWorksheet('关键信息字段');
 
     sheet.columns = [
-      { header: '文件类型ID*', key: 'docTypeId', width: 15 },
+      { header: '文件类型（ID或编码）*', key: 'docTypeId', width: 20 },
       { header: '字段编码（留空自动生成）', key: 'fieldCode', width: 25 },
       { header: '字段名称*', key: 'fieldName', width: 20 },
       { header: '字段类别', key: 'fieldCategory', width: 15 },
@@ -207,7 +207,7 @@ export class DocFieldDefService {
 
     // 添加说明行
     const noteRow = sheet.addRow({
-      docTypeId: '填写文件类型的ID',
+      docTypeId: '填写ID(数字)或编码(如DT001)',
       fieldCode: '留空则自动生成',
       fieldName: '必填',
       fieldCategory: '文字/日期/金额/数量/枚举/其他',
@@ -304,14 +304,6 @@ export class DocFieldDefService {
           continue;
         }
 
-        // 验证文件类型ID
-        const docTypeId = parseInt(docTypeIdText);
-        if (isNaN(docTypeId)) {
-          errors.push(`第${row.number}行：文件类型ID "${docTypeIdText}" 不是有效数字`);
-          failed++;
-          continue;
-        }
-
         // 验证字段名称
         if (!fieldName) {
           errors.push(`第${row.number}行：字段名称为必填项`);
@@ -319,13 +311,25 @@ export class DocFieldDefService {
           continue;
         }
 
-        // 验证文件类型是否存在
-        const docType = await this.docTypeRepository.findOne({ where: { id: docTypeId } });
+        // 查找文件类型：支持ID或编码
+        let docType: DocType | null = null;
+        
+        const parsedId = parseInt(docTypeIdText);
+        if (!isNaN(parsedId)) {
+          // 如果是数字，按ID查找
+          docType = await this.docTypeRepository.findOne({ where: { id: parsedId } });
+        } else {
+          // 如果不是数字，按编码查找
+          docType = await this.docTypeRepository.findOne({ where: { code: docTypeIdText } });
+        }
+        
         if (!docType) {
-          errors.push(`第${row.number}行：文件类型ID ${docTypeId} 不存在`);
+          errors.push(`第${row.number}行：文件类型 "${docTypeIdText}" 不存在（可填ID或编码）`);
           failed++;
           continue;
         }
+        
+        const docTypeId = docType.id;
 
         // 如果字段编码为空，自动生成
         if (!fieldCode) {

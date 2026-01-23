@@ -186,15 +186,16 @@ export class DocFieldDefService {
 
     sheet.columns = [
       { header: '文件类型ID*', key: 'docTypeId', width: 15 },
-      { header: '字段编码*', key: 'fieldCode', width: 20 },
+      { header: '字段编码（留空自动生成）', key: 'fieldCode', width: 25 },
       { header: '字段名称*', key: 'fieldName', width: 20 },
       { header: '字段类别', key: 'fieldCategory', width: 15 },
       { header: '是否必填(1/0)', key: 'requiredFlag', width: 15 },
       { header: '取值方式', key: 'valueSource', width: 25 },
-      { header: '定位词', key: 'anchorWord', width: 30 },
-      { header: '枚举值', key: 'enumOptions', width: 30 },
+      { header: '定位词（空格分隔）', key: 'anchorWord', width: 30 },
+      { header: '枚举值（空格分隔）', key: 'enumOptions', width: 30 },
       { header: '示例数据', key: 'exampleValue', width: 25 },
       { header: '字段说明', key: 'fieldDescription', width: 40 },
+      { header: '处理方式', key: 'processMethod', width: 15 },
     ];
 
     sheet.getRow(1).font = { bold: true };
@@ -206,16 +207,17 @@ export class DocFieldDefService {
 
     // 添加说明行
     const noteRow = sheet.addRow({
-      docTypeId: '说明：填写文件类型的ID',
-      fieldCode: '',
-      fieldName: '',
-      fieldCategory: '如：金额、日期、枚举',
+      docTypeId: '填写文件类型的ID',
+      fieldCode: '留空则自动生成',
+      fieldName: '必填',
+      fieldCategory: '文字/日期/金额/数量/枚举/其他',
       requiredFlag: '1=必填，0=非必填',
       valueSource: '如：封面、正文第X条',
-      anchorWord: '用于定位字段的关键词',
-      enumOptions: '枚举类型时填写，如：是,否',
+      anchorWord: '多个用空格分隔',
+      enumOptions: '字段类别为枚举时填写',
       exampleValue: '如：100000.00',
-      fieldDescription: '',
+      fieldDescription: '字段用途说明',
+      processMethod: '默认default',
     });
     noteRow.font = { italic: true, color: { argb: 'FF888888' } };
 
@@ -240,17 +242,31 @@ export class DocFieldDefService {
     for (const row of rows) {
       try {
         const docTypeId = parseInt(row.getCell(1).text);
-        const fieldCode = row.getCell(2).text?.trim();
+        let fieldCode = row.getCell(2).text?.trim();
         const fieldName = row.getCell(3).text?.trim();
 
-        if (!docTypeId || !fieldCode || !fieldName) {
-          // 跳过说明行或空行
-          if (row.getCell(1).text?.includes('说明')) continue;
+        // 跳过说明行或空行
+        if (row.getCell(1).text?.includes('说明') || row.getCell(1).text?.includes('填写')) continue;
+        
+        if (!docTypeId || !fieldName) {
           if (docTypeId || fieldCode || fieldName) {
-            errors.push(`第${row.number}行：文件类型ID、字段编码和名称为必填项`);
+            errors.push(`第${row.number}行：文件类型ID和字段名称为必填项`);
             failed++;
           }
           continue;
+        }
+
+        // 如果字段编码为空，自动生成
+        if (!fieldCode) {
+          const maxCode = await this.repository
+            .createQueryBuilder('df')
+            .select('MAX(df.fieldCode)', 'max')
+            .where('df.docTypeId = :docTypeId', { docTypeId })
+            .getRawOne();
+          
+          const lastNum = maxCode?.max ? parseInt(maxCode.max.split('-').pop() || '0') : 0;
+          const docType = await this.docTypeService.findOne(docTypeId);
+          fieldCode = `${docType.code}-${String(lastNum + 1).padStart(3, '0')}`;
         }
 
         const dto: CreateDocFieldDefDto = {
@@ -264,6 +280,7 @@ export class DocFieldDefService {
           enumOptions: row.getCell(8).text?.trim() || undefined,
           exampleValue: row.getCell(9).text?.trim() || undefined,
           fieldDescription: row.getCell(10).text?.trim() || undefined,
+          processMethod: row.getCell(11).text?.trim() || 'default',
         };
 
         const existing = await this.repository.findOne({

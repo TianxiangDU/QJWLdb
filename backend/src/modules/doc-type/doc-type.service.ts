@@ -359,13 +359,12 @@ export class DocTypeService {
 
     sheet.columns = [
       { header: '文件类型名称*', key: 'name', width: 25 },
-      { header: '文件类型编码（留空自动生成）', key: 'code', width: 25 },
-      { header: '所属项目阶段', key: 'projectPhase', width: 15 },
-      { header: '所属大类', key: 'majorCategory', width: 15 },
-      { header: '所属小类', key: 'minorCategory', width: 15 },
-      { header: '适用项目类型', key: 'projectType', width: 20 },
-      { header: '适用地区', key: 'region', width: 15 },
-      { header: '适用业主', key: 'ownerOrg', width: 20 },
+      { header: '文件类型编码（留空自动生成）', key: 'code', width: 30 },
+      { header: '所属项目阶段*', key: 'projectPhase', width: 18 },
+      { header: '所属大类*', key: 'majorCategory', width: 18 },
+      { header: '所属小类*', key: 'minorCategory', width: 18 },
+      { header: '适用地区*', key: 'region', width: 15 },
+      { header: '适用业主*', key: 'ownerOrg', width: 20 },
       { header: '业务说明/使用场景', key: 'bizDescription', width: 40 },
       { header: '文件特征信息（LLM识别）', key: 'fileFeature', width: 40 },
       { header: '备注', key: 'remark', width: 30 },
@@ -378,6 +377,21 @@ export class DocTypeService {
       pattern: 'solid',
       fgColor: { argb: 'FFE0E0E0' },
     };
+
+    // 添加说明行
+    const noteRow = sheet.addRow({
+      name: '必填，文件类型的名称',
+      code: '留空则根据阶段/大类/小类/地区/业主自动生成',
+      projectPhase: '如：前期准备阶段',
+      majorCategory: '如：立项文件',
+      minorCategory: '如：可行性研究',
+      region: '如：全国通用',
+      ownerOrg: '如：通用',
+      bizDescription: '描述该文件类型的使用场景',
+      fileFeature: '用于LLM识别的文件特征描述',
+      remark: '其他备注信息',
+    });
+    noteRow.font = { italic: true, color: { argb: 'FF888888' } };
 
     return workbook;
   }

@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
+import { useQuery, useQueryClient } from '@tanstack/react-query'
 import {
   Select,
   SelectContent,
@@ -40,6 +40,8 @@ const API_BASE = '/api/v1'
 
 async function fetchEnumOptions(category: string, parentValue?: string): Promise<EnumOption[]> {
   const token = localStorage.getItem('token')
+  if (!token) return []
+  
   let url = `${API_BASE}/enum-options?category=${category}`
   if (parentValue) {
     url += `&parentValue=${encodeURIComponent(parentValue)}`
@@ -47,8 +49,8 @@ async function fetchEnumOptions(category: string, parentValue?: string): Promise
   const res = await fetch(url, {
     headers: { Authorization: `Bearer ${token}` },
   })
+  if (!res.ok) return []
   const json = await res.json()
-  // 后端响应格式: { data: [...], meta: {} }
   return json.data || []
 }
 
@@ -88,11 +90,12 @@ export function EnumSelect({
   const [addDialogOpen, setAddDialogOpen] = useState(false)
   const [newValue, setNewValue] = useState('')
 
-  // 查询选项
+  // 使用 React Query 加载选项（带缓存）
   const { data: options = [], isLoading } = useQuery({
     queryKey: ['enumOptions', category, parentValue],
     queryFn: () => fetchEnumOptions(category, parentValue),
     enabled: !!category,
+    staleTime: 5 * 60 * 1000, // 5分钟缓存
   })
 
   // 当父级值变化时，清空当前值（如果当前值不在新选项中）
@@ -106,20 +109,25 @@ export function EnumSelect({
   }, [parentValue, options])
 
   // 新增选项
-  const addMutation = useMutation({
-    mutationFn: () => addEnumOption(category, newValue, parentValue),
-    onSuccess: (newOpt) => {
+  const [adding, setAdding] = useState(false)
+  
+  const handleAddOption = async () => {
+    if (!newValue.trim()) return
+    setAdding(true)
+    try {
+      const newOpt = await addEnumOption(category, newValue, parentValue)
+      // 刷新缓存
       queryClient.invalidateQueries({ queryKey: ['enumOptions', category] })
       onChange?.(newOpt.value)
       setAddDialogOpen(false)
       setNewValue('')
-    },
-  })
-
-  const handleAdd = () => {
-    if (!newValue.trim()) return
-    addMutation.mutate()
+    } catch (err) {
+      console.error('[EnumSelect] Add option error:', err)
+    } finally {
+      setAdding(false)
+    }
   }
+
 
   return (
     <div className={cn('flex gap-2', className)}>
@@ -168,7 +176,7 @@ export function EnumSelect({
               value={newValue}
               onChange={(e) => setNewValue(e.target.value)}
               placeholder="请输入新选项"
-              onKeyDown={(e) => e.key === 'Enter' && handleAdd()}
+              onKeyDown={(e) => e.key === 'Enter' && handleAddOption()}
             />
           </div>
           <DialogFooter>
@@ -176,10 +184,10 @@ export function EnumSelect({
               取消
             </Button>
             <Button
-              onClick={handleAdd}
-              disabled={!newValue.trim() || addMutation.isPending}
+              onClick={handleAddOption}
+              disabled={!newValue.trim() || adding}
             >
-              {addMutation.isPending ? '添加中...' : '确定'}
+              {adding ? '添加中...' : '确定'}
             </Button>
           </DialogFooter>
         </DialogContent>

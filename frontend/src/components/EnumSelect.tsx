@@ -39,7 +39,7 @@ interface EnumSelectProps {
 const API_BASE = '/api/v1'
 
 async function fetchEnumOptions(category: string, parentValue?: string): Promise<EnumOption[]> {
-  const token = localStorage.getItem('token')
+  const token = localStorage.getItem('qjwl_token')
   if (!token) return []
   
   let url = `${API_BASE}/enum-options?category=${category}`
@@ -59,7 +59,7 @@ async function addEnumOption(
   value: string,
   parentValue?: string
 ): Promise<EnumOption> {
-  const token = localStorage.getItem('token')
+  const token = localStorage.getItem('qjwl_token')
   const res = await fetch(`${API_BASE}/enum-options`, {
     method: 'POST',
     headers: {

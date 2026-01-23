@@ -55,7 +55,7 @@ export interface FormFieldConfig<T = any> {
   /** 字段标签 */
   label: string
   /** 字段类型 */
-  type: "text" | "number" | "textarea" | "select" | "date" | "switch" | "file"
+  type: "text" | "number" | "textarea" | "select" | "date" | "switch" | "file" | "enumSelect" | "cascadeSelect"
   /** 是否必填 */
   required?: boolean
   /** 占位符 */
@@ -66,6 +66,12 @@ export interface FormFieldConfig<T = any> {
   options?: { label: string; value: string | number }[]
   /** 选项获取函数 */
   optionsLoader?: () => Promise<{ label: string; value: string | number }[]>
+  /** 枚举分类（用于 enumSelect 类型） */
+  enumCategory?: string
+  /** 父级字段（用于级联，如小类依赖大类） */
+  parentField?: string
+  /** 是否允许新增选项 */
+  allowAdd?: boolean
   /** 默认值 */
   defaultValue?: any
   /** 是否只在编辑时显示 */

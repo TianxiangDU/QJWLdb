@@ -7,6 +7,7 @@ import { UpdateDocTypeDto } from './dto/update-doc-type.dto';
 import { QueryDocTypeDto } from './dto/query-doc-type.dto';
 import { PaginationResultDto } from '../../common/dto/pagination.dto';
 import { CodeService } from '../../common/services/code.service';
+import { EnumOptionService, ENUM_CATEGORIES } from '../../common/services/enum-option.service';
 import { ImportResult, ImportMode } from '../../common/interfaces/crud.interface';
 import * as ExcelJS from 'exceljs';
 
@@ -16,6 +17,7 @@ export class DocTypeService {
     @InjectRepository(DocType)
     private readonly docTypeRepository: Repository<DocType>,
     private readonly codeService: CodeService,
+    private readonly enumOptionService: EnumOptionService,
   ) {}
 
   async create(createDto: CreateDocTypeDto): Promise<DocType> {
@@ -427,5 +429,76 @@ export class DocTypeService {
       majorCategories: majorCategories.map(r => r.value).filter(Boolean),
       minorCategories: minorCategories.map(r => r.value).filter(Boolean),
     };
+  }
+
+  /**
+   * 从现有数据同步枚举选项到 enum_option 表
+   */
+  async syncEnumOptions(): Promise<{
+    projectPhase: number;
+    majorCategory: number;
+    minorCategory: number;
+    region: number;
+    ownerOrg: number;
+  }> {
+    // 获取所有不重复的值
+    const data = await this.docTypeRepository
+      .createQueryBuilder('dt')
+      .select([
+        'dt.projectPhase',
+        'dt.majorCategory',
+        'dt.minorCategory',
+        'dt.region',
+        'dt.ownerOrg',
+      ])
+      .getMany();
+
+    // 收集唯一值和大类-小类关系
+    const projectPhases = new Set<string>();
+    const majorCategories = new Set<string>();
+    const minorCategories = new Set<string>();
+    const regions = new Set<string>();
+    const ownerOrgs = new Set<string>();
+    const minorToMajorMap = new Map<string, string>();
+
+    for (const item of data) {
+      if (item.projectPhase) projectPhases.add(item.projectPhase);
+      if (item.majorCategory) majorCategories.add(item.majorCategory);
+      if (item.minorCategory) {
+        minorCategories.add(item.minorCategory);
+        if (item.majorCategory) {
+          minorToMajorMap.set(item.minorCategory, item.majorCategory);
+        }
+      }
+      if (item.region) regions.add(item.region);
+      if (item.ownerOrg) ownerOrgs.add(item.ownerOrg);
+    }
+
+    // 同步到 enum_option 表
+    const result = {
+      projectPhase: await this.enumOptionService.syncFromExistingData(
+        ENUM_CATEGORIES.PROJECT_PHASE,
+        Array.from(projectPhases),
+      ),
+      majorCategory: await this.enumOptionService.syncFromExistingData(
+        ENUM_CATEGORIES.MAJOR_CATEGORY,
+        Array.from(majorCategories),
+      ),
+      minorCategory: await this.enumOptionService.syncFromExistingData(
+        ENUM_CATEGORIES.MINOR_CATEGORY,
+        Array.from(minorCategories),
+        minorToMajorMap,
+      ),
+      region: await this.enumOptionService.syncFromExistingData(
+        ENUM_CATEGORIES.REGION,
+        Array.from(regions),
+      ),
+      ownerOrg: await this.enumOptionService.syncFromExistingData(
+        ENUM_CATEGORIES.OWNER_ORG,
+        Array.from(ownerOrgs),
+      ),
+    };
+
+    return result;
   }
 }

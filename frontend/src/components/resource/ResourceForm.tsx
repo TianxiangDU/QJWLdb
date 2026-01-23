@@ -12,6 +12,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
+import { EnumSelect } from "@/components/EnumSelect"
 import {
   Sheet,
   SheetContent,
@@ -155,6 +156,16 @@ export function ResourceForm<T>({
               ))}
             </SelectContent>
           </Select>
+        ) : field.type === "enumSelect" ? (
+          <EnumSelect
+            category={field.enumCategory || String(field.key)}
+            value={value || ""}
+            onChange={(v) => handleChange(String(field.key), v)}
+            parentValue={field.parentField ? (values as any)[field.parentField] : undefined}
+            placeholder={field.placeholder}
+            allowAdd={field.allowAdd !== false}
+            disabled={false}
+          />
         ) : field.type === "switch" ? (
           <div className="flex items-center space-x-2">
             <Switch

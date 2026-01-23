@@ -51,6 +51,15 @@ export class DocTypeController {
     return this.docTypeService.getFilterOptions();
   }
 
+  @Post('sync-enum-options')
+  @ApiOperation({ 
+    summary: '同步枚举选项',
+    description: '从现有文件类型数据中提取枚举值，同步到枚举选项表',
+  })
+  syncEnumOptions() {
+    return this.docTypeService.syncEnumOptions();
+  }
+
   @Get('template')
   @Public()
   @ApiOperation({ summary: '下载Excel导入模板' })

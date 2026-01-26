@@ -7,7 +7,6 @@ import { Permission } from './permission.entity';
  * 定义系统中的角色，角色关联多个权限
  */
 @Entity('role')
-@Index(['code'], { unique: true })
 export class Role {
   @ApiProperty({ description: 'ID' })
   @PrimaryGeneratedColumn({ type: 'bigint', unsigned: true })

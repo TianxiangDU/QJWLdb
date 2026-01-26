@@ -6,7 +6,6 @@ import { BaseEntity } from '../../../common/entities/base.entity';
 import { Role } from '../../../common/entities/role.entity';
 
 @Entity('users')
-@Index(['roleId'])
 export class User extends BaseEntity {
   @ApiProperty({ description: '用户名' })
   @Column({ type: 'varchar', length: 50, unique: true, comment: '用户名' })

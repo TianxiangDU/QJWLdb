@@ -6,7 +6,6 @@ import { ApiProperty } from '@nestjs/swagger';
  * 定义系统中的所有权限
  */
 @Entity('permission')
-@Index(['code'], { unique: true })
 @Index(['module'])
 export class Permission {
   @ApiProperty({ description: 'ID' })

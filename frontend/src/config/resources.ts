@@ -105,7 +105,8 @@ export interface DocFieldDef {
   enumOptions?: string
   exampleValue?: string
   fieldDescription?: string
-  processMethod?: string
+  outputFormat?: string
+  extractMethod?: string
   status: number
   createdAt: string
   updatedAt: string
@@ -129,7 +130,8 @@ export const docFieldDefConfig: ResourceConfig<DocFieldDef> = {
     { key: "enumOptions", title: "枚举值", width: 120 },
     { key: "exampleValue", title: "示例数据", width: 120 },
     { key: "fieldDescription", title: "字段说明", width: 200 },
-    { key: "processMethod", title: "处理方式", width: 100 },
+    { key: "outputFormat", title: "输出格式", width: 100 },
+    { key: "extractMethod", title: "提取方法", width: 100 },
     { key: "status", title: "状态", type: "status", width: 70 },
   ],
   
@@ -168,7 +170,8 @@ export const docFieldDefConfig: ResourceConfig<DocFieldDef> = {
     { key: "enumOptions", label: "枚举值", type: "text", placeholder: "如字段类别为枚举则填写，空格分隔" },
     { key: "exampleValue", label: "示例数据", type: "text", placeholder: "字段的示例值" },
     { key: "fieldDescription", label: "字段说明", type: "textarea", placeholder: "详细描述该字段的含义和用途" },
-    { key: "processMethod", label: "处理方式", type: "text", defaultValue: "default", placeholder: "默认为 default" },
+    { key: "outputFormat", label: "输出格式", type: "text", placeholder: "如：金额（元）、日期（YYYY-MM-DD）" },
+    { key: "extractMethod", label: "提取方法", type: "text", placeholder: "如：正则匹配、关键词定位" },
   ],
   
   filters: [

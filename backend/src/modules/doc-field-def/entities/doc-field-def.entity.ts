@@ -51,9 +51,13 @@ export class DocFieldDef extends BaseEntity {
   @Column({ name: 'anchor_word', type: 'text', nullable: true, comment: '定位词（用于在文件中定位该字段）' })
   anchorWord: string;
 
-  @ApiProperty({ description: '处理方式' })
-  @Column({ name: 'process_method', type: 'varchar', length: 100, default: 'default', comment: '处理方式' })
-  processMethod: string;
+  @ApiProperty({ description: '输出格式' })
+  @Column({ name: 'output_format', type: 'varchar', length: 200, nullable: true, comment: '输出格式' })
+  outputFormat: string;
+
+  @ApiProperty({ description: '提取方法' })
+  @Column({ name: 'extract_method', type: 'varchar', length: 100, nullable: true, comment: '提取方法' })
+  extractMethod: string;
 
   @ApiProperty({ description: '数据版本号（乐观锁）', example: 1 })
   @VersionColumn({ name: 'row_version', default: 1 })

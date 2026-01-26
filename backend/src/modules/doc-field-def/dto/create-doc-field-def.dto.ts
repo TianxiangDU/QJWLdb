@@ -58,9 +58,15 @@ export class CreateDocFieldDefDto {
   @IsString()
   anchorWord?: string;
 
-  @ApiPropertyOptional({ description: '处理方式', example: 'default', default: 'default' })
+  @ApiPropertyOptional({ description: '输出格式', example: '金额（元）' })
+  @IsOptional()
+  @IsString()
+  @MaxLength(200)
+  outputFormat?: string;
+
+  @ApiPropertyOptional({ description: '提取方法', example: '正则匹配' })
   @IsOptional()
   @IsString()
   @MaxLength(100)
-  processMethod?: string;
+  extractMethod?: string;
 }

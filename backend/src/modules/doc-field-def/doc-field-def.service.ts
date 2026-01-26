@@ -41,7 +41,6 @@ export class DocFieldDefService {
     const entity = this.repository.create({
       ...createDto,
       fieldCode,
-      processMethod: createDto.processMethod || 'default',
     });
     return this.repository.save(entity);
   }
@@ -196,7 +195,8 @@ export class DocFieldDefService {
       { header: '枚举值（空格分隔）', key: 'enumOptions', width: 30 },
       { header: '示例数据', key: 'exampleValue', width: 25 },
       { header: '字段说明', key: 'fieldDescription', width: 40 },
-      { header: '处理方式', key: 'processMethod', width: 15 },
+      { header: '输出格式', key: 'outputFormat', width: 20 },
+      { header: '提取方法', key: 'extractMethod', width: 15 },
     ];
 
     sheet.getRow(1).font = { bold: true };
@@ -219,7 +219,8 @@ export class DocFieldDefService {
       enumOptions: '字段类别为枚举时填写',
       exampleValue: '如：100000.00',
       fieldDescription: '字段用途说明',
-      processMethod: '默认default',
+      outputFormat: '如：金额（元）',
+      extractMethod: '如：正则匹配',
     });
     noteRow.font = { italic: true, color: { argb: 'FF888888' } };
 
@@ -276,8 +277,10 @@ export class DocFieldDefService {
         columnMap['exampleValue'] = colNumber;
       } else if (headerText.includes('说明') || headerText.includes('描述')) {
         columnMap['fieldDescription'] = colNumber;
-      } else if (headerText.includes('处理')) {
-        columnMap['processMethod'] = colNumber;
+      } else if (headerText.includes('输出格式')) {
+        columnMap['outputFormat'] = colNumber;
+      } else if (headerText.includes('提取方法')) {
+        columnMap['extractMethod'] = colNumber;
       }
     });
 
@@ -293,7 +296,8 @@ export class DocFieldDefService {
     if (!columnMap['enumOptions']) columnMap['enumOptions'] = 9;
     if (!columnMap['exampleValue']) columnMap['exampleValue'] = 10;
     if (!columnMap['fieldDescription']) columnMap['fieldDescription'] = 11;
-    if (!columnMap['processMethod']) columnMap['processMethod'] = 12;
+    if (!columnMap['outputFormat']) columnMap['outputFormat'] = 12;
+    if (!columnMap['extractMethod']) columnMap['extractMethod'] = 13;
 
     // 辅助函数：获取单元格文本
     const getCellText = (row: ExcelJS.Row, key: string): string => {
@@ -376,7 +380,8 @@ export class DocFieldDefService {
           enumOptions: getCellText(row, 'enumOptions') || undefined,
           exampleValue: getCellText(row, 'exampleValue') || undefined,
           fieldDescription: getCellText(row, 'fieldDescription') || undefined,
-          processMethod: getCellText(row, 'processMethod') || 'default',
+          outputFormat: getCellText(row, 'outputFormat') || undefined,
+          extractMethod: getCellText(row, 'extractMethod') || undefined,
         };
 
         const existing = await this.repository.findOne({
@@ -446,7 +451,8 @@ export class DocFieldDefService {
       { header: '枚举值', key: 'enumOptions', width: 30 },
       { header: '示例数据', key: 'exampleValue', width: 25 },
       { header: '字段说明', key: 'fieldDescription', width: 40 },
-      { header: '处理方式', key: 'processMethod', width: 15 },
+      { header: '输出格式', key: 'outputFormat', width: 20 },
+      { header: '提取方法', key: 'extractMethod', width: 15 },
       { header: '状态', key: 'status', width: 8 },
     ];
 
@@ -471,7 +477,8 @@ export class DocFieldDefService {
         enumOptions: item.enumOptions || '',
         exampleValue: item.exampleValue || '',
         fieldDescription: item.fieldDescription || '',
-        processMethod: item.processMethod || 'default',
+        outputFormat: item.outputFormat || '',
+        extractMethod: item.extractMethod || '',
         status: item.status === 1 ? '启用' : '停用',
       });
     }

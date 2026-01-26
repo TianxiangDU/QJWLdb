@@ -61,12 +61,41 @@ export class FileAssetService {
   }
 
   /**
+   * 修复 multer 中文文件名编码问题
+   * 浏览器发送的文件名可能是 UTF-8 被当作 Latin-1 解码
+   */
+  private fixFileName(name: string): string {
+    if (!name) return name;
+    
+    try {
+      // 检查是否包含乱码特征（高位字节被错误解码为拉丁字符）
+      // 如果文件名看起来已经是正常的（只含ASCII或正确的中文），就不处理
+      const hasGarbledChars = /[\x80-\xff]/.test(name);
+      
+      if (hasGarbledChars) {
+        // 尝试将 Latin-1 编码的字符串转为 Buffer，再解码为 UTF-8
+        const fixed = Buffer.from(name, 'latin1').toString('utf8');
+        // 验证转换后的字符串是有效的（不含替换字符）
+        if (!fixed.includes('\ufffd')) {
+          return fixed;
+        }
+      }
+      return name;
+    } catch {
+      return name;
+    }
+  }
+
+  /**
    * 上传文件（带去重）
    */
   async upload(
     file: Express.Multer.File,
     subDir: string = 'general',
   ): Promise<UploadResult> {
+    // 修复中文文件名编码
+    const originalName = this.fixFileName(file.originalname);
+    
     // 计算文件哈希
     const sha256 = await this.calculateSha256(file.buffer);
 
@@ -106,7 +135,7 @@ export class FileAssetService {
     // 创建文件资产记录
     const fileAsset = this.fileAssetRepo.create({
       sha256,
-      originalName: file.originalname,
+      originalName,
       size: file.size,
       mime: file.mimetype,
       storagePath: `/uploads/${relativePath}`,

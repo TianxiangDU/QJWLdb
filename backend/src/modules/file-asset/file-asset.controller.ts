@@ -3,6 +3,7 @@ import {
   Post,
   Get,
   Param,
+  Query,
   Res,
   UploadedFile,
   UseInterceptors,
@@ -43,6 +44,7 @@ export class FileAssetController {
   @UseInterceptors(FileInterceptor('file'))
   async upload(
     @UploadedFile() file: Express.Multer.File,
+    @Query('subDir') subDir?: string,
   ): Promise<{
     id: number;
     sha256: string;
@@ -52,10 +54,12 @@ export class FileAssetController {
     mime: string;
     isExisting: boolean;
     message: string;
+    url: string;
   }> {
-    const result = await this.fileAssetService.upload(file);
+    const result = await this.fileAssetService.upload(file, subDir || 'general');
     return {
       ...result,
+      url: `/static${result.storagePath}`,
       message: result.isExisting ? '文件已存在，已复用' : '上传成功',
     };
   }

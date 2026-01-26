@@ -290,6 +290,7 @@ export class DocTypeService {
       templates: templates.map((t: any) => ({
         id: t.id,
         fileName: t.fileName,
+        filePath: t.filePath,
         description: t.description,
       })),
     };

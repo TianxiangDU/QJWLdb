@@ -62,11 +62,12 @@ import { FileAssetModule } from './modules/file-asset/file-asset.module';
       }),
       inject: [ConfigService],
     }),
-    // 静态文件服务 - 从 project/uploads 目录提供文件
+    // 静态文件服务 - 从 project 目录提供文件
+    // URL: /static/uploads/xxx -> 文件: ../project/uploads/xxx
     ServeStaticModule.forRootAsync({
       imports: [ConfigModule],
-      useFactory: (configService: ConfigService) => [{
-        rootPath: join(process.cwd(), configService.get('UPLOAD_DIR', '../project/uploads')),
+      useFactory: () => [{
+        rootPath: join(process.cwd(), '../project'),
         serveRoot: '/static',
       }],
       inject: [ConfigService],

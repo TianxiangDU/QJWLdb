@@ -15,7 +15,8 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog"
 import { apiClient } from "@/services/api-client"
-import { FileText, FileCheck, Scale, Search, Loader2, FolderOpen, List } from "lucide-react"
+import { FileText, FileCheck, Scale, Search, Loader2, FolderOpen, List, Eye, Download } from "lucide-react"
+import { FilePreviewDialog } from "@/components/common/FilePreviewDialog"
 
 interface StatCard {
   title: string
@@ -74,11 +75,18 @@ interface FieldDetail {
   processMethod?: string
 }
 
+interface PreviewFile {
+  url: string
+  name: string
+  description?: string
+}
+
 export function HomePage() {
   const [searchKeyword, setSearchKeyword] = useState("")
   const [searchInput, setSearchInput] = useState("")
   const [selectedDocTypeId, setSelectedDocTypeId] = useState<number | null>(null)
   const [selectedField, setSelectedField] = useState<FieldDetail | null>(null)
+  const [previewFile, setPreviewFile] = useState<PreviewFile | null>(null)
 
   // 获取各模块统计
   const { data: docTypesData } = useQuery({
@@ -364,14 +372,56 @@ export function HomePage() {
                         </TabsContent>
                         <TabsContent value="templates" className="mt-3">
                           {fullInfo.templates?.length ? (
-                            <div className="space-y-2">
+                            <div className="space-y-3">
                               {fullInfo.templates.map((tpl) => (
-                                <div key={tpl.id} className="flex items-center justify-between p-2 border rounded">
-                                  <span>{tpl.fileName}</span>
-                                  {tpl.filePath && (
-                                    <Button variant="outline" size="sm" asChild>
-                                      <a href={`/api/v1/static/${tpl.filePath}`} target="_blank">预览</a>
-                                    </Button>
+                                <div key={tpl.id} className="p-3 border rounded-lg hover:bg-accent/50 transition-colors">
+                                  <div className="flex items-center justify-between">
+                                    <div className="flex items-center gap-2 flex-1 min-w-0">
+                                      <FileText className="h-4 w-4 text-blue-600 flex-shrink-0" />
+                                      <span 
+                                        className="text-blue-600 hover:underline cursor-pointer truncate"
+                                        onClick={() => tpl.filePath && setPreviewFile({
+                                          url: tpl.filePath,
+                                          name: tpl.fileName,
+                                          description: tpl.description
+                                        })}
+                                      >
+                                        {tpl.fileName}
+                                      </span>
+                                    </div>
+                                    {tpl.filePath && (
+                                      <div className="flex items-center gap-1 flex-shrink-0">
+                                        <Button 
+                                          variant="ghost" 
+                                          size="sm" 
+                                          className="h-7 px-2"
+                                          onClick={() => setPreviewFile({
+                                            url: tpl.filePath!,
+                                            name: tpl.fileName,
+                                            description: tpl.description
+                                          })}
+                                        >
+                                          <Eye className="h-4 w-4 mr-1" />
+                                          预览
+                                        </Button>
+                                        <Button 
+                                          variant="ghost" 
+                                          size="sm" 
+                                          className="h-7 px-2"
+                                          asChild
+                                        >
+                                          <a href={tpl.filePath} download={tpl.fileName}>
+                                            <Download className="h-4 w-4 mr-1" />
+                                            下载
+                                          </a>
+                                        </Button>
+                                      </div>
+                                    )}
+                                  </div>
+                                  {tpl.description && (
+                                    <p className="text-sm text-muted-foreground mt-2 pl-6">
+                                      {tpl.description}
+                                    </p>
                                   )}
                                 </div>
                               ))}
@@ -445,6 +495,15 @@ export function HomePage() {
           )}
         </DialogContent>
       </Dialog>
+
+      {/* 文件预览弹窗 */}
+      <FilePreviewDialog
+        open={!!previewFile}
+        onClose={() => setPreviewFile(null)}
+        fileUrl={previewFile?.url || ""}
+        fileName={previewFile?.name || ""}
+        description={previewFile?.description}
+      />
     </div>
   )
 }

@@ -62,14 +62,21 @@ import { FileAssetModule } from './modules/file-asset/file-asset.module';
       }),
       inject: [ConfigService],
     }),
-    // 静态文件服务 - 从 project 目录提供文件
-    // URL: /static/uploads/xxx -> 文件: ../project/uploads/xxx
+    // 静态文件服务 - 提供上传文件的静态访问
+    // URL: /static/uploads/xxx -> 文件: UPLOAD_DIR/../uploads/xxx
     ServeStaticModule.forRootAsync({
       imports: [ConfigModule],
-      useFactory: () => [{
-        rootPath: join(process.cwd(), '../project'),
-        serveRoot: '/static',
-      }],
+      useFactory: (configService: ConfigService) => {
+        // Docker 环境: UPLOAD_DIR=/app/project/uploads
+        // 本地开发: UPLOAD_DIR=../project/uploads
+        const uploadDir = configService.get('UPLOAD_DIR', '../project/uploads');
+        // 静态服务根目录是 uploads 的父目录
+        const staticRoot = join(process.cwd(), uploadDir, '..');
+        return [{
+          rootPath: staticRoot,
+          serveRoot: '/static',
+        }];
+      },
       inject: [ConfigService],
     }),
     // 通用服务模块（全局）

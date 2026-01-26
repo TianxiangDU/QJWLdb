@@ -50,14 +50,18 @@ export class LoginResponseDto {
       id: 1,
       username: 'admin',
       nickname: '管理员',
-      role: 'admin'
+      role: 'admin',
+      roleId: 1,
+      avatar: null
     }
   })
   user: {
     id: number;
     username: string;
-    nickname: string;
+    nickname?: string;
     role: string;
+    roleId?: number;
+    avatar?: string;
   };
 }
 
@@ -72,6 +76,28 @@ export class ChangePasswordDto {
   @IsNotEmpty({ message: '新密码不能为空' })
   @MinLength(6, { message: '密码至少6个字符' })
   newPassword: string;
+}
+
+export class UpdateProfileDto {
+  @ApiProperty({ description: '昵称', required: false })
+  @IsString()
+  @IsOptional()
+  nickname?: string;
+
+  @ApiProperty({ description: '邮箱', required: false })
+  @IsEmail({}, { message: '邮箱格式不正确' })
+  @IsOptional()
+  email?: string;
+
+  @ApiProperty({ description: '手机号', required: false })
+  @IsString()
+  @IsOptional()
+  phone?: string;
+
+  @ApiProperty({ description: '头像URL', required: false })
+  @IsString()
+  @IsOptional()
+  avatar?: string;
 }
 
 

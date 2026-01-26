@@ -1,7 +1,8 @@
-import { Controller, Post, Get, Body, UseGuards } from '@nestjs/common';
+import { Controller, Post, Get, Put, Body, UseGuards, Req, Headers } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiBearerAuth } from '@nestjs/swagger';
+import { Request } from 'express';
 import { AuthService } from './auth.service';
-import { LoginDto, RegisterDto, ChangePasswordDto, LoginResponseDto } from './dto/auth.dto';
+import { LoginDto, RegisterDto, ChangePasswordDto, LoginResponseDto, UpdateProfileDto } from './dto/auth.dto';
 import { Public } from './decorators/public.decorator';
 import { CurrentUser } from './decorators/current-user.decorator';
 import { JwtAuthGuard } from './guards/jwt-auth.guard';
@@ -14,8 +15,13 @@ export class AuthController {
   @Post('login')
   @Public()
   @ApiOperation({ summary: '用户登录' })
-  async login(@Body() dto: LoginDto): Promise<LoginResponseDto> {
-    return this.authService.login(dto);
+  async login(
+    @Body() dto: LoginDto,
+    @Req() req: Request,
+    @Headers('user-agent') userAgent?: string,
+  ): Promise<LoginResponseDto> {
+    const ipAddress = req.ip || req.headers['x-forwarded-for'] as string || req.socket.remoteAddress;
+    return this.authService.login(dto, ipAddress, userAgent);
   }
 
   @Post('register')
@@ -31,6 +37,17 @@ export class AuthController {
   @ApiOperation({ summary: '获取当前用户信息' })
   async getProfile(@CurrentUser('id') userId: number) {
     return this.authService.getProfile(userId);
+  }
+
+  @Put('profile')
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
+  @ApiOperation({ summary: '更新个人信息' })
+  async updateProfile(
+    @CurrentUser('id') userId: number,
+    @Body() dto: UpdateProfileDto,
+  ) {
+    return this.authService.updateProfile(userId, dto);
   }
 
   @Post('change-password')

@@ -360,17 +360,19 @@ export class DocTypeService {
     const workbook = new ExcelJS.Workbook();
     const sheet = workbook.addWorksheet('文件类型');
 
+    // 列顺序与前端表格一致
     sheet.columns = [
-      { header: '文件类型名称*', key: 'name', width: 25 },
-      { header: '文件类型编码（留空自动生成）', key: 'code', width: 30 },
-      { header: '所属项目阶段*', key: 'projectPhase', width: 18 },
-      { header: '所属大类*', key: 'majorCategory', width: 18 },
-      { header: '所属小类*', key: 'minorCategory', width: 18 },
-      { header: '适用地区*', key: 'region', width: 15 },
-      { header: '适用业主*', key: 'ownerOrg', width: 20 },
-      { header: '业务说明/使用场景', key: 'bizDescription', width: 40 },
-      { header: '文件特征信息（LLM识别）', key: 'fileFeature', width: 40 },
-      { header: '备注', key: 'remark', width: 30 },
+      { header: '编码（留空自动生成）', key: 'code', width: 25 },
+      { header: '名称*', key: 'name', width: 30 },
+      { header: '项目阶段*', key: 'projectPhase', width: 15 },
+      { header: '大类*', key: 'majorCategory', width: 15 },
+      { header: '小类*', key: 'minorCategory', width: 18 },
+      { header: '文件特征', key: 'fileFeature', width: 30 },
+      { header: '项目类型', key: 'projectType', width: 12 },
+      { header: '适用地区', key: 'region', width: 12 },
+      { header: '适用业主', key: 'ownerOrg', width: 15 },
+      { header: '业务说明', key: 'bizDescription', width: 40 },
+      { header: '备注', key: 'remark', width: 25 },
     ];
 
     // 设置表头样式
@@ -383,15 +385,16 @@ export class DocTypeService {
 
     // 添加说明行
     const noteRow = sheet.addRow({
+      code: '留空则自动生成',
       name: '必填，文件类型的名称',
-      code: '留空则根据阶段/大类/小类/地区/业主自动生成',
-      projectPhase: '如：前期准备阶段',
-      majorCategory: '如：立项文件',
-      minorCategory: '如：可行性研究',
-      region: '如：全国通用',
+      projectPhase: '如：招投标阶段',
+      majorCategory: '如：投标文件',
+      minorCategory: '如：投标函',
+      fileFeature: 'LLM识别的文件特征',
+      projectType: '如：通用',
+      region: '如：通用',
       ownerOrg: '如：通用',
       bizDescription: '描述该文件类型的使用场景',
-      fileFeature: '用于LLM识别的文件特征描述',
       remark: '其他备注信息',
     });
     noteRow.font = { italic: true, color: { argb: 'FF888888' } };
@@ -429,8 +432,9 @@ export class DocTypeService {
     for (const row of rows) {
       const rowNum = row.number;
       try {
-        const name = row.getCell(1).text?.trim();
-        let code = row.getCell(2).text?.trim();
+        // 列顺序：编码、名称、阶段、大类、小类...
+        let code = row.getCell(1).text?.trim();
+        const name = row.getCell(2).text?.trim();
 
         if (!name) {
           if (code) {
@@ -454,17 +458,18 @@ export class DocTypeService {
           codeMap.set(code, rowNum);
         }
 
+        // 列顺序：编码、名称、阶段、大类、小类、文件特征、项目类型、地区、业主、业务说明、备注
         const dto: CreateDocTypeDto = {
-          name,
           code: code || '',
+          name,
           projectPhase: row.getCell(3).text?.trim() || undefined,
           majorCategory: row.getCell(4).text?.trim() || undefined,
           minorCategory: row.getCell(5).text?.trim() || undefined,
-          projectType: row.getCell(6).text?.trim() || undefined,
-          region: row.getCell(7).text?.trim() || undefined,
-          ownerOrg: row.getCell(8).text?.trim() || undefined,
-          bizDescription: row.getCell(9).text?.trim() || undefined,
-          fileFeature: row.getCell(10).text?.trim() || undefined,
+          fileFeature: row.getCell(6).text?.trim() || undefined,
+          projectType: row.getCell(7).text?.trim() || undefined,
+          region: row.getCell(8).text?.trim() || undefined,
+          ownerOrg: row.getCell(9).text?.trim() || undefined,
+          bizDescription: row.getCell(10).text?.trim() || undefined,
           remark: row.getCell(11).text?.trim() || undefined,
         };
 
@@ -658,18 +663,19 @@ export class DocTypeService {
     const workbook = new ExcelJS.Workbook();
     const sheet = workbook.addWorksheet('文件类型');
 
+    // 导出列顺序与模板和前端一致
     sheet.columns = [
-      { header: '编码', key: 'code', width: 20 },
-      { header: '名称', key: 'name', width: 25 },
-      { header: '项目阶段', key: 'projectPhase', width: 12 },
-      { header: '大类', key: 'majorCategory', width: 12 },
-      { header: '小类', key: 'minorCategory', width: 15 },
+      { header: '编码', key: 'code', width: 25 },
+      { header: '名称', key: 'name', width: 30 },
+      { header: '项目阶段', key: 'projectPhase', width: 15 },
+      { header: '大类', key: 'majorCategory', width: 15 },
+      { header: '小类', key: 'minorCategory', width: 18 },
       { header: '文件特征', key: 'fileFeature', width: 30 },
       { header: '项目类型', key: 'projectType', width: 12 },
       { header: '适用地区', key: 'region', width: 12 },
       { header: '适用业主', key: 'ownerOrg', width: 15 },
       { header: '业务说明', key: 'bizDescription', width: 40 },
-      { header: '备注', key: 'remark', width: 20 },
+      { header: '备注', key: 'remark', width: 25 },
       { header: '状态', key: 'status', width: 8 },
     ];
 

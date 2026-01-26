@@ -55,6 +55,8 @@ interface DocTypeFullInfo {
   }>
   templates: Array<{
     id: number
+    code?: string
+    name?: string
     fileName: string
     description?: string
     filePath?: string
@@ -382,11 +384,12 @@ export function HomePage() {
                                         className="text-blue-600 hover:underline cursor-pointer truncate"
                                         onClick={() => tpl.filePath && setPreviewFile({
                                           url: tpl.filePath,
-                                          name: tpl.fileName,
+                                          name: tpl.fileName || tpl.name || '文件',
                                           description: tpl.description
                                         })}
+                                        title={tpl.fileName}
                                       >
-                                        {tpl.fileName}
+                                        {tpl.name || tpl.fileName}
                                       </span>
                                     </div>
                                     {tpl.filePath && (
@@ -397,7 +400,7 @@ export function HomePage() {
                                           className="h-7 px-2"
                                           onClick={() => setPreviewFile({
                                             url: tpl.filePath!,
-                                            name: tpl.fileName,
+                                            name: tpl.fileName || tpl.name || '文件',
                                             description: tpl.description
                                           })}
                                         >
@@ -410,7 +413,7 @@ export function HomePage() {
                                           className="h-7 px-2"
                                           asChild
                                         >
-                                          <a href={tpl.filePath} download={tpl.fileName}>
+                                          <a href={tpl.filePath} download={tpl.fileName || tpl.name || '文件'}>
                                             <Download className="h-4 w-4 mr-1" />
                                             下载
                                           </a>

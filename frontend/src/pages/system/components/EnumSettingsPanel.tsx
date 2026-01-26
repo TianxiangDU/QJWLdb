@@ -82,11 +82,38 @@ const TABLE_ENUM_MAP: {
       { key: 'projectPhase', label: '项目阶段', hasShortCode: true },
       { key: 'majorCategory', label: '大类', hasShortCode: true },
       { key: 'minorCategory', label: '小类', hasParent: true, parentCategory: 'majorCategory' },
+      { key: 'projectType', label: '项目类型' },
       { key: 'region', label: '适用地区' },
       { key: 'ownerOrg', label: '适用业主' },
     ],
   },
-  // 后续可扩展其他表
+  {
+    key: 'auditRule',
+    table: 'audit_rule',
+    label: '审计规则',
+    categories: [
+      { key: 'auditType', label: '审计类型', hasShortCode: true },
+      { key: 'auditPhase', label: '审计阶段', hasShortCode: true },
+      { key: 'verifySection', label: '查证板块', hasShortCode: true },
+    ],
+  },
+  {
+    key: 'lawDocument',
+    table: 'law_document',
+    label: '法规与标准',
+    categories: [
+      { key: 'lawCategory', label: '法规类别' },
+      { key: 'lawStatus', label: '法规状态' },
+    ],
+  },
+  {
+    key: 'docFieldDef',
+    table: 'doc_field_def',
+    label: '关键信息字段',
+    categories: [
+      { key: 'fieldCategory', label: '字段类别' },
+    ],
+  },
 ]
 
 async function fetchOptions(category: string, parentValue?: string): Promise<EnumOption[]> {

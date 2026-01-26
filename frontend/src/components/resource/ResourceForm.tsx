@@ -12,8 +12,9 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
-import { EnumSelect } from "@/components/EnumSelect"
-import { SearchableSelect } from "@/components/SearchableSelect"
+import { EnumSelect } from "@/components/resource/EnumSelect"
+import { SearchableSelect } from "@/components/resource/SearchableSelect"
+import { FileUpload } from "@/components/resource/FileUpload"
 import {
   Sheet,
   SheetContent,
@@ -162,7 +163,7 @@ export function ResourceForm<T>({
             <SearchableSelect
               options={options}
               value={value}
-              onChange={(v) => handleChange(String(field.key), v)}
+              onChange={(v: string | number) => handleChange(String(field.key), v)}
               placeholder={field.placeholder || `选择${field.label}`}
               searchPlaceholder={`搜索${field.label}...`}
               loading={optionsLoading[field.key as string]}
@@ -198,7 +199,7 @@ export function ResourceForm<T>({
               <EnumSelect
                 category={field.enumCategory || String(field.key)}
                 value={value || ""}
-                onChange={(v) => handleChange(String(field.key), v)}
+                onChange={(v: string | number) => handleChange(String(field.key), v)}
                 parentValue={parentVal}
                 placeholder={parentMissing ? "请先选择上级" : field.placeholder}
                 allowAdd={field.allowAdd !== false && !parentMissing}
@@ -223,6 +224,19 @@ export function ResourceForm<T>({
             onChange={(e) => handleChange(String(field.key), e.target.value ? Number(e.target.value) : undefined)}
             placeholder={field.placeholder}
             className={cn(error && "border-destructive")}
+          />
+        ) : field.type === "file" ? (
+          <FileUpload
+            value={value || ""}
+            onChange={(filePath, fileName) => {
+              handleChange(String(field.key), filePath)
+              // 如果是 filePath 字段，同时设置 fileName
+              if (field.key === "filePath") {
+                handleChange("fileName", fileName)
+              }
+            }}
+            placeholder={field.placeholder || "选择文件"}
+            error={!!error}
           />
         ) : (
           <Input

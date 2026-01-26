@@ -59,6 +59,26 @@ export class AuditRuleController {
     res.end();
   }
 
+  @Get('export')
+  @ApiOperation({ summary: '导出数据到Excel' })
+  async exportExcel(@Query() query: QueryAuditRuleDto, @Res() res: Response) {
+    const workbook = await this.service.exportToExcel(query);
+    const filename = `audit-rules_${new Date().toISOString().slice(0, 10)}.xlsx`;
+    res.setHeader(
+      'Content-Type',
+      'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+    );
+    res.setHeader('Content-Disposition', `attachment; filename=${encodeURIComponent(filename)}`);
+    await workbook.xlsx.write(res);
+    res.end();
+  }
+
+  @Get('field-by-code/:fieldCode')
+  @ApiOperation({ summary: '根据字段编码获取字段信息' })
+  async getFieldByCode(@Param('fieldCode') fieldCode: string) {
+    return this.service.getFieldByCode(fieldCode);
+  }
+
   @Post('import')
   @ApiOperation({ summary: 'Excel批量导入' })
   @ApiConsumes('multipart/form-data')

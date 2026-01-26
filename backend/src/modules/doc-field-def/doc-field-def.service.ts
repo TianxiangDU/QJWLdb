@@ -191,6 +191,7 @@ export class DocFieldDefService {
       { header: '字段类别', key: 'fieldCategory', width: 15 },
       { header: '是否必填(1/0)', key: 'requiredFlag', width: 15 },
       { header: '取值方式', key: 'valueSource', width: 25 },
+      { header: '提取方式-LLM用', key: 'valueSourceLlm', width: 30 },
       { header: '定位词（空格分隔）', key: 'anchorWord', width: 30 },
       { header: '枚举值（空格分隔）', key: 'enumOptions', width: 30 },
       { header: '示例数据', key: 'exampleValue', width: 25 },
@@ -213,6 +214,7 @@ export class DocFieldDefService {
       fieldCategory: '文字/日期/金额/数量/枚举/其他',
       requiredFlag: '1=必填，0=非必填',
       valueSource: '如：封面、正文第X条',
+      valueSourceLlm: 'LLM提取时使用的描述',
       anchorWord: '多个用空格分隔',
       enumOptions: '字段类别为枚举时填写',
       exampleValue: '如：100000.00',
@@ -226,11 +228,20 @@ export class DocFieldDefService {
 
   async importFromExcel(buffer: Buffer): Promise<{ success: number; failed: number; errors: string[] }> {
     const workbook = new ExcelJS.Workbook();
-    await workbook.xlsx.load(buffer as unknown as ArrayBuffer);
+    
+    try {
+      await workbook.xlsx.load(buffer as unknown as ArrayBuffer);
+    } catch (error) {
+      throw new Error(`Excel文件解析失败：${error.message}。请确保上传的是有效的xlsx格式文件。`);
+    }
 
     const sheet = workbook.getWorksheet(1);
     if (!sheet) {
-      throw new Error('Excel文件格式错误');
+      throw new Error('Excel文件中没有找到工作表');
+    }
+    
+    if (sheet.rowCount < 2) {
+      throw new Error('Excel文件中没有数据行');
     }
 
     let success = 0;
@@ -255,6 +266,8 @@ export class DocFieldDefService {
         columnMap['requiredFlag'] = colNumber;
       } else if (headerText.includes('取值') || headerText.includes('位置')) {
         columnMap['valueSource'] = colNumber;
+      } else if (headerText.includes('提取方式') && headerText.includes('llm')) {
+        columnMap['valueSourceLlm'] = colNumber;
       } else if (headerText.includes('定位词')) {
         columnMap['anchorWord'] = colNumber;
       } else if (headerText.includes('枚举')) {
@@ -275,11 +288,12 @@ export class DocFieldDefService {
     if (!columnMap['fieldCategory']) columnMap['fieldCategory'] = 4;
     if (!columnMap['requiredFlag']) columnMap['requiredFlag'] = 5;
     if (!columnMap['valueSource']) columnMap['valueSource'] = 6;
-    if (!columnMap['anchorWord']) columnMap['anchorWord'] = 7;
-    if (!columnMap['enumOptions']) columnMap['enumOptions'] = 8;
-    if (!columnMap['exampleValue']) columnMap['exampleValue'] = 9;
-    if (!columnMap['fieldDescription']) columnMap['fieldDescription'] = 10;
-    if (!columnMap['processMethod']) columnMap['processMethod'] = 11;
+    if (!columnMap['valueSourceLlm']) columnMap['valueSourceLlm'] = 7;
+    if (!columnMap['anchorWord']) columnMap['anchorWord'] = 8;
+    if (!columnMap['enumOptions']) columnMap['enumOptions'] = 9;
+    if (!columnMap['exampleValue']) columnMap['exampleValue'] = 10;
+    if (!columnMap['fieldDescription']) columnMap['fieldDescription'] = 11;
+    if (!columnMap['processMethod']) columnMap['processMethod'] = 12;
 
     // 辅助函数：获取单元格文本
     const getCellText = (row: ExcelJS.Row, key: string): string => {
@@ -357,6 +371,7 @@ export class DocFieldDefService {
           fieldCategory: getCellText(row, 'fieldCategory') || undefined,
           requiredFlag,
           valueSource: getCellText(row, 'valueSource') || undefined,
+          valueSourceLlm: getCellText(row, 'valueSourceLlm') || undefined,
           anchorWord: getCellText(row, 'anchorWord') || undefined,
           enumOptions: getCellText(row, 'enumOptions') || undefined,
           exampleValue: getCellText(row, 'exampleValue') || undefined,
@@ -390,5 +405,77 @@ export class DocFieldDefService {
       where: { docTypeId, status: 1 },
       order: { fieldCode: 'ASC' },
     });
+  }
+
+  /**
+   * 导出数据到 Excel
+   */
+  async exportToExcel(query: QueryDocFieldDefDto): Promise<ExcelJS.Workbook> {
+    const queryBuilder = this.repository.createQueryBuilder('df')
+      .leftJoinAndSelect('df.docType', 'docType');
+    
+    if (query.status !== undefined) {
+      queryBuilder.andWhere('df.status = :status', { status: query.status });
+    }
+    if (query.docTypeIds && query.docTypeIds.length > 0) {
+      queryBuilder.andWhere('df.docTypeId IN (:...docTypeIds)', { docTypeIds: query.docTypeIds });
+    }
+    if (query.keyword) {
+      queryBuilder.andWhere(
+        '(df.fieldName LIKE :keyword OR df.fieldCode LIKE :keyword OR df.fieldDescription LIKE :keyword)',
+        { keyword: `%${query.keyword}%` },
+      );
+    }
+
+    queryBuilder.orderBy('docType.code', 'ASC').addOrderBy('df.fieldCode', 'ASC');
+    const data = await queryBuilder.getMany();
+
+    const workbook = new ExcelJS.Workbook();
+    const sheet = workbook.addWorksheet('关键信息字段');
+
+    sheet.columns = [
+      { header: '文件类型编码', key: 'docTypeCode', width: 20 },
+      { header: '文件类型名称', key: 'docTypeName', width: 25 },
+      { header: '字段编码', key: 'fieldCode', width: 25 },
+      { header: '字段名称', key: 'fieldName', width: 20 },
+      { header: '字段类别', key: 'fieldCategory', width: 12 },
+      { header: '是否必填', key: 'requiredFlag', width: 10 },
+      { header: '取值方式', key: 'valueSource', width: 30 },
+      { header: '提取方式-LLM用', key: 'valueSourceLlm', width: 30 },
+      { header: '定位词', key: 'anchorWord', width: 30 },
+      { header: '枚举值', key: 'enumOptions', width: 30 },
+      { header: '示例数据', key: 'exampleValue', width: 25 },
+      { header: '字段说明', key: 'fieldDescription', width: 40 },
+      { header: '处理方式', key: 'processMethod', width: 15 },
+      { header: '状态', key: 'status', width: 8 },
+    ];
+
+    sheet.getRow(1).font = { bold: true };
+    sheet.getRow(1).fill = {
+      type: 'pattern',
+      pattern: 'solid',
+      fgColor: { argb: 'FFE0E0E0' },
+    };
+
+    for (const item of data) {
+      sheet.addRow({
+        docTypeCode: item.docType?.code || '',
+        docTypeName: item.docType?.name || '',
+        fieldCode: item.fieldCode,
+        fieldName: item.fieldName,
+        fieldCategory: item.fieldCategory || '',
+        requiredFlag: item.requiredFlag === 1 ? '是' : '否',
+        valueSource: item.valueSource || '',
+        valueSourceLlm: item.valueSourceLlm || '',
+        anchorWord: item.anchorWord || '',
+        enumOptions: item.enumOptions || '',
+        exampleValue: item.exampleValue || '',
+        fieldDescription: item.fieldDescription || '',
+        processMethod: item.processMethod || 'default',
+        status: item.status === 1 ? '启用' : '停用',
+      });
+    }
+
+    return workbook;
   }
 }

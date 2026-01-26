@@ -40,10 +40,14 @@ export interface ColumnConfig<T = any> {
   hidden?: boolean
   /** 是否可排序 */
   sortable?: boolean
+  /** 是否固定列（编码和名称等重要列应固定） */
+  fixed?: boolean
   /** 渲染函数 */
   render?: (value: any, record: T) => React.ReactNode
   /** 类型（用于默认渲染） */
-  type?: "text" | "number" | "date" | "datetime" | "status" | "boolean" | "link"
+  type?: "text" | "number" | "date" | "datetime" | "status" | "boolean" | "link" | "fileLink"
+  /** 链接字段（用于 fileLink 类型，指定链接的字段） */
+  linkField?: string
 }
 
 /**

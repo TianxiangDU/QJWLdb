@@ -122,40 +122,67 @@ interface SimplePaginationProps {
   total: number
   totalPages: number
   onPageChange: (page: number) => void
+  onPageSizeChange?: (pageSize: number) => void
+  pageSizeOptions?: number[]
 }
 
 export function SimplePagination({
   page,
-  pageSize: _pageSize,
+  pageSize,
   total,
   totalPages,
   onPageChange,
+  onPageSizeChange,
+  pageSizeOptions = [10, 20, 50, 100, 200, 500],
 }: SimplePaginationProps) {
-  void _pageSize // 保留参数以备后用
+  // 至少显示1页
+  const displayTotalPages = Math.max(1, totalPages)
+  
   return (
-    <div className="flex items-center justify-between px-2">
-      <div className="text-sm text-muted-foreground">
-        共 {total} 条，第 {page}/{totalPages} 页
+    <div className="flex items-center justify-between py-2 px-1">
+      <div className="text-sm text-gray-500">
+        共 <span className="font-semibold text-gray-700">{total}</span> 条，第 <span className="font-medium">{page}</span>/<span>{displayTotalPages}</span> 页
       </div>
-      <div className="flex items-center space-x-2">
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={() => onPageChange(page - 1)}
-          disabled={page <= 1}
-        >
-          <ChevronLeft className="h-4 w-4" />
-          上一页
-        </Button>
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={() => onPageChange(page + 1)}
-          disabled={page >= totalPages}
-        >
-          下一页
-          <ChevronRight className="h-4 w-4" />
-        </Button>
+      <div className="flex items-center gap-4">
+        {onPageSizeChange && (
+          <div className="flex items-center gap-2">
+            <span className="text-sm text-gray-500">每页</span>
+            <select
+              value={pageSize}
+              onChange={(e) => onPageSizeChange(Number(e.target.value))}
+              className="h-8 rounded-md border border-gray-300 bg-white px-2 text-sm focus:ring-2 focus:ring-blue-100 focus:border-blue-400 outline-none cursor-pointer"
+            >
+              {pageSizeOptions.map((size) => (
+                <option key={size} value={size}>
+                  {size}
+                </option>
+              ))}
+            </select>
+            <span className="text-sm text-gray-500">条</span>
+          </div>
+        )}
+        <div className="flex items-center gap-1">
+          <Button
+            variant="outline"
+            size="sm"
+            className="h-8 px-3 border-gray-300 hover:bg-gray-50"
+            onClick={() => onPageChange(page - 1)}
+            disabled={page <= 1}
+          >
+            <ChevronLeft className="h-4 w-4" />
+            上一页
+          </Button>
+          <Button
+            variant="outline"
+            size="sm"
+            className="h-8 px-3 border-gray-300 hover:bg-gray-50"
+            onClick={() => onPageChange(page + 1)}
+            disabled={page >= totalPages}
+          >
+            下一页
+            <ChevronRight className="h-4 w-4" />
+          </Button>
+        </div>
       </div>
     </div>
   )

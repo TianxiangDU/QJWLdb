@@ -28,15 +28,19 @@ export class DocFieldDef extends BaseEntity {
   requiredFlag: number;
 
   @ApiProperty({ description: '取值方式（在文件中的位置）' })
-  @Column({ name: 'value_source', type: 'varchar', length: 200, nullable: true, comment: '取值方式（在文件中的位置）' })
+  @Column({ name: 'value_source', type: 'text', nullable: true, comment: '取值方式（在文件中的位置）' })
   valueSource: string;
+
+  @ApiProperty({ description: '提取方式-LLM用' })
+  @Column({ name: 'value_source_llm', type: 'text', nullable: true, comment: '提取方式-LLM用' })
+  valueSourceLlm: string;
 
   @ApiProperty({ description: '枚举值（当字段类别为枚举时填写）' })
   @Column({ name: 'enum_options', type: 'text', nullable: true, comment: '枚举值（当字段类别为枚举时填写，多个值用逗号分隔）' })
   enumOptions: string;
 
   @ApiProperty({ description: '示例数据' })
-  @Column({ name: 'example_value', type: 'varchar', length: 500, nullable: true, comment: '示例数据' })
+  @Column({ name: 'example_value', type: 'text', nullable: true, comment: '示例数据' })
   exampleValue: string;
 
   @ApiProperty({ description: '字段说明' })
@@ -44,7 +48,7 @@ export class DocFieldDef extends BaseEntity {
   fieldDescription: string;
 
   @ApiProperty({ description: '定位词' })
-  @Column({ name: 'anchor_word', type: 'varchar', length: 500, nullable: true, comment: '定位词（用于在文件中定位该字段）' })
+  @Column({ name: 'anchor_word', type: 'text', nullable: true, comment: '定位词（用于在文件中定位该字段）' })
   anchorWord: string;
 
   @ApiProperty({ description: '处理方式' })

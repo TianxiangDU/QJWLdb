@@ -11,7 +11,7 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Separator } from '@/components/ui/separator'
-import { Settings, Palette, List, Save, Upload } from 'lucide-react'
+import { Settings, Palette, List, Save, Upload, Database } from 'lucide-react'
 import { toast } from '@/hooks/use-toast'
 import { EnumSettingsPanel } from './components/EnumSettingsPanel'
 
@@ -151,22 +151,18 @@ function UISettingsPanel() {
           {/* 预览 */}
           <div className="space-y-2">
             <Label>预览效果</Label>
-            <div className="p-4 rounded-lg border bg-sidebar">
-              <div className="flex items-center gap-3">
+            <div className="p-4 rounded-lg border bg-white inline-flex">
+              <div className="flex items-center gap-2">
                 {config.logoUrl ? (
                   <img
                     src={config.logoUrl}
                     alt="Logo"
-                    className="h-8 w-8 object-contain"
+                    className="h-6 w-6 object-contain"
                   />
                 ) : (
-                  <div className="h-8 w-8 rounded bg-primary/10 flex items-center justify-center">
-                    <span className="text-primary font-bold text-sm">
-                      {config.siteName?.[0] || 'D'}
-                    </span>
-                  </div>
+                  <Database className="h-6 w-6 text-blue-600" />
                 )}
-                <span className="font-semibold text-sidebar-foreground">
+                <span className="font-semibold text-gray-800">
                   {config.siteName || '数据中台'}
                 </span>
               </div>

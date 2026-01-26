@@ -11,6 +11,7 @@ import {
   UploadedFile,
   Res,
   ParseIntPipe,
+  BadRequestException,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { ApiTags, ApiOperation, ApiConsumes, ApiBody } from '@nestjs/swagger';
@@ -59,6 +60,20 @@ export class DocFieldDefController {
     res.end();
   }
 
+  @Get('export')
+  @ApiOperation({ summary: '导出数据到Excel' })
+  async exportExcel(@Query() query: QueryDocFieldDefDto, @Res() res: Response) {
+    const workbook = await this.service.exportToExcel(query);
+    const filename = `doc-field-defs_${new Date().toISOString().slice(0, 10)}.xlsx`;
+    res.setHeader(
+      'Content-Type',
+      'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+    );
+    res.setHeader('Content-Disposition', `attachment; filename=${encodeURIComponent(filename)}`);
+    await workbook.xlsx.write(res);
+    res.end();
+  }
+
   @Post('import')
   @ApiOperation({ summary: 'Excel批量导入' })
   @ApiConsumes('multipart/form-data')
@@ -72,6 +87,20 @@ export class DocFieldDefController {
   })
   @UseInterceptors(FileInterceptor('file'))
   async importExcel(@UploadedFile() file: Express.Multer.File) {
+    if (!file) {
+      throw new BadRequestException('请选择要导入的Excel文件');
+    }
+    if (!file.buffer) {
+      throw new BadRequestException('文件内容为空');
+    }
+    // 检查文件类型
+    const validTypes = [
+      'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+      'application/vnd.ms-excel',
+    ];
+    if (!validTypes.includes(file.mimetype) && !file.originalname?.endsWith('.xlsx') && !file.originalname?.endsWith('.xls')) {
+      throw new BadRequestException('请上传Excel文件（.xlsx或.xls格式）');
+    }
     return this.service.importFromExcel(file.buffer);
   }
 

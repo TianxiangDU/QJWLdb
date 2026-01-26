@@ -56,21 +56,35 @@ export function ResourceToolbar({
   }
 
   return (
-    <div className="flex items-center justify-between">
-      <div className="flex items-center gap-2">
-        <Button onClick={onAdd}>
-          <Plus className="mr-1 h-4 w-4" />
+    <div className="flex items-center justify-between flex-wrap gap-3">
+      <div className="flex items-center gap-2 flex-wrap">
+        <Button 
+          onClick={onAdd} 
+          size="sm" 
+          className="h-9 px-4 bg-blue-600 hover:bg-blue-700 shadow-sm"
+        >
+          <Plus className="mr-1.5 h-4 w-4" />
           新增
         </Button>
 
         {importable && (
           <>
-            <Button variant="outline" onClick={onDownloadTemplate}>
-              <Download className="mr-1 h-4 w-4" />
+            <Button 
+              variant="outline" 
+              size="sm" 
+              className="h-9 px-3 border-gray-300 hover:bg-gray-50" 
+              onClick={onDownloadTemplate}
+            >
+              <Download className="mr-1.5 h-4 w-4 text-gray-500" />
               下载模板
             </Button>
-            <Button variant="outline" onClick={() => fileInputRef.current?.click()}>
-              <Upload className="mr-1 h-4 w-4" />
+            <Button 
+              variant="outline" 
+              size="sm" 
+              className="h-9 px-3 border-gray-300 hover:bg-gray-50" 
+              onClick={() => fileInputRef.current?.click()}
+            >
+              <Upload className="mr-1.5 h-4 w-4 text-gray-500" />
               导入
             </Button>
             <input
@@ -84,37 +98,42 @@ export function ResourceToolbar({
         )}
 
         {exportable && (
-          <Button variant="outline" onClick={onExport}>
-            <FileDown className="mr-1 h-4 w-4" />
+          <Button 
+            variant="outline" 
+            size="sm" 
+            className="h-9 px-3 border-gray-300 hover:bg-gray-50" 
+            onClick={onExport}
+          >
+            <FileDown className="mr-1.5 h-4 w-4 text-gray-500" />
             导出
           </Button>
         )}
       </div>
 
       {batchable && selectedCount > 0 && (
-        <div className="flex items-center gap-2">
-          <span className="text-sm text-muted-foreground">
-            已选择 {selectedCount} 项
+        <div className="flex items-center gap-3 bg-blue-50 px-4 py-2 rounded-lg border border-blue-100">
+          <span className="text-sm font-medium text-blue-700">
+            已选择 <span className="text-blue-900">{selectedCount}</span> 项
           </span>
           
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button variant="outline" size="sm">
-                <MoreHorizontal className="mr-1 h-4 w-4" />
+              <Button variant="outline" size="sm" className="h-8 border-blue-200 bg-white hover:bg-blue-50">
+                <MoreHorizontal className="mr-1.5 h-4 w-4" />
                 批量操作
               </Button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
-              <DropdownMenuItem onClick={onBatchEnable}>
-                <CheckCircle className="mr-2 h-4 w-4 text-green-500" />
+            <DropdownMenuContent align="end" className="w-40">
+              <DropdownMenuItem onClick={onBatchEnable} className="cursor-pointer">
+                <CheckCircle className="mr-2 h-4 w-4 text-emerald-500" />
                 批量启用
               </DropdownMenuItem>
-              <DropdownMenuItem onClick={onBatchDisable}>
-                <XCircle className="mr-2 h-4 w-4 text-yellow-500" />
+              <DropdownMenuItem onClick={onBatchDisable} className="cursor-pointer">
+                <XCircle className="mr-2 h-4 w-4 text-amber-500" />
                 批量停用
               </DropdownMenuItem>
               <DropdownMenuSeparator />
-              <DropdownMenuItem onClick={onBatchDelete} className="text-destructive">
+              <DropdownMenuItem onClick={onBatchDelete} className="text-red-600 cursor-pointer focus:text-red-600 focus:bg-red-50">
                 <Trash2 className="mr-2 h-4 w-4" />
                 批量删除
               </DropdownMenuItem>

@@ -5,13 +5,22 @@ import { DocType } from '../../doc-type/entities/doc-type.entity';
 
 @Entity('doc_template_sample')
 @Index(['docTypeId'])
+@Index(['code'], { unique: true })
 export class DocTemplateSample extends BaseEntity {
+  @ApiProperty({ description: '编码' })
+  @Column({ type: 'varchar', length: 50, unique: true, comment: '编码（文件类型编码-A/B/C...）' })
+  code: string;
+
   @ApiProperty({ description: '所属文件类型ID' })
   @Column({ name: 'doc_type_id', type: 'bigint', unsigned: true, comment: '所属文件类型ID' })
   docTypeId: number;
 
-  @ApiProperty({ description: '文件名称' })
-  @Column({ name: 'file_name', type: 'varchar', length: 200, comment: '文件名称' })
+  @ApiProperty({ description: '名称' })
+  @Column({ type: 'varchar', length: 200, comment: '名称' })
+  name: string;
+
+  @ApiProperty({ description: '示例文件名' })
+  @Column({ name: 'file_name', type: 'varchar', length: 200, nullable: true, comment: '示例文件名' })
   fileName: string;
 
   @ApiProperty({ description: '文件链接' })

@@ -493,9 +493,9 @@ export class DocTypeService {
           }
 
           if (!dryRun) {
-            // 自动生成编码
+            // 自动生成编码（使用与create方法相同的逻辑）
             if (!dto.code) {
-              dto.code = await this.codeService.next('docType', 'PREFIX-YYYYMM-SEQ6');
+              dto.code = await this.generateDocTypeCode(dto);
             }
             const entity = this.docTypeRepository.create(dto);
             await this.docTypeRepository.save(entity);
@@ -624,5 +624,78 @@ export class DocTypeService {
     };
 
     return result;
+  }
+
+  /**
+   * 导出数据到 Excel
+   */
+  async exportToExcel(query: QueryDocTypeDto): Promise<ExcelJS.Workbook> {
+    // 获取所有符合条件的数据（不分页）
+    const queryBuilder = this.docTypeRepository.createQueryBuilder('dt');
+    
+    if (query.status !== undefined) {
+      queryBuilder.andWhere('dt.status = :status', { status: query.status });
+    }
+    if (query.keyword) {
+      queryBuilder.andWhere(
+        '(dt.name LIKE :keyword OR dt.code LIKE :keyword OR dt.bizDescription LIKE :keyword)',
+        { keyword: `%${query.keyword}%` },
+      );
+    }
+    if (query.projectPhase) {
+      queryBuilder.andWhere('dt.projectPhase = :projectPhase', { projectPhase: query.projectPhase });
+    }
+    if (query.majorCategory) {
+      queryBuilder.andWhere('dt.majorCategory = :majorCategory', { majorCategory: query.majorCategory });
+    }
+
+    queryBuilder.orderBy('dt.code', 'ASC');
+    const data = await queryBuilder.getMany();
+
+    const workbook = new ExcelJS.Workbook();
+    const sheet = workbook.addWorksheet('文件类型');
+
+    sheet.columns = [
+      { header: '编码', key: 'code', width: 20 },
+      { header: '名称', key: 'name', width: 25 },
+      { header: '项目阶段', key: 'projectPhase', width: 12 },
+      { header: '大类', key: 'majorCategory', width: 12 },
+      { header: '小类', key: 'minorCategory', width: 15 },
+      { header: '文件特征', key: 'fileFeature', width: 30 },
+      { header: '项目类型', key: 'projectType', width: 12 },
+      { header: '适用地区', key: 'region', width: 12 },
+      { header: '适用业主', key: 'ownerOrg', width: 15 },
+      { header: '业务说明', key: 'bizDescription', width: 40 },
+      { header: '备注', key: 'remark', width: 20 },
+      { header: '状态', key: 'status', width: 8 },
+    ];
+
+    // 设置表头样式
+    sheet.getRow(1).font = { bold: true };
+    sheet.getRow(1).fill = {
+      type: 'pattern',
+      pattern: 'solid',
+      fgColor: { argb: 'FFE0E0E0' },
+    };
+
+    // 添加数据
+    for (const item of data) {
+      sheet.addRow({
+        code: item.code,
+        name: item.name,
+        projectPhase: item.projectPhase || '',
+        majorCategory: item.majorCategory || '',
+        minorCategory: item.minorCategory || '',
+        fileFeature: item.fileFeature || '',
+        projectType: item.projectType || '',
+        region: item.region || '',
+        ownerOrg: item.ownerOrg || '',
+        bizDescription: item.bizDescription || '',
+        remark: item.remark || '',
+        status: item.status === 1 ? '启用' : '停用',
+      });
+    }
+
+    return workbook;
   }
 }

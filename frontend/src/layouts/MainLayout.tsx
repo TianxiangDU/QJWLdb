@@ -88,11 +88,13 @@ function NavLink({ item, isActive }: { item: NavItem; isActive: boolean }) {
     <Link
       to={item.href!}
       className={cn(
-        "flex items-center gap-3 rounded-lg px-3 py-2 text-sm transition-all hover:bg-accent",
-        isActive && "bg-accent text-accent-foreground"
+        "flex items-center gap-3 rounded-lg px-3 py-2 text-sm transition-all",
+        isActive 
+          ? "bg-blue-50 text-blue-700 font-medium" 
+          : "text-gray-600 hover:bg-gray-100 hover:text-gray-900"
       )}
     >
-      {Icon && <Icon className="h-4 w-4" />}
+      {Icon && <Icon className={cn("h-4 w-4", isActive && "text-blue-600")} />}
       {item.title}
     </Link>
   )
@@ -100,9 +102,8 @@ function NavLink({ item, isActive }: { item: NavItem; isActive: boolean }) {
 
 function NavGroup({ item }: { item: NavItem }) {
   const location = useLocation()
-  const [open, setOpen] = useState(
-    item.children?.some((child) => child.href === location.pathname) || false
-  )
+  const isChildActive = item.children?.some((child) => child.href === location.pathname)
+  const [open, setOpen] = useState(isChildActive || false)
 
   const Icon = item.icon
 
@@ -110,18 +111,23 @@ function NavGroup({ item }: { item: NavItem }) {
     <div>
       <button
         onClick={() => setOpen(!open)}
-        className="flex w-full items-center justify-between rounded-lg px-3 py-2 text-sm font-medium hover:bg-accent"
+        className={cn(
+          "flex w-full items-center justify-between rounded-lg px-3 py-2 text-sm font-medium transition-colors",
+          isChildActive 
+            ? "text-blue-700" 
+            : "text-gray-700 hover:bg-gray-100"
+        )}
       >
         <span className="flex items-center gap-3">
-          {Icon && <Icon className="h-4 w-4" />}
+          {Icon && <Icon className={cn("h-4 w-4", isChildActive && "text-blue-600")} />}
           {item.title}
         </span>
         <ChevronDown
-          className={cn("h-4 w-4 transition-transform", open && "rotate-180")}
+          className={cn("h-4 w-4 transition-transform text-gray-400", open && "rotate-180")}
         />
       </button>
       {open && (
-        <div className="ml-4 mt-1 space-y-1 border-l pl-4">
+        <div className="ml-4 mt-1 space-y-0.5 border-l-2 border-gray-200 pl-3">
           {item.children?.map((child) => (
             <NavLink
               key={child.href}
@@ -164,7 +170,7 @@ export function MainLayout() {
   }
 
   return (
-    <div className="flex min-h-screen">
+    <div className="h-screen w-screen overflow-hidden flex">
       {/* Mobile sidebar backdrop */}
       {sidebarOpen && (
         <div
@@ -173,21 +179,21 @@ export function MainLayout() {
         />
       )}
 
-      {/* Sidebar */}
+      {/* Sidebar - 固定宽度 */}
       <aside
         className={cn(
-          "fixed inset-y-0 left-0 z-50 w-64 transform bg-background border-r transition-transform lg:static lg:translate-x-0",
+          "fixed inset-y-0 left-0 z-50 w-[220px] flex-shrink-0 bg-white border-r border-gray-200 transition-transform lg:static lg:translate-x-0",
           sidebarOpen ? "translate-x-0" : "-translate-x-full"
         )}
       >
-        <div className="flex h-16 items-center justify-between border-b px-4">
-          <Link to="/" className="flex items-center gap-2 font-semibold">
+        <div className="flex h-14 items-center justify-between border-b border-gray-200 px-4 bg-white">
+          <Link to="/" className="flex items-center gap-2 font-semibold text-gray-800">
             {uiConfig.logoUrl ? (
               <img src={uiConfig.logoUrl} alt="Logo" className="h-6 w-6 object-contain" />
             ) : (
-              <Database className="h-6 w-6 text-primary" />
+              <Database className="h-6 w-6 text-blue-600" />
             )}
-            <span>{uiConfig.siteName || '数据中台'}</span>
+            <span className="truncate">{uiConfig.siteName || '数据中台'}</span>
           </Link>
           <Button
             variant="ghost"
@@ -199,8 +205,8 @@ export function MainLayout() {
           </Button>
         </div>
 
-        <ScrollArea className="h-[calc(100vh-64px)]">
-          <div className="space-y-1 p-4">
+        <ScrollArea className="h-[calc(100vh-56px)]">
+          <div className="space-y-1 p-3">
             {navItems.map((item) =>
               item.children ? (
                 <NavGroup key={item.title} item={item} />
@@ -216,10 +222,10 @@ export function MainLayout() {
         </ScrollArea>
       </aside>
 
-      {/* Main content */}
-      <div className="flex flex-1 flex-col">
-        {/* Header */}
-        <header className="flex h-16 items-center justify-between border-b px-4 lg:px-6">
+      {/* Main content area - 占据剩余空间 */}
+      <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
+        {/* Header - 固定高度 */}
+        <header className="h-14 flex-shrink-0 flex items-center justify-between border-b border-gray-200 px-4 bg-white">
           <Button
             variant="ghost"
             size="icon"
@@ -281,8 +287,8 @@ export function MainLayout() {
           </DropdownMenu>
         </header>
 
-        {/* Page content */}
-        <main className="flex-1 p-4 lg:p-6">
+        {/* Page content - 可滚动区域 */}
+        <main className="flex-1 overflow-auto p-5 bg-gray-50/50">
           <Outlet />
         </main>
       </div>

@@ -6,15 +6,54 @@ import { CreateDocTemplateSampleDto } from './dto/create-doc-template-sample.dto
 import { UpdateDocTemplateSampleDto } from './dto/update-doc-template-sample.dto';
 import { QueryDocTemplateSampleDto } from './dto/query-doc-template-sample.dto';
 import { PaginationResultDto } from '../../common/dto/pagination.dto';
+import { DocType } from '../doc-type/entities/doc-type.entity';
 
 @Injectable()
 export class DocTemplateSampleService {
   constructor(
     @InjectRepository(DocTemplateSample)
     private readonly repository: Repository<DocTemplateSample>,
+    @InjectRepository(DocType)
+    private readonly docTypeRepository: Repository<DocType>,
   ) {}
 
+  /**
+   * 生成编码：文件类型编码-A/B/C...
+   */
+  private async generateCode(docTypeId: number): Promise<string> {
+    // 获取文件类型
+    const docType = await this.docTypeRepository.findOne({ where: { id: docTypeId } });
+    if (!docType) {
+      throw new NotFoundException(`文件类型 ID ${docTypeId} 不存在`);
+    }
+
+    // 查找该文件类型下已有的模板数量
+    const count = await this.repository.count({ where: { docTypeId } });
+    
+    // 生成字母后缀：A, B, C, ... Z, AA, AB, ...
+    const suffix = this.numberToLetters(count);
+    
+    return `${docType.code}-${suffix}`;
+  }
+
+  /**
+   * 数字转字母：0->A, 1->B, ..., 25->Z, 26->AA, 27->AB, ...
+   */
+  private numberToLetters(num: number): string {
+    let result = '';
+    let n = num;
+    do {
+      result = String.fromCharCode(65 + (n % 26)) + result;
+      n = Math.floor(n / 26) - 1;
+    } while (n >= 0);
+    return result;
+  }
+
   async create(createDto: CreateDocTemplateSampleDto): Promise<DocTemplateSample> {
+    // 自动生成编码
+    if (!createDto.code) {
+      createDto.code = await this.generateCode(createDto.docTypeId);
+    }
     const entity = this.repository.create(createDto);
     return this.repository.save(entity);
   }
@@ -33,7 +72,7 @@ export class DocTemplateSampleService {
     }
     if (keyword) {
       queryBuilder.andWhere(
-        '(dt.fileName LIKE :keyword OR dt.description LIKE :keyword OR docType.name LIKE :keyword)',
+        '(dt.code LIKE :keyword OR dt.name LIKE :keyword OR dt.description LIKE :keyword OR docType.name LIKE :keyword)',
         { keyword: `%${keyword}%` },
       );
     }

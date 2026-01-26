@@ -10,7 +10,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
-import { Search, X } from "lucide-react"
+import { Search, RotateCcw } from "lucide-react"
 
 // 获取枚举选项
 async function fetchEnumOptions(category: string) {
@@ -43,8 +43,8 @@ function EnumFilter({
       value={value || ""}
       onValueChange={(v) => onChange(v === "__all__" ? "" : v)}
     >
-      <SelectTrigger className="w-40">
-        <SelectValue placeholder={isLoading ? "加载中..." : (filter.placeholder || `选择${filter.label}`)} />
+      <SelectTrigger className="w-[140px] h-9 bg-white border-gray-200 focus:ring-2 focus:ring-blue-100">
+        <SelectValue placeholder={isLoading ? "加载中..." : "全部"} />
       </SelectTrigger>
       <SelectContent>
         <SelectItem value="__all__">全部</SelectItem>
@@ -106,8 +106,8 @@ export function ResourceFilters({
             value={values[filter.key] || ""}
             onValueChange={(value) => handleValueChange(filter.key, value === "__all__" ? "" : value)}
           >
-            <SelectTrigger className="w-40">
-              <SelectValue placeholder={filter.placeholder || `选择${filter.label}`} />
+            <SelectTrigger className="w-[140px] h-9 bg-white border-gray-200 focus:ring-2 focus:ring-blue-100">
+              <SelectValue placeholder="全部" />
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="__all__">全部</SelectItem>
@@ -127,7 +127,7 @@ export function ResourceFilters({
             value={values[filter.key] || ""}
             onChange={(e) => handleValueChange(filter.key, e.target.value)}
             placeholder={filter.placeholder || `输入${filter.label}`}
-            className="w-40"
+            className="w-[180px] h-9 bg-white border-gray-200 focus:ring-2 focus:ring-blue-100"
             onKeyDown={(e) => {
               if (e.key === "Enter") {
                 onSearch()
@@ -143,25 +143,36 @@ export function ResourceFilters({
   )
 
   return (
-    <div className="flex flex-wrap items-center gap-3">
+    <div className="flex flex-wrap items-center gap-x-5 gap-y-2">
       {filters.map((filter) => (
         <div key={filter.key} className="flex items-center gap-2">
-          <span className="text-sm text-muted-foreground">{filter.label}</span>
+          <span className="text-sm text-gray-500 whitespace-nowrap">{filter.label}</span>
           {renderFilter(filter)}
         </div>
       ))}
 
-      <Button onClick={onSearch} size="sm">
-        <Search className="mr-1 h-4 w-4" />
-        搜索
-      </Button>
-
-      {hasActiveFilters && (
-        <Button onClick={onReset} variant="ghost" size="sm">
-          <X className="mr-1 h-4 w-4" />
-          清除
+      <div className="flex items-center gap-2 ml-2">
+        <Button 
+          onClick={onSearch} 
+          size="sm" 
+          className="h-9 px-4 bg-blue-600 hover:bg-blue-700 shadow-sm"
+        >
+          <Search className="mr-1.5 h-4 w-4" />
+          搜索
         </Button>
-      )}
+
+        {hasActiveFilters && (
+          <Button 
+            onClick={onReset} 
+            variant="outline" 
+            size="sm" 
+            className="h-9 px-4 border-gray-300 hover:bg-gray-100"
+          >
+            <RotateCcw className="mr-1.5 h-4 w-4" />
+            清除
+          </Button>
+        )}
+      </div>
     </div>
   )
 }

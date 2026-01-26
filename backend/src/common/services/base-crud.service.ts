@@ -159,7 +159,7 @@ export abstract class BaseCrudService<T extends ObjectLiteral> {
       ...filters
     } = query;
 
-    const limitedPageSize = Math.min(pageSize, 100);
+    const limitedPageSize = Math.min(pageSize, 1000);
     const qb = this.repository.createQueryBuilder('entity');
 
     // 状态筛选

@@ -3,12 +3,13 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { MulterModule } from '@nestjs/platform-express';
 import { memoryStorage } from 'multer';
 import { AuditRule } from './entities/audit-rule.entity';
+import { DocFieldDef } from '../doc-field-def/entities/doc-field-def.entity';
 import { AuditRuleController } from './audit-rule.controller';
 import { AuditRuleService } from './audit-rule.service';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([AuditRule]),
+    TypeOrmModule.forFeature([AuditRule, DocFieldDef]),
     MulterModule.register({
       storage: memoryStorage(),
     }),

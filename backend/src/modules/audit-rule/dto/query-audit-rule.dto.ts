@@ -3,25 +3,18 @@ import { IsOptional, IsString } from 'class-validator';
 import { PaginationDto } from '../../../common/dto/pagination.dto';
 
 export class QueryAuditRuleDto extends PaginationDto {
-  @ApiPropertyOptional({ description: '规则编码' })
+  @ApiPropertyOptional({ description: '审计类型' })
   @IsOptional()
   @IsString()
-  ruleCode?: string;
+  auditType?: string;
 
-  @ApiPropertyOptional({ description: '规则分类' })
+  @ApiPropertyOptional({ description: '阶段' })
   @IsOptional()
   @IsString()
-  ruleCategory?: string;
+  phase?: string;
 
-  @ApiPropertyOptional({ description: '风险等级' })
+  @ApiPropertyOptional({ description: '查证板块' })
   @IsOptional()
   @IsString()
-  riskLevel?: string;
-
-  @ApiPropertyOptional({ description: '适用项目阶段' })
-  @IsOptional()
-  @IsString()
-  projectPhase?: string;
+  verifySection?: string;
 }
-
-

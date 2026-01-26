@@ -119,15 +119,21 @@ export function createResourceApi<T>(basePath: string): ResourceApi<T> {
     },
 
     batchEnable: async (ids) => {
-      await apiClient.post(`${basePath}/batch/enable`, { ids })
+      // 确保 ids 都是数字类型
+      const numericIds = ids.map((id: string | number) => Number(id))
+      await apiClient.post(`${basePath}/batch/enable`, { ids: numericIds })
     },
 
     batchDisable: async (ids) => {
-      await apiClient.post(`${basePath}/batch/disable`, { ids })
+      // 确保 ids 都是数字类型
+      const numericIds = ids.map((id: string | number) => Number(id))
+      await apiClient.post(`${basePath}/batch/disable`, { ids: numericIds })
     },
 
     batchDelete: async (ids) => {
-      await apiClient.post(`${basePath}/batch/delete`, { ids })
+      // 确保 ids 都是数字类型
+      const numericIds = ids.map((id: string | number) => Number(id))
+      await apiClient.post(`${basePath}/batch/delete`, { ids: numericIds })
     },
 
     downloadTemplate: async () => {

@@ -1,72 +1,128 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
-import { IsString, IsOptional, IsInt, MaxLength } from 'class-validator';
+import { IsString, IsOptional, MaxLength } from 'class-validator';
 
 export class CreateAuditRuleDto {
-  @ApiProperty({ description: '规则编码', example: 'AUDIT_001' })
+  @ApiPropertyOptional({ description: '规则编码（留空自动生成）' })
+  @IsOptional()
   @IsString()
   @MaxLength(50)
-  ruleCode: string;
+  ruleCode?: string;
 
-  @ApiProperty({ description: '规则名称', example: '合同金额与预算对比审计' })
+  @ApiProperty({ description: '规则名称' })
   @IsString()
   @MaxLength(200)
   ruleName: string;
 
-  @ApiPropertyOptional({ description: '规则分类', example: '金额审计' })
+  // ===== 三个枚举字段（用于自动编码） =====
+  @ApiPropertyOptional({ description: '审计类型' })
   @IsOptional()
   @IsString()
   @MaxLength(50)
-  ruleCategory?: string;
+  auditType?: string;
 
-  @ApiPropertyOptional({ description: '规则业务说明', example: '检查施工合同金额是否超过批复预算，超过需要说明原因' })
+  @ApiPropertyOptional({ description: '阶段' })
   @IsOptional()
   @IsString()
-  bizDescription?: string;
+  @MaxLength(50)
+  phase?: string;
 
-  @ApiPropertyOptional({ description: '比对方法/思路说明', example: '1.获取合同金额 2.获取批复预算 3.计算差额比例 4.超过10%则预警' })
+  @ApiPropertyOptional({ description: '查证板块' })
+  @IsOptional()
+  @IsString()
+  @MaxLength(50)
+  verifySection?: string;
+
+  // ===== 字符串字段 =====
+  @ApiPropertyOptional({ description: '问题描述' })
+  @IsOptional()
+  @IsString()
+  problemDesc?: string;
+
+  @ApiPropertyOptional({ description: '比对方式' })
   @IsOptional()
   @IsString()
   compareMethod?: string;
 
-  @ApiPropertyOptional({ description: '风险等级', example: '高' })
+  @ApiPropertyOptional({ description: '比对方式-LLM用' })
   @IsOptional()
   @IsString()
-  @MaxLength(20)
-  riskLevel?: string;
+  compareMethodLlm?: string;
 
-  @ApiPropertyOptional({ description: '适用项目阶段', example: '招投标阶段,施工阶段' })
+  @ApiPropertyOptional({ description: '审计依据内容' })
   @IsOptional()
   @IsString()
-  @MaxLength(200)
-  projectPhase?: string;
+  auditBasis?: string;
 
-  @ApiPropertyOptional({ description: '适用项目类型', example: '房建工程,市政工程' })
+  // ===== 5个数据源 =====
+  @ApiPropertyOptional({ description: '数据源1编码' })
   @IsOptional()
   @IsString()
-  @MaxLength(200)
-  projectType?: string;
+  @MaxLength(50)
+  source1Code?: string;
 
-  @ApiPropertyOptional({ description: '适用地区', example: '全国' })
-  @IsOptional()
-  @IsString()
-  @MaxLength(100)
-  region?: string;
-
-  @ApiPropertyOptional({ description: '适用业主', example: '政府投资项目' })
+  @ApiPropertyOptional({ description: '数据源1名称' })
   @IsOptional()
   @IsString()
   @MaxLength(200)
-  ownerOrg?: string;
+  source1Name?: string;
 
-  @ApiPropertyOptional({ description: '版本号', example: 1 })
+  @ApiPropertyOptional({ description: '数据源2编码' })
   @IsOptional()
-  @IsInt()
-  version?: number;
+  @IsString()
+  @MaxLength(50)
+  source2Code?: string;
 
-  @ApiPropertyOptional({ description: '备注', example: '参考GB50500-2013标准' })
+  @ApiPropertyOptional({ description: '数据源2名称' })
+  @IsOptional()
+  @IsString()
+  @MaxLength(200)
+  source2Name?: string;
+
+  @ApiPropertyOptional({ description: '数据源3编码' })
+  @IsOptional()
+  @IsString()
+  @MaxLength(50)
+  source3Code?: string;
+
+  @ApiPropertyOptional({ description: '数据源3名称' })
+  @IsOptional()
+  @IsString()
+  @MaxLength(200)
+  source3Name?: string;
+
+  @ApiPropertyOptional({ description: '数据源4编码' })
+  @IsOptional()
+  @IsString()
+  @MaxLength(50)
+  source4Code?: string;
+
+  @ApiPropertyOptional({ description: '数据源4名称' })
+  @IsOptional()
+  @IsString()
+  @MaxLength(200)
+  source4Name?: string;
+
+  @ApiPropertyOptional({ description: '数据源5编码' })
+  @IsOptional()
+  @IsString()
+  @MaxLength(50)
+  source5Code?: string;
+
+  @ApiPropertyOptional({ description: '数据源5名称' })
+  @IsOptional()
+  @IsString()
+  @MaxLength(200)
+  source5Name?: string;
+
+  // ===== 法规关联 =====
+  @ApiPropertyOptional({ description: '法条编码' })
+  @IsOptional()
+  @IsString()
+  @MaxLength(50)
+  lawClauseCode?: string;
+
+  @ApiPropertyOptional({ description: '备注' })
   @IsOptional()
   @IsString()
   remark?: string;
 }
-
-

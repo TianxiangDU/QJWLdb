@@ -49,7 +49,7 @@ async function bootstrap() {
 
 ## 分页
 - 默认 page=1, pageSize=10
-- 最大 pageSize=100
+- 最大 pageSize=1000
     `)
     .setVersion('1.0')
     .addBearerAuth(

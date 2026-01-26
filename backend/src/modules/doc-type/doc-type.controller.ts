@@ -83,6 +83,20 @@ export class DocTypeController {
     res.end();
   }
 
+  @Get('export')
+  @ApiOperation({ summary: '导出数据到Excel' })
+  async exportExcel(@Query() query: QueryDocTypeDto, @Res() res: Response) {
+    const workbook = await this.docTypeService.exportToExcel(query);
+    const filename = `doc-types_${new Date().toISOString().slice(0, 10)}.xlsx`;
+    res.setHeader(
+      'Content-Type',
+      'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+    );
+    res.setHeader('Content-Disposition', `attachment; filename=${encodeURIComponent(filename)}`);
+    await workbook.xlsx.write(res);
+    res.end();
+  }
+
   @Post('import')
   @ApiOperation({ 
     summary: 'Excel批量导入',

@@ -1,15 +1,21 @@
 import { useState } from "react"
 import { useQuery } from "@tanstack/react-query"
 import { Link } from "react-router-dom"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog"
 import { apiClient } from "@/services/api-client"
-import { FileText, FileCheck, Scale, Database, Search, Loader2, FolderOpen, List, ArrowRight } from "lucide-react"
+import { FileText, FileCheck, Scale, Search, Loader2, FolderOpen, List } from "lucide-react"
 
 interface StatCard {
   title: string
@@ -54,10 +60,25 @@ interface DocTypeFullInfo {
   }>
 }
 
+interface FieldDetail {
+  id: number
+  fieldCode: string
+  fieldName: string
+  fieldCategory?: string
+  requiredFlag: number
+  valueSource?: string
+  anchorWord?: string
+  enumOptions?: string
+  exampleValue?: string
+  fieldDescription?: string
+  processMethod?: string
+}
+
 export function HomePage() {
   const [searchKeyword, setSearchKeyword] = useState("")
   const [searchInput, setSearchInput] = useState("")
   const [selectedDocTypeId, setSelectedDocTypeId] = useState<number | null>(null)
+  const [selectedField, setSelectedField] = useState<FieldDetail | null>(null)
 
   // 获取各模块统计
   const { data: docTypesData } = useQuery({
@@ -315,12 +336,21 @@ export function HomePage() {
                               </TableHeader>
                               <TableBody>
                                 {fullInfo.fields.map((field) => (
-                                  <TableRow key={field.id}>
-                                    <TableCell>{field.fieldName}</TableCell>
+                                  <TableRow 
+                                    key={field.id} 
+                                    className="cursor-pointer hover:bg-accent"
+                                    onClick={() => setSelectedField(field as FieldDetail)}
+                                  >
+                                    <TableCell className="text-blue-600 hover:underline font-medium">
+                                      {field.fieldName}
+                                    </TableCell>
                                     <TableCell className="text-xs">{field.fieldCode}</TableCell>
                                     <TableCell>{field.fieldCategory || "-"}</TableCell>
                                     <TableCell>
-                                      <Badge variant={field.requiredFlag === 1 ? "destructive" : "secondary"}>
+                                      <Badge className={field.requiredFlag === 1 
+                                        ? "bg-emerald-500 hover:bg-emerald-600 text-white" 
+                                        : "bg-gray-100 text-gray-600 hover:bg-gray-200"
+                                      }>
                                         {field.requiredFlag === 1 ? "是" : "否"}
                                       </Badge>
                                     </TableCell>
@@ -357,6 +387,64 @@ export function HomePage() {
               </Card>
             </div>
           )}
+
+      {/* 字段详情弹窗 */}
+      <Dialog open={!!selectedField} onOpenChange={() => setSelectedField(null)}>
+        <DialogContent className="max-w-lg">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              字段详情
+              {selectedField?.requiredFlag === 1 && (
+                <Badge className="bg-emerald-500 text-white">必填</Badge>
+              )}
+            </DialogTitle>
+          </DialogHeader>
+          {selectedField && (
+            <div className="space-y-3">
+              <Table>
+                <TableBody>
+                  <TableRow>
+                    <TableCell className="font-medium text-muted-foreground w-28">字段名称</TableCell>
+                    <TableCell>{selectedField.fieldName}</TableCell>
+                  </TableRow>
+                  <TableRow>
+                    <TableCell className="font-medium text-muted-foreground">字段编码</TableCell>
+                    <TableCell className="font-mono text-sm">{selectedField.fieldCode}</TableCell>
+                  </TableRow>
+                  <TableRow>
+                    <TableCell className="font-medium text-muted-foreground">字段类别</TableCell>
+                    <TableCell>{selectedField.fieldCategory || "-"}</TableCell>
+                  </TableRow>
+                  <TableRow>
+                    <TableCell className="font-medium text-muted-foreground">取值方式</TableCell>
+                    <TableCell>{selectedField.valueSource || "-"}</TableCell>
+                  </TableRow>
+                  <TableRow>
+                    <TableCell className="font-medium text-muted-foreground">定位词</TableCell>
+                    <TableCell>{selectedField.anchorWord || "-"}</TableCell>
+                  </TableRow>
+                  <TableRow>
+                    <TableCell className="font-medium text-muted-foreground">枚举值</TableCell>
+                    <TableCell>{selectedField.enumOptions || "-"}</TableCell>
+                  </TableRow>
+                  <TableRow>
+                    <TableCell className="font-medium text-muted-foreground">示例数据</TableCell>
+                    <TableCell>{selectedField.exampleValue || "-"}</TableCell>
+                  </TableRow>
+                  <TableRow>
+                    <TableCell className="font-medium text-muted-foreground">字段说明</TableCell>
+                    <TableCell className="whitespace-pre-wrap">{selectedField.fieldDescription || "-"}</TableCell>
+                  </TableRow>
+                  <TableRow>
+                    <TableCell className="font-medium text-muted-foreground">处理方式</TableCell>
+                    <TableCell>{selectedField.processMethod || "default"}</TableCell>
+                  </TableRow>
+                </TableBody>
+              </Table>
+            </div>
+          )}
+        </DialogContent>
+      </Dialog>
     </div>
   )
 }

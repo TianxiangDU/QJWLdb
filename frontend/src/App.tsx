@@ -5,6 +5,7 @@ import { MainLayout } from "@/layouts/MainLayout"
 import { LoginPage } from "@/pages/auth/LoginPage"
 import { DocTypesPage } from "@/pages/resources/DocTypesPage"
 import { DocFieldDefsPage } from "@/pages/resources/DocFieldDefsPage"
+import { DocTemplateSamplesPage } from "@/pages/resources/DocTemplateSamplesPage"
 import { AuditRulesPage } from "@/pages/resources/AuditRulesPage"
 import { LawDocumentsPage } from "@/pages/resources/LawDocumentsPage"
 import { LawClausesPage } from "@/pages/resources/LawClausesPage"
@@ -50,7 +51,7 @@ function App() {
             <Route index element={<HomePage />} />
             <Route path="doc-types" element={<DocTypesPage />} />
             <Route path="doc-field-defs" element={<DocFieldDefsPage />} />
-            <Route path="doc-template-samples" element={<DocTypesPage />} />
+            <Route path="doc-template-samples" element={<DocTemplateSamplesPage />} />
             <Route path="audit-rules" element={<AuditRulesPage />} />
             <Route path="law-documents" element={<LawDocumentsPage />} />
             <Route path="law-clauses" element={<LawClausesPage />} />

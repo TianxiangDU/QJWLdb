@@ -7,7 +7,6 @@ import { ResourceForm } from "./ResourceForm"
 import { ResourceDetail } from "./ResourceDetail"
 import { ResourceToolbar } from "./ResourceToolbar"
 import { SimplePagination } from "@/components/ui/pagination"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import {
   AlertDialog,
@@ -33,9 +32,19 @@ export function ResourcePage<T extends { id: number; status?: number }>({
 }: ResourcePageProps<T>) {
   const queryClient = useQueryClient()
 
+  // 从 localStorage 读取全局 pageSize
+  const getGlobalPageSize = () => {
+    try {
+      const saved = localStorage.getItem('app_page_size')
+      return saved ? parseInt(saved, 10) : 10
+    } catch {
+      return 10
+    }
+  }
+
   // 状态
   const [page, setPage] = useState(1)
-  const [pageSize] = useState(10)
+  const [pageSize, setPageSize] = useState(getGlobalPageSize)
   const [filters, setFilters] = useState<Record<string, any>>({})
   const [appliedFilters, setAppliedFilters] = useState<Record<string, any>>({})
   const [selectedIds, setSelectedIds] = useState<number[]>([])
@@ -127,21 +136,20 @@ export function ResourcePage<T extends { id: number; status?: number }>({
   const importMutation = useMutation({
     mutationFn: (file: File) => api.import?.(file) || Promise.resolve({ success: 0, failed: 0, created: 0, updated: 0, skipped: 0, errors: [] }),
     onSuccess: (response: any) => {
-      // 处理 API 返回的 { data: { success, failed, errors }, meta: {} } 结构
       const result = response?.data || response
-      const errors = result?.errors || []
-      const errorMsg = errors.length > 0 ? `\n失败原因：${errors.slice(0, 5).join('；')}${errors.length > 5 ? '...' : ''}` : ''
+      const errors: string[] = result?.errors || []
       
-      // 在控制台打印详细错误
       if (errors.length > 0) {
         console.log('导入失败详情:', errors)
+        // 使用 alert 显示完整错误信息，方便用户查看
+        const errorList = errors.map((e, i) => `${i + 1}. ${e}`).join('\n')
+        alert(`导入完成\n\n成功: ${result?.success ?? 0} 条\n失败: ${result?.failed ?? 0} 条\n\n失败详情:\n${errorList}`)
       }
       
       toast({
         title: "导入完成",
-        description: `成功 ${result?.success ?? 0} 条，失败 ${result?.failed ?? 0} 条${errorMsg}`,
+        description: `成功 ${result?.success ?? 0} 条，失败 ${result?.failed ?? 0} 条`,
         variant: (result?.failed ?? 0) > 0 ? "destructive" : "default",
-        duration: errors.length > 0 ? 10000 : 3000, // 有错误时显示更久
       })
       queryClient.invalidateQueries({ queryKey: [config.key] })
     },
@@ -157,32 +165,38 @@ export function ResourcePage<T extends { id: number; status?: number }>({
       {
         key: "__actions__",
         title: "操作",
-        width: 120,
+        width: 100,
         render: (_: any, record: T) => (
-          <div className="flex items-center gap-1" onClick={(e) => e.stopPropagation()}>
+          <div className="flex items-center gap-0.5" onClick={(e) => e.stopPropagation()}>
             <Button
               variant="ghost"
-              size="icon"
+              size="sm"
+              className="h-8 w-8 p-0 hover:bg-blue-50 hover:text-blue-600"
               onClick={() => setDetailRecord(record)}
+              title="查看详情"
             >
               <Eye className="h-4 w-4" />
             </Button>
             <Button
               variant="ghost"
-              size="icon"
+              size="sm"
+              className="h-8 w-8 p-0 hover:bg-amber-50 hover:text-amber-600"
               onClick={() => {
                 setEditRecord(record)
                 setFormOpen(true)
               }}
+              title="编辑"
             >
               <Pencil className="h-4 w-4" />
             </Button>
             <Button
               variant="ghost"
-              size="icon"
+              size="sm"
+              className="h-8 w-8 p-0 hover:bg-red-50 hover:text-red-600"
               onClick={() => setDeleteConfirm({ type: "single", id: record.id })}
+              title="删除"
             >
-              <Trash2 className="h-4 w-4 text-destructive" />
+              <Trash2 className="h-4 w-4" />
             </Button>
           </div>
         ),
@@ -238,63 +252,81 @@ export function ResourcePage<T extends { id: number; status?: number }>({
   }, [deleteConfirm, deleteMutation, batchDeleteMutation])
 
   return (
-    <div className="space-y-4">
-      <Card>
-        <CardHeader>
-          <CardTitle className="text-xl">{config.name}</CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          {/* 筛选 */}
-          {config.filters && config.filters.length > 0 && (
-            <ResourceFilters
-              filters={config.filters}
-              values={filters}
-              onChange={setFilters}
-              onSearch={handleSearch}
-              onReset={handleReset}
-            />
-          )}
+    <div className="h-full flex flex-col min-w-0">
+      {/* 页面标题 */}
+      <div className="flex-shrink-0 mb-5">
+        <h1 className="text-2xl font-bold text-gray-800">{config.name}</h1>
+      </div>
 
-          {/* 工具栏 */}
-          <ResourceToolbar
-            selectedCount={selectedIds.length}
-            onAdd={() => {
-              setEditRecord(null)
-              setFormOpen(true)
+      {/* 筛选和工具栏区域 */}
+      <div className="flex-shrink-0 bg-gray-50/50 rounded-lg p-4 mb-4 space-y-3 border border-gray-100">
+        {/* 筛选区域 */}
+        {config.filters && config.filters.length > 0 && (
+          <ResourceFilters
+            filters={config.filters}
+            values={filters}
+            onChange={setFilters}
+            onSearch={handleSearch}
+            onReset={handleReset}
+          />
+        )}
+
+        {/* 工具栏 */}
+        <ResourceToolbar
+          selectedCount={selectedIds.length}
+          onAdd={() => {
+            setEditRecord(null)
+            setFormOpen(true)
+          }}
+          onBatchEnable={() => batchEnableMutation.mutate()}
+          onBatchDisable={() => batchDisableMutation.mutate()}
+          onBatchDelete={() => setDeleteConfirm({ type: "batch" })}
+          onDownloadTemplate={() => api.downloadTemplate?.()}
+          onImport={(file) => importMutation.mutate(file)}
+          onExport={async () => {
+            try {
+              await api.export?.(appliedFilters)
+              toast({ title: "导出成功", description: "文件已开始下载" })
+            } catch (error: any) {
+              toast({ title: "导出失败", description: error.message, variant: "destructive" })
+            }
+          }}
+          importable={config.importable}
+          exportable={config.exportable}
+          batchable={config.batchable}
+        />
+      </div>
+
+      {/* 表格区域 */}
+      <div className="flex-1 min-h-0 bg-white rounded-lg border border-gray-200 shadow-sm overflow-hidden">
+        <ResourceTable
+          data={data?.data || []}
+          columns={columnsWithActions}
+          loading={isLoading}
+          selectedIds={selectedIds}
+          onSelectionChange={setSelectedIds}
+          onRowClick={(record) => setDetailRecord(record)}
+        />
+      </div>
+
+      {/* 分页 */}
+      {data?.meta && (
+        <div className="flex-shrink-0 mt-4">
+          <SimplePagination
+            page={data.meta.page}
+            pageSize={data.meta.pageSize}
+            total={data.meta.total}
+            totalPages={data.meta.totalPages}
+            onPageChange={setPage}
+            onPageSizeChange={(size) => {
+              setPageSize(size)
+              setPage(1)
+              // 保存到全局
+              localStorage.setItem('app_page_size', String(size))
             }}
-            onBatchEnable={() => batchEnableMutation.mutate()}
-            onBatchDisable={() => batchDisableMutation.mutate()}
-            onBatchDelete={() => setDeleteConfirm({ type: "batch" })}
-            onDownloadTemplate={() => api.downloadTemplate?.()}
-            onImport={(file) => importMutation.mutate(file)}
-            onExport={() => api.export?.(appliedFilters)}
-            importable={config.importable}
-            exportable={config.exportable}
-            batchable={config.batchable}
           />
-
-          {/* 表格 */}
-          <ResourceTable
-            data={data?.data || []}
-            columns={columnsWithActions}
-            loading={isLoading}
-            selectedIds={selectedIds}
-            onSelectionChange={setSelectedIds}
-            onRowClick={(record) => setDetailRecord(record)}
-          />
-
-          {/* 分页 */}
-          {data?.meta && (
-            <SimplePagination
-              page={data.meta.page}
-              pageSize={data.meta.pageSize}
-              total={data.meta.total}
-              totalPages={data.meta.totalPages}
-              onPageChange={setPage}
-            />
-          )}
-        </CardContent>
-      </Card>
+        </div>
+      )}
 
       {/* 表单 */}
       <ResourceForm

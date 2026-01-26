@@ -105,10 +105,6 @@ export function LoginPage() {
             </Button>
           </form>
 
-          <div className="mt-6 text-center text-sm text-muted-foreground">
-            默认账号：<code className="rounded bg-muted px-1">admin</code> / 
-            <code className="rounded bg-muted px-1">admin123</code>
-          </div>
         </CardContent>
       </Card>
     </div>

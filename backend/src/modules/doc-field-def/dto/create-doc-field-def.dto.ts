@@ -31,8 +31,12 @@ export class CreateDocFieldDefDto {
   @ApiPropertyOptional({ description: '取值方式（在文件中的位置）', example: '正文第三条第2款' })
   @IsOptional()
   @IsString()
-  @MaxLength(200)
   valueSource?: string;
+
+  @ApiPropertyOptional({ description: '提取方式-LLM用', example: '从合同正文中提取合同金额字段' })
+  @IsOptional()
+  @IsString()
+  valueSourceLlm?: string;
 
   @ApiPropertyOptional({ description: '枚举值（当字段类别为枚举时填写）', example: '是,否,待定' })
   @IsOptional()
@@ -42,7 +46,6 @@ export class CreateDocFieldDefDto {
   @ApiPropertyOptional({ description: '示例数据', example: '1000000.00' })
   @IsOptional()
   @IsString()
-  @MaxLength(500)
   exampleValue?: string;
 
   @ApiPropertyOptional({ description: '字段说明', example: '施工合同的总金额，不含变更金额' })
@@ -53,7 +56,6 @@ export class CreateDocFieldDefDto {
   @ApiPropertyOptional({ description: '定位词', example: '合同价款,合同金额,总价' })
   @IsOptional()
   @IsString()
-  @MaxLength(500)
   anchorWord?: string;
 
   @ApiPropertyOptional({ description: '处理方式', example: 'default', default: 'default' })

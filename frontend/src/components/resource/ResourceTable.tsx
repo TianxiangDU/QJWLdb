@@ -9,8 +9,15 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip"
 import { TableLoading } from "@/components/ui/loading"
 import { format } from "date-fns"
+import { cn } from "@/lib/utils"
 
 interface ResourceTableProps<T> {
   data: T[]
@@ -34,8 +41,6 @@ export function ResourceTable<T extends { id: number }>({
   const visibleColumns = columns.filter((col) => !col.hidden)
 
   const allSelected = data.length > 0 && data.every((item) => selectedIds.includes(item[primaryKey] as number))
-  const _someSelected = data.some((item) => selectedIds.includes(item[primaryKey] as number))
-  void _someSelected // 保留以备后用
 
   const handleSelectAll = (checked: boolean) => {
     if (checked) {
@@ -63,35 +68,39 @@ export function ResourceTable<T extends { id: number }>({
 
     // 空值
     if (value === null || value === undefined || value === "") {
-      return <span className="text-muted-foreground">-</span>
+      return <span className="text-gray-400">-</span>
     }
 
     // 按类型渲染
     switch (column.type) {
       case "status":
         return value === 1 ? (
-          <Badge variant="success">启用</Badge>
+          <Badge className="bg-emerald-100 text-emerald-700 hover:bg-emerald-100 border-0 font-medium">
+            启用
+          </Badge>
         ) : (
-          <Badge variant="secondary">停用</Badge>
+          <Badge className="bg-gray-100 text-gray-600 hover:bg-gray-100 border-0 font-medium">
+            停用
+          </Badge>
         )
 
       case "boolean":
         return value ? (
-          <Badge variant="success">是</Badge>
+          <Badge className="bg-emerald-100 text-emerald-700 hover:bg-emerald-100 border-0">是</Badge>
         ) : (
-          <Badge variant="secondary">否</Badge>
+          <Badge className="bg-gray-100 text-gray-600 hover:bg-gray-100 border-0">否</Badge>
         )
 
       case "date":
         try {
-          return format(new Date(value), "yyyy-MM-dd")
+          return <span className="text-gray-600">{format(new Date(value), "yyyy-MM-dd")}</span>
         } catch {
           return value
         }
 
       case "datetime":
         try {
-          return format(new Date(value), "yyyy-MM-dd HH:mm")
+          return <span className="text-gray-500 text-sm">{format(new Date(value), "MM-dd HH:mm")}</span>
         } catch {
           return value
         }
@@ -99,7 +108,7 @@ export function ResourceTable<T extends { id: number }>({
       case "link":
         return (
           <span
-            className="cursor-pointer text-primary hover:underline"
+            className="cursor-pointer text-blue-600 hover:text-blue-800 hover:underline font-medium transition-colors"
             onClick={(e) => {
               e.stopPropagation()
               onRowClick?.(record)
@@ -109,15 +118,42 @@ export function ResourceTable<T extends { id: number }>({
           </span>
         )
 
+      case "fileLink":
+        // 文件链接：显示文件名，点击可下载/预览
+        const linkUrl = column.linkField ? (record as any)[column.linkField] : null
+        if (!value || !linkUrl) {
+          return <span className="text-gray-400">-</span>
+        }
+        return (
+          <a
+            href={linkUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-blue-600 hover:text-blue-800 hover:underline font-medium transition-colors"
+            onClick={(e) => e.stopPropagation()}
+            title={value}
+          >
+            {String(value).length > 20 ? String(value).slice(0, 20) + '...' : value}
+          </a>
+        )
+
       default:
         // 长文本截断
         const strValue = String(value)
-        if (strValue.length > 50) {
+        const maxLength = column.width ? Math.floor(column.width / 8) : 20
+        if (strValue.length > maxLength) {
           return (
-            <span title={strValue}>{strValue.slice(0, 50)}...</span>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <span className="cursor-help text-gray-700">{strValue.slice(0, maxLength)}...</span>
+              </TooltipTrigger>
+              <TooltipContent side="top" className="max-w-md whitespace-pre-wrap">
+                {strValue}
+              </TooltipContent>
+            </Tooltip>
           )
         }
-        return strValue
+        return <span className="text-gray-700">{strValue}</span>
     }
   }
 
@@ -125,65 +161,91 @@ export function ResourceTable<T extends { id: number }>({
     return <TableLoading />
   }
 
-  if (data.length === 0) {
-    return (
-      <div className="flex h-32 items-center justify-center text-muted-foreground">
-        暂无数据
-      </div>
-    )
-  }
-
   return (
-    <div className="rounded-md border">
-      <Table>
-        <TableHeader>
-          <TableRow>
-            <TableHead className="w-12">
-              <Checkbox
-                checked={allSelected}
-                onCheckedChange={handleSelectAll}
-                aria-label="全选"
-              />
-            </TableHead>
-            {visibleColumns.map((column) => (
-              <TableHead
-                key={String(column.key)}
-                style={{ width: column.width ? `${column.width}px` : undefined }}
-              >
-                {column.title}
+    <TooltipProvider>
+      <div className="h-full overflow-auto">
+        <Table>
+          <TableHeader className="sticky top-0 z-10">
+            <TableRow className="bg-gray-50/80 backdrop-blur-sm border-b border-gray-200 hover:bg-gray-50/80">
+              <TableHead className="w-12 bg-gray-50/80">
+                <Checkbox
+                  checked={allSelected}
+                  onCheckedChange={handleSelectAll}
+                  aria-label="全选"
+                  disabled={data.length === 0}
+                />
               </TableHead>
-            ))}
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-          {data.map((record) => {
-            const id = record[primaryKey] as number
-            const isSelected = selectedIds.includes(id)
-
-            return (
-              <TableRow
-                key={id}
-                data-state={isSelected ? "selected" : undefined}
-                className="cursor-pointer"
-                onClick={() => onRowClick?.(record)}
-              >
-                <TableCell onClick={(e) => e.stopPropagation()}>
-                  <Checkbox
-                    checked={isSelected}
-                    onCheckedChange={(checked) => handleSelectRow(id, !!checked)}
-                    aria-label="选择行"
-                  />
+              {visibleColumns.map((column) => (
+                <TableHead
+                  key={String(column.key)}
+                  style={{ 
+                    width: column.width ? `${column.width}px` : undefined,
+                    minWidth: column.width ? `${column.width}px` : '100px',
+                  }}
+                  className="whitespace-nowrap text-gray-600 font-semibold bg-gray-50/80"
+                >
+                  {column.title}
+                </TableHead>
+              ))}
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {data.length === 0 ? (
+              <TableRow>
+                <TableCell 
+                  colSpan={visibleColumns.length + 1} 
+                  className="h-40 text-center text-gray-400"
+                >
+                  <div className="flex flex-col items-center justify-center">
+                    <div className="text-4xl mb-2">📭</div>
+                    <div>暂无数据</div>
+                  </div>
                 </TableCell>
-                {visibleColumns.map((column) => (
-                  <TableCell key={String(column.key)}>
-                    {renderCellValue(column, (record as any)[column.key], record)}
-                  </TableCell>
-                ))}
               </TableRow>
-            )
-          })}
-        </TableBody>
-      </Table>
-    </div>
+            ) : data.map((record, index) => {
+              const id = record[primaryKey] as number
+              const isSelected = selectedIds.includes(id)
+
+              return (
+                <TableRow
+                  key={id}
+                  data-state={isSelected ? "selected" : undefined}
+                  className={cn(
+                    "cursor-pointer transition-all duration-150 border-b border-gray-100",
+                    isSelected 
+                      ? "bg-blue-50/60 hover:bg-blue-50" 
+                      : index % 2 === 0 
+                        ? "bg-white hover:bg-gray-50" 
+                        : "bg-gray-50/30 hover:bg-gray-50"
+                  )}
+                  onClick={() => onRowClick?.(record)}
+                >
+                  <TableCell onClick={(e) => e.stopPropagation()} className="py-3">
+                    <Checkbox
+                      checked={isSelected}
+                      onCheckedChange={(checked) => handleSelectRow(id, !!checked)}
+                      aria-label="选择行"
+                    />
+                  </TableCell>
+                  {visibleColumns.map((column) => (
+                    <TableCell 
+                      key={String(column.key)}
+                      style={{
+                        width: column.width ? `${column.width}px` : undefined,
+                        minWidth: column.width ? `${column.width}px` : '100px',
+                        maxWidth: column.width ? `${column.width}px` : '300px',
+                      }}
+                      className="py-3"
+                    >
+                      {renderCellValue(column, (record as any)[column.key], record)}
+                    </TableCell>
+                  ))}
+                </TableRow>
+              )
+            })}
+          </TableBody>
+        </Table>
+      </div>
+    </TooltipProvider>
   )
 }

@@ -143,36 +143,34 @@ export function ResourceFilters({
   )
 
   return (
-    <div className="flex flex-wrap items-center gap-x-5 gap-y-2">
+    <div className="flex flex-wrap items-center gap-3">
       {filters.map((filter) => (
-        <div key={filter.key} className="flex items-center gap-2">
+        <div key={filter.key} className="flex items-center gap-1.5">
           <span className="text-sm text-gray-500 whitespace-nowrap">{filter.label}</span>
           {renderFilter(filter)}
         </div>
       ))}
 
-      <div className="flex items-center gap-2 ml-2">
-        <Button 
-          onClick={onSearch} 
-          size="sm" 
-          className="h-9 px-4 bg-blue-600 hover:bg-blue-700 shadow-sm"
-        >
-          <Search className="mr-1.5 h-4 w-4" />
-          搜索
-        </Button>
+      <Button 
+        onClick={onSearch} 
+        size="sm" 
+        className="h-9 px-4"
+      >
+        <Search className="mr-1.5 h-4 w-4" />
+        搜索
+      </Button>
 
-        {hasActiveFilters && (
-          <Button 
-            onClick={onReset} 
-            variant="outline" 
-            size="sm" 
-            className="h-9 px-4 border-gray-300 hover:bg-gray-100"
-          >
-            <RotateCcw className="mr-1.5 h-4 w-4" />
-            清除
-          </Button>
-        )}
-      </div>
+      {hasActiveFilters && (
+        <Button 
+          onClick={onReset} 
+          variant="ghost" 
+          size="sm" 
+          className="h-9 px-3 text-gray-500 hover:text-gray-700"
+        >
+          <RotateCcw className="mr-1 h-3.5 w-3.5" />
+          重置
+        </Button>
+      )}
     </div>
   )
 }

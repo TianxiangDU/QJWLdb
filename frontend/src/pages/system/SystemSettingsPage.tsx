@@ -1,17 +1,9 @@
 import { useState } from 'react'
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import { Separator } from '@/components/ui/separator'
-import { Settings, Palette, List, Save, Upload, Database } from 'lucide-react'
+import { Settings, Palette, List, Save, Upload, Database, X } from 'lucide-react'
 import { toast } from '@/hooks/use-toast'
 import { EnumSettingsPanel } from './components/EnumSettingsPanel'
 
@@ -63,7 +55,6 @@ function UISettingsPanel() {
     const file = e.target.files?.[0]
     if (!file) return
 
-    // 简单处理：转为 base64 存储
     const reader = new FileReader()
     reader.onload = () => {
       const base64 = reader.result as string
@@ -73,111 +64,91 @@ function UISettingsPanel() {
   }
 
   return (
-    <div className="space-y-6">
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Palette className="h-5 w-5" />
-            界面设置
-          </CardTitle>
-          <CardDescription>配置系统的外观和品牌信息</CardDescription>
-        </CardHeader>
-        <CardContent className="space-y-6">
-          {/* 站点名称 */}
-          <div className="space-y-2">
-            <Label htmlFor="siteName">站点名称</Label>
-            <Input
-              id="siteName"
-              value={config.siteName}
-              onChange={(e) => handleChange('siteName', e.target.value)}
-              placeholder="输入站点名称"
-              className="max-w-md"
+    <div className="max-w-2xl">
+      {/* 站点名称 */}
+      <div className="mb-8">
+        <Label htmlFor="siteName" className="text-sm font-medium text-gray-700">
+          站点名称
+        </Label>
+        <Input
+          id="siteName"
+          value={config.siteName}
+          onChange={(e) => handleChange('siteName', e.target.value)}
+          placeholder="输入站点名称"
+          className="mt-2"
+        />
+        <p className="mt-1.5 text-xs text-gray-500">
+          显示在页面左上角和浏览器标题
+        </p>
+      </div>
+
+      {/* Logo */}
+      <div className="mb-8">
+        <Label className="text-sm font-medium text-gray-700">站点 Logo</Label>
+        <div className="mt-2 flex items-center gap-4">
+          {config.logoUrl ? (
+            <div className="relative h-12 w-12 rounded-lg border border-gray-200 bg-gray-50 flex items-center justify-center overflow-hidden">
+              <img
+                src={config.logoUrl}
+                alt="Logo"
+                className="h-full w-full object-contain"
+              />
+              <button
+                onClick={() => handleChange('logoUrl', '')}
+                className="absolute -top-1.5 -right-1.5 h-5 w-5 rounded-full bg-gray-900 text-white flex items-center justify-center hover:bg-gray-700 transition-colors"
+              >
+                <X className="h-3 w-3" />
+              </button>
+            </div>
+          ) : (
+            <div className="h-12 w-12 rounded-lg border border-dashed border-gray-300 bg-gray-50 flex items-center justify-center">
+              <span className="text-xs text-gray-400">暂无</span>
+            </div>
+          )}
+          <Button variant="outline" size="sm" asChild>
+            <label className="cursor-pointer">
+              <Upload className="h-4 w-4 mr-2" />
+              上传 Logo
+              <input
+                type="file"
+                accept="image/*"
+                onChange={handleLogoUpload}
+                className="hidden"
+              />
+            </label>
+          </Button>
+        </div>
+        <p className="mt-1.5 text-xs text-gray-500">
+          建议尺寸：32×32 或 64×64 像素，支持 PNG、JPG、SVG 格式
+        </p>
+      </div>
+
+      {/* 预览 */}
+      <div className="mb-8 flex items-center gap-6">
+        <Label className="text-sm font-medium text-gray-700 flex-shrink-0">预览效果</Label>
+        <div className="inline-flex items-center gap-3 px-4 py-2.5 rounded-lg border border-gray-200 bg-gray-50">
+          {config.logoUrl ? (
+            <img
+              src={config.logoUrl}
+              alt="Logo"
+              className="h-5 w-5 object-contain"
             />
-            <p className="text-sm text-muted-foreground">
-              显示在页面左上角和浏览器标题
-            </p>
-          </div>
+          ) : (
+            <Database className="h-5 w-5 text-blue-600" />
+          )}
+          <span className="font-medium text-gray-800">
+            {config.siteName || '数据中台'}
+          </span>
+        </div>
+      </div>
 
-          <Separator />
-
-          {/* Logo */}
-          <div className="space-y-2">
-            <Label>站点 Logo</Label>
-            <div className="flex items-center gap-4">
-              {config.logoUrl ? (
-                <div className="h-12 w-12 rounded border bg-muted flex items-center justify-center overflow-hidden">
-                  <img
-                    src={config.logoUrl}
-                    alt="Logo"
-                    className="h-full w-full object-contain"
-                  />
-                </div>
-              ) : (
-                <div className="h-12 w-12 rounded border bg-muted flex items-center justify-center">
-                  <span className="text-xs text-muted-foreground">暂无</span>
-                </div>
-              )}
-              <div className="flex gap-2">
-                <Button variant="outline" size="sm" asChild>
-                  <label className="cursor-pointer">
-                    <Upload className="h-4 w-4 mr-2" />
-                    上传 Logo
-                    <input
-                      type="file"
-                      accept="image/*"
-                      onChange={handleLogoUpload}
-                      className="hidden"
-                    />
-                  </label>
-                </Button>
-                {config.logoUrl && (
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={() => handleChange('logoUrl', '')}
-                  >
-                    移除
-                  </Button>
-                )}
-              </div>
-            </div>
-            <p className="text-sm text-muted-foreground">
-              建议尺寸：32x32 或 64x64 像素，支持 PNG、JPG、SVG 格式
-            </p>
-          </div>
-
-          <Separator />
-
-          {/* 预览 */}
-          <div className="space-y-2">
-            <Label>预览效果</Label>
-            <div className="p-4 rounded-lg border bg-white inline-flex">
-              <div className="flex items-center gap-2">
-                {config.logoUrl ? (
-                  <img
-                    src={config.logoUrl}
-                    alt="Logo"
-                    className="h-6 w-6 object-contain"
-                  />
-                ) : (
-                  <Database className="h-6 w-6 text-blue-600" />
-                )}
-                <span className="font-semibold text-gray-800">
-                  {config.siteName || '数据中台'}
-                </span>
-              </div>
-            </div>
-          </div>
-
-          {/* 保存按钮 */}
-          <div className="flex justify-end pt-4">
-            <Button onClick={handleSave} disabled={!isDirty}>
-              <Save className="h-4 w-4 mr-2" />
-              保存设置
-            </Button>
-          </div>
-        </CardContent>
-      </Card>
+      {/* 保存按钮 */}
+      <div className="pt-4 border-t border-gray-100">
+        <Button onClick={handleSave} disabled={!isDirty}>
+          <Save className="h-4 w-4 mr-2" />
+          保存设置
+        </Button>
+      </div>
     </div>
   )
 }
@@ -186,32 +157,39 @@ export default function SystemSettingsPage() {
   const [activeTab, setActiveTab] = useState('ui')
 
   return (
-    <div className="p-6 space-y-6">
-      <div>
-        <h1 className="text-2xl font-bold tracking-tight flex items-center gap-2">
-          <Settings className="h-6 w-6" />
+    <div className="p-6 max-w-4xl">
+      {/* 页面标题 */}
+      <div className="mb-8">
+        <h1 className="text-xl font-semibold text-gray-900 flex items-center gap-2">
+          <Settings className="h-5 w-5 text-gray-600" />
           系统设置
         </h1>
-        <p className="text-muted-foreground">管理系统配置、界面外观和数据选项</p>
+        <p className="mt-1 text-sm text-gray-500">管理系统配置、界面外观和数据选项</p>
       </div>
 
-      <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-        <TabsList>
-          <TabsTrigger value="ui" className="gap-2">
+      <Tabs value={activeTab} onValueChange={setActiveTab}>
+        <TabsList className="mb-6 bg-transparent border-b border-gray-200 rounded-none p-0 h-auto">
+          <TabsTrigger 
+            value="ui" 
+            className="gap-2 rounded-none border-b-2 border-transparent data-[state=active]:border-blue-600 data-[state=active]:bg-transparent data-[state=active]:shadow-none px-4 py-2.5"
+          >
             <Palette className="h-4 w-4" />
             界面设置
           </TabsTrigger>
-          <TabsTrigger value="enum" className="gap-2">
+          <TabsTrigger 
+            value="enum" 
+            className="gap-2 rounded-none border-b-2 border-transparent data-[state=active]:border-blue-600 data-[state=active]:bg-transparent data-[state=active]:shadow-none px-4 py-2.5"
+          >
             <List className="h-4 w-4" />
             枚举设置
           </TabsTrigger>
         </TabsList>
 
-        <TabsContent value="ui">
+        <TabsContent value="ui" className="mt-0">
           <UISettingsPanel />
         </TabsContent>
 
-        <TabsContent value="enum">
+        <TabsContent value="enum" className="mt-0">
           <EnumSettingsPanel />
         </TabsContent>
       </Tabs>

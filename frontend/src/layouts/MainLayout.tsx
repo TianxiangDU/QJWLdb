@@ -11,7 +11,6 @@ import {
   Menu,
   X,
   Search,
-  Info,
   ExternalLink,
   Settings,
 } from "lucide-react"
@@ -170,43 +169,45 @@ export function MainLayout() {
   }
 
   return (
-    <div className="h-screen w-screen overflow-hidden flex">
+    <div className="h-screen w-screen overflow-hidden flex bg-[#f8f9fc]">
       {/* Mobile sidebar backdrop */}
       {sidebarOpen && (
         <div
-          className="fixed inset-0 z-40 bg-black/50 lg:hidden"
+          className="fixed inset-0 z-40 bg-black/30 lg:hidden"
           onClick={() => setSidebarOpen(false)}
         />
       )}
 
-      {/* Sidebar - 固定宽度 */}
+      {/* Sidebar */}
       <aside
         className={cn(
-          "fixed inset-y-0 left-0 z-50 w-[220px] flex-shrink-0 bg-white border-r border-gray-200 transition-transform lg:static lg:translate-x-0",
+          "fixed inset-y-0 left-0 z-50 w-60 flex-shrink-0 bg-white border-r border-gray-200/80 transition-transform lg:static lg:translate-x-0",
           sidebarOpen ? "translate-x-0" : "-translate-x-full"
         )}
       >
-        <div className="flex h-14 items-center justify-between border-b border-gray-200 px-4 bg-white">
-          <Link to="/" className="flex items-center gap-2 font-semibold text-gray-800">
+        {/* Logo */}
+        <div className="flex h-14 items-center justify-between px-5 border-b border-gray-100">
+          <Link to="/" className="flex items-center gap-2.5 font-semibold text-gray-900">
             {uiConfig.logoUrl ? (
-              <img src={uiConfig.logoUrl} alt="Logo" className="h-6 w-6 object-contain" />
+              <img src={uiConfig.logoUrl} alt="Logo" className="h-7 w-7 object-contain" />
             ) : (
               <Database className="h-6 w-6 text-blue-600" />
             )}
-            <span className="truncate">{uiConfig.siteName || '数据中台'}</span>
+            <span className="truncate text-[15px]">{uiConfig.siteName || '数据中台'}</span>
           </Link>
           <Button
             variant="ghost"
             size="icon"
-            className="lg:hidden"
+            className="lg:hidden -mr-2"
             onClick={() => setSidebarOpen(false)}
           >
             <X className="h-5 w-5" />
           </Button>
         </div>
 
+        {/* Navigation */}
         <ScrollArea className="h-[calc(100vh-56px)]">
-          <div className="space-y-1 p-3">
+          <div className="space-y-1 p-4">
             {navItems.map((item) =>
               item.children ? (
                 <NavGroup key={item.title} item={item} />
@@ -222,14 +223,14 @@ export function MainLayout() {
         </ScrollArea>
       </aside>
 
-      {/* Main content area - 占据剩余空间 */}
+      {/* Main content area */}
       <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
-        {/* Header - 固定高度 */}
-        <header className="h-14 flex-shrink-0 flex items-center justify-between border-b border-gray-200 px-4 bg-white">
+        {/* Header */}
+        <header className="h-14 flex-shrink-0 flex items-center justify-between px-6 bg-white border-b border-gray-200/80">
           <Button
             variant="ghost"
             size="icon"
-            className="lg:hidden"
+            className="lg:hidden -ml-2"
             onClick={() => setSidebarOpen(true)}
           >
             <Menu className="h-5 w-5" />
@@ -239,47 +240,29 @@ export function MainLayout() {
 
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button variant="ghost" className="gap-2">
-                <User className="h-4 w-4" />
-                {user?.nickname || user?.username || "用户"}
-                <ChevronDown className="h-4 w-4" />
+              <Button variant="ghost" className="gap-2 h-9 px-3 text-gray-700 hover:text-gray-900">
+                <div className="h-7 w-7 rounded-full bg-blue-50 flex items-center justify-center">
+                  <User className="h-4 w-4 text-blue-600" />
+                </div>
+                <span className="font-medium">{user?.nickname || user?.username || "用户"}</span>
+                <ChevronDown className="h-4 w-4 text-gray-400" />
               </Button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" className="w-64">
-              <DropdownMenuItem disabled>
-                <User className="mr-2 h-4 w-4" />
-                {user?.username}
-              </DropdownMenuItem>
-              <DropdownMenuSeparator />
-              <div className="px-2 py-1.5">
-                <div className="flex items-center gap-2 text-sm font-medium mb-2">
-                  <Info className="h-4 w-4" />
-                  系统信息
-                </div>
-                <div className="space-y-1 text-xs text-muted-foreground">
-                  <div className="flex justify-between">
-                    <span>版本</span>
-                    <span className="font-medium text-foreground">v1.0</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span>前端</span>
-                    <span>React + shadcn/ui</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span>后端</span>
-                    <span>NestJS + MySQL</span>
-                  </div>
-                </div>
+            <DropdownMenuContent align="end" className="w-56">
+              <div className="px-3 py-2 border-b">
+                <div className="font-medium text-sm">{user?.nickname || user?.username}</div>
+                <div className="text-xs text-gray-500 mt-0.5">{user?.username}</div>
+              </div>
+              <div className="py-1">
+                <DropdownMenuItem asChild>
+                  <a href="/api-docs" target="_blank" rel="noopener noreferrer" className="cursor-pointer">
+                    <ExternalLink className="mr-2 h-4 w-4" />
+                    API 文档
+                  </a>
+                </DropdownMenuItem>
               </div>
               <DropdownMenuSeparator />
-              <DropdownMenuItem asChild>
-                <a href="/api-docs" target="_blank" rel="noopener noreferrer">
-                  <ExternalLink className="mr-2 h-4 w-4" />
-                  API 文档
-                </a>
-              </DropdownMenuItem>
-              <DropdownMenuSeparator />
-              <DropdownMenuItem onClick={handleLogout}>
+              <DropdownMenuItem onClick={handleLogout} className="text-red-600 focus:text-red-600 focus:bg-red-50">
                 <LogOut className="mr-2 h-4 w-4" />
                 退出登录
               </DropdownMenuItem>
@@ -287,8 +270,8 @@ export function MainLayout() {
           </DropdownMenu>
         </header>
 
-        {/* Page content - 可滚动区域 */}
-        <main className="flex-1 overflow-auto p-5 bg-gray-50/50">
+        {/* Page content */}
+        <main className="flex-1 overflow-auto p-6">
           <Outlet />
         </main>
       </div>

@@ -56,90 +56,79 @@ export function ResourceToolbar({
   }
 
   return (
-    <div className="flex items-center justify-between flex-wrap gap-3">
-      <div className="flex items-center gap-2 flex-wrap">
-        <Button 
-          onClick={onAdd} 
-          size="sm" 
-          className="h-9 px-4 bg-blue-600 hover:bg-blue-700 shadow-sm"
-        >
-          <Plus className="mr-1.5 h-4 w-4" />
-          新增
-        </Button>
+    <div className="flex items-center gap-2">
+      <Button onClick={onAdd} size="sm" className="h-8">
+        <Plus className="mr-1.5 h-4 w-4" />
+        新增
+      </Button>
 
-        {importable && (
-          <>
-            <Button 
-              variant="outline" 
-              size="sm" 
-              className="h-9 px-3 border-gray-300 hover:bg-gray-50" 
-              onClick={onDownloadTemplate}
-            >
-              <Download className="mr-1.5 h-4 w-4 text-gray-500" />
-              下载模板
-            </Button>
-            <Button 
-              variant="outline" 
-              size="sm" 
-              className="h-9 px-3 border-gray-300 hover:bg-gray-50" 
-              onClick={() => fileInputRef.current?.click()}
-            >
-              <Upload className="mr-1.5 h-4 w-4 text-gray-500" />
-              导入
-            </Button>
-            <input
-              ref={fileInputRef}
-              type="file"
-              accept=".xlsx,.xls"
-              className="hidden"
-              onChange={handleFileChange}
-            />
-          </>
-        )}
-
-        {exportable && (
+      {importable && (
+        <>
           <Button 
             variant="outline" 
             size="sm" 
-            className="h-9 px-3 border-gray-300 hover:bg-gray-50" 
-            onClick={onExport}
+            className="h-8" 
+            onClick={onDownloadTemplate}
           >
-            <FileDown className="mr-1.5 h-4 w-4 text-gray-500" />
-            导出
+            <Download className="mr-1.5 h-4 w-4" />
+            模板
           </Button>
-        )}
-      </div>
+          <Button 
+            variant="outline" 
+            size="sm" 
+            className="h-8" 
+            onClick={() => fileInputRef.current?.click()}
+          >
+            <Upload className="mr-1.5 h-4 w-4" />
+            导入
+          </Button>
+          <input
+            ref={fileInputRef}
+            type="file"
+            accept=".xlsx,.xls"
+            className="hidden"
+            onChange={handleFileChange}
+          />
+        </>
+      )}
+
+      {exportable && (
+        <Button variant="outline" size="sm" className="h-8" onClick={onExport}>
+          <FileDown className="mr-1.5 h-4 w-4" />
+          导出
+        </Button>
+      )}
 
       {batchable && selectedCount > 0 && (
-        <div className="flex items-center gap-3 bg-blue-50 px-4 py-2 rounded-lg border border-blue-100">
-          <span className="text-sm font-medium text-blue-700">
-            已选择 <span className="text-blue-900">{selectedCount}</span> 项
+        <>
+          <div className="w-px h-6 bg-gray-200 mx-1" />
+          <span className="text-sm text-gray-600">
+            已选 <span className="font-medium text-blue-600">{selectedCount}</span> 项
           </span>
-          
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button variant="outline" size="sm" className="h-8 border-blue-200 bg-white hover:bg-blue-50">
+              <Button variant="outline" size="sm" className="h-8">
                 <MoreHorizontal className="mr-1.5 h-4 w-4" />
-                批量操作
+                批量
               </Button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" className="w-40">
+            <DropdownMenuContent align="end" className="w-36">
               <DropdownMenuItem onClick={onBatchEnable} className="cursor-pointer">
                 <CheckCircle className="mr-2 h-4 w-4 text-emerald-500" />
-                批量启用
+                启用
               </DropdownMenuItem>
               <DropdownMenuItem onClick={onBatchDisable} className="cursor-pointer">
                 <XCircle className="mr-2 h-4 w-4 text-amber-500" />
-                批量停用
+                停用
               </DropdownMenuItem>
               <DropdownMenuSeparator />
               <DropdownMenuItem onClick={onBatchDelete} className="text-red-600 cursor-pointer focus:text-red-600 focus:bg-red-50">
                 <Trash2 className="mr-2 h-4 w-4" />
-                批量删除
+                删除
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
-        </div>
+        </>
       )}
     </div>
   )

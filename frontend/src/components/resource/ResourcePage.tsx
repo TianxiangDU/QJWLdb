@@ -253,25 +253,9 @@ export function ResourcePage<T extends { id: number; status?: number }>({
 
   return (
     <div className="h-full flex flex-col min-w-0">
-      {/* 页面标题 */}
-      <div className="flex-shrink-0 mb-5">
-        <h1 className="text-2xl font-bold text-gray-800">{config.name}</h1>
-      </div>
-
-      {/* 筛选和工具栏区域 */}
-      <div className="flex-shrink-0 bg-gray-50/50 rounded-lg p-4 mb-4 space-y-3 border border-gray-100">
-        {/* 筛选区域 */}
-        {config.filters && config.filters.length > 0 && (
-          <ResourceFilters
-            filters={config.filters}
-            values={filters}
-            onChange={setFilters}
-            onSearch={handleSearch}
-            onReset={handleReset}
-          />
-        )}
-
-        {/* 工具栏 */}
+      {/* 页面标题和工具栏 */}
+      <div className="flex-shrink-0 mb-4 flex items-center justify-between">
+        <h1 className="text-xl font-semibold text-gray-900">{config.name}</h1>
         <ResourceToolbar
           selectedCount={selectedIds.length}
           onAdd={() => {
@@ -297,8 +281,21 @@ export function ResourcePage<T extends { id: number; status?: number }>({
         />
       </div>
 
+      {/* 筛选区域 */}
+      {config.filters && config.filters.length > 0 && (
+        <div className="flex-shrink-0 mb-4">
+          <ResourceFilters
+            filters={config.filters}
+            values={filters}
+            onChange={setFilters}
+            onSearch={handleSearch}
+            onReset={handleReset}
+          />
+        </div>
+      )}
+
       {/* 表格区域 */}
-      <div className="flex-1 min-h-0 bg-white rounded-lg border border-gray-200 shadow-sm overflow-hidden">
+      <div className="flex-1 min-h-0 bg-white rounded-lg border border-gray-200 overflow-hidden">
         <ResourceTable
           data={data?.data || []}
           columns={columnsWithActions}
@@ -311,7 +308,7 @@ export function ResourcePage<T extends { id: number; status?: number }>({
 
       {/* 分页 */}
       {data?.meta && (
-        <div className="flex-shrink-0 mt-4">
+        <div className="flex-shrink-0 mt-3">
           <SimplePagination
             page={data.meta.page}
             pageSize={data.meta.pageSize}
@@ -321,7 +318,6 @@ export function ResourcePage<T extends { id: number; status?: number }>({
             onPageSizeChange={(size) => {
               setPageSize(size)
               setPage(1)
-              // 保存到全局
               localStorage.setItem('app_page_size', String(size))
             }}
           />

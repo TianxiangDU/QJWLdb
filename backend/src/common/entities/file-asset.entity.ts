@@ -3,7 +3,6 @@ import {
   Column,
   PrimaryGeneratedColumn,
   CreateDateColumn,
-  Index,
 } from 'typeorm';
 import { ApiProperty } from '@nestjs/swagger';
 
@@ -22,7 +21,6 @@ export class FileAsset {
    */
   @ApiProperty({ description: '文件SHA256哈希' })
   @Column({ type: 'varchar', length: 64, unique: true })
-  @Index('idx_file_asset_sha256', { unique: true })
   sha256: string;
 
   /**

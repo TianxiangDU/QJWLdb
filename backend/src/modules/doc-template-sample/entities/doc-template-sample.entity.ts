@@ -5,7 +5,6 @@ import { DocType } from '../../doc-type/entities/doc-type.entity';
 
 @Entity('doc_template_sample')
 @Index(['docTypeId'])
-@Index(['code'], { unique: true })
 export class DocTemplateSample extends BaseEntity {
   @ApiProperty({ description: '编码' })
   @Column({ type: 'varchar', length: 50, unique: true, comment: '编码（文件类型编码-A/B/C...）' })

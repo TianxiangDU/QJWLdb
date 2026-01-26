@@ -43,13 +43,15 @@ export function FileUpload({
       })
 
       if (!response.ok) {
-        throw new Error("上传失败")
+        const errorData = await response.json().catch(() => ({}))
+        throw new Error(errorData?.message || "上传失败")
       }
 
       const result = await response.json()
-      // 服务端返回 { url, originalName, filename }
-      setFileName(result.originalName || file.name)
-      onChange(result.url, result.originalName || file.name)
+      // 服务端返回 { data: { url, originalName, filename }, meta: {} }
+      const data = result.data || result
+      setFileName(data.originalName || file.name)
+      onChange(data.url, data.originalName || file.name)
     } catch (err) {
       console.error("文件上传失败:", err)
       alert("文件上传失败，请重试")

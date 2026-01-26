@@ -33,11 +33,6 @@ export class CreateDocFieldDefDto {
   @IsString()
   valueSource?: string;
 
-  @ApiPropertyOptional({ description: '提取方式-LLM用', example: '从合同正文中提取合同金额字段' })
-  @IsOptional()
-  @IsString()
-  valueSourceLlm?: string;
-
   @ApiPropertyOptional({ description: '枚举值（当字段类别为枚举时填写）', example: '是,否,待定' })
   @IsOptional()
   @IsString()

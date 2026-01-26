@@ -31,10 +31,6 @@ export class DocFieldDef extends BaseEntity {
   @Column({ name: 'value_source', type: 'text', nullable: true, comment: '取值方式（在文件中的位置）' })
   valueSource: string;
 
-  @ApiProperty({ description: '提取方式-LLM用' })
-  @Column({ name: 'value_source_llm', type: 'text', nullable: true, comment: '提取方式-LLM用' })
-  valueSourceLlm: string;
-
   @ApiProperty({ description: '枚举值（当字段类别为枚举时填写）' })
   @Column({ name: 'enum_options', type: 'text', nullable: true, comment: '枚举值（当字段类别为枚举时填写，多个值用逗号分隔）' })
   enumOptions: string;

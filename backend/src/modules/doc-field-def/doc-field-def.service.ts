@@ -190,7 +190,6 @@ export class DocFieldDefService {
       { header: '字段类别', key: 'fieldCategory', width: 15 },
       { header: '是否必填(1/0)', key: 'requiredFlag', width: 15 },
       { header: '取值方式', key: 'valueSource', width: 25 },
-      { header: '提取方式-LLM用', key: 'valueSourceLlm', width: 30 },
       { header: '定位词（空格分隔）', key: 'anchorWord', width: 30 },
       { header: '枚举值（空格分隔）', key: 'enumOptions', width: 30 },
       { header: '示例数据', key: 'exampleValue', width: 25 },
@@ -214,7 +213,6 @@ export class DocFieldDefService {
       fieldCategory: '文字/日期/金额/数量/枚举/其他',
       requiredFlag: '1=必填，0=非必填',
       valueSource: '如：封面、正文第X条',
-      valueSourceLlm: 'LLM提取时使用的描述',
       anchorWord: '多个用空格分隔',
       enumOptions: '字段类别为枚举时填写',
       exampleValue: '如：100000.00',
@@ -267,8 +265,6 @@ export class DocFieldDefService {
         columnMap['requiredFlag'] = colNumber;
       } else if (headerText.includes('取值') || headerText.includes('位置')) {
         columnMap['valueSource'] = colNumber;
-      } else if (headerText.includes('提取方式') && headerText.includes('llm')) {
-        columnMap['valueSourceLlm'] = colNumber;
       } else if (headerText.includes('定位词')) {
         columnMap['anchorWord'] = colNumber;
       } else if (headerText.includes('枚举')) {
@@ -291,13 +287,12 @@ export class DocFieldDefService {
     if (!columnMap['fieldCategory']) columnMap['fieldCategory'] = 4;
     if (!columnMap['requiredFlag']) columnMap['requiredFlag'] = 5;
     if (!columnMap['valueSource']) columnMap['valueSource'] = 6;
-    if (!columnMap['valueSourceLlm']) columnMap['valueSourceLlm'] = 7;
-    if (!columnMap['anchorWord']) columnMap['anchorWord'] = 8;
-    if (!columnMap['enumOptions']) columnMap['enumOptions'] = 9;
-    if (!columnMap['exampleValue']) columnMap['exampleValue'] = 10;
-    if (!columnMap['fieldDescription']) columnMap['fieldDescription'] = 11;
-    if (!columnMap['outputFormat']) columnMap['outputFormat'] = 12;
-    if (!columnMap['extractMethod']) columnMap['extractMethod'] = 13;
+    if (!columnMap['anchorWord']) columnMap['anchorWord'] = 7;
+    if (!columnMap['enumOptions']) columnMap['enumOptions'] = 8;
+    if (!columnMap['exampleValue']) columnMap['exampleValue'] = 9;
+    if (!columnMap['fieldDescription']) columnMap['fieldDescription'] = 10;
+    if (!columnMap['outputFormat']) columnMap['outputFormat'] = 11;
+    if (!columnMap['extractMethod']) columnMap['extractMethod'] = 12;
 
     // 辅助函数：获取单元格文本
     const getCellText = (row: ExcelJS.Row, key: string): string => {
@@ -375,7 +370,6 @@ export class DocFieldDefService {
           fieldCategory: getCellText(row, 'fieldCategory') || undefined,
           requiredFlag,
           valueSource: getCellText(row, 'valueSource') || undefined,
-          valueSourceLlm: getCellText(row, 'valueSourceLlm') || undefined,
           anchorWord: getCellText(row, 'anchorWord') || undefined,
           enumOptions: getCellText(row, 'enumOptions') || undefined,
           exampleValue: getCellText(row, 'exampleValue') || undefined,
@@ -446,7 +440,6 @@ export class DocFieldDefService {
       { header: '字段类别', key: 'fieldCategory', width: 12 },
       { header: '是否必填', key: 'requiredFlag', width: 10 },
       { header: '取值方式', key: 'valueSource', width: 30 },
-      { header: '提取方式-LLM用', key: 'valueSourceLlm', width: 30 },
       { header: '定位词', key: 'anchorWord', width: 30 },
       { header: '枚举值', key: 'enumOptions', width: 30 },
       { header: '示例数据', key: 'exampleValue', width: 25 },
@@ -472,7 +465,6 @@ export class DocFieldDefService {
         fieldCategory: item.fieldCategory || '',
         requiredFlag: item.requiredFlag === 1 ? '是' : '否',
         valueSource: item.valueSource || '',
-        valueSourceLlm: item.valueSourceLlm || '',
         anchorWord: item.anchorWord || '',
         enumOptions: item.enumOptions || '',
         exampleValue: item.exampleValue || '',

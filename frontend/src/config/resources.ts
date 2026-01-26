@@ -100,7 +100,6 @@ export interface DocFieldDef {
   fieldCategory?: string
   requiredFlag?: number
   valueSource?: string
-  valueSourceLlm?: string
   anchorWord?: string
   enumOptions?: string
   exampleValue?: string
@@ -125,7 +124,6 @@ export const docFieldDefConfig: ResourceConfig<DocFieldDef> = {
     { key: "fieldCategory", title: "类别", width: 80 },
     { key: "requiredFlag", title: "必填", type: "boolean", width: 60 },
     { key: "valueSource", title: "取值方式", width: 150 },
-    { key: "valueSourceLlm", title: "提取方式-LLM用", width: 180 },
     { key: "anchorWord", title: "定位词", width: 120 },
     { key: "enumOptions", title: "枚举值", width: 120 },
     { key: "exampleValue", title: "示例数据", width: 120 },
@@ -165,7 +163,6 @@ export const docFieldDefConfig: ResourceConfig<DocFieldDef> = {
       { label: "否", value: 0 },
     ]},
     { key: "valueSource", label: "取值方式", type: "text", placeholder: "描述如何从文件中获取该字段值" },
-    { key: "valueSourceLlm", label: "提取方式-LLM用", type: "textarea", placeholder: "LLM提取时使用的描述信息" },
     { key: "anchorWord", label: "定位词", type: "text", placeholder: "用于定位该字段的关键词，空格分隔" },
     { key: "enumOptions", label: "枚举值", type: "text", placeholder: "如字段类别为枚举则填写，空格分隔" },
     { key: "exampleValue", label: "示例数据", type: "text", placeholder: "字段的示例值" },

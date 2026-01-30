@@ -6,6 +6,7 @@ import { AuditRuleFieldLink } from '../../modules/audit-rule-field-link/entities
 import { LawDocument } from '../../modules/law-document/entities/law-document.entity';
 import { LawClause } from '../../modules/law-clause/entities/law-clause.entity';
 import { AuditRuleLawLink } from '../../modules/audit-rule-law-link/entities/audit-rule-law-link.entity';
+import { EnumOption } from '../../common/entities/enum-option.entity';
 
 async function seed() {
   const dataSource = new DataSource({
@@ -273,6 +274,73 @@ async function seed() {
       console.log('创建规则法规关联');
     }
   }
+
+  // 8. 同步枚举选项（从 doc_type 表中提取）
+  console.log('开始同步枚举选项...');
+  const enumOptionRepo = dataSource.getRepository(EnumOption);
+  
+  // 获取所有文件类型数据
+  const allDocTypes = await docTypeRepo.find();
+  
+  // 收集唯一值
+  const projectPhases = new Set<string>();
+  const majorCategories = new Set<string>();
+  const minorCategories = new Set<string>();
+  const regions = new Set<string>();
+  const ownerOrgs = new Set<string>();
+  const minorToMajorMap = new Map<string, string>();
+
+  for (const dt of allDocTypes) {
+    if (dt.projectPhase) projectPhases.add(dt.projectPhase);
+    if (dt.majorCategory) majorCategories.add(dt.majorCategory);
+    if (dt.minorCategory) {
+      minorCategories.add(dt.minorCategory);
+      if (dt.majorCategory) {
+        minorToMajorMap.set(dt.minorCategory, dt.majorCategory);
+      }
+    }
+    if (dt.region) regions.add(dt.region);
+    if (dt.ownerOrg) ownerOrgs.add(dt.ownerOrg);
+  }
+
+  // 同步函数
+  const syncCategory = async (
+    category: string,
+    values: Set<string>,
+    parentValueMap?: Map<string, string>,
+  ) => {
+    let count = 0;
+    let sortOrder = 0;
+    for (const value of values) {
+      if (!value || value.trim() === '') continue;
+      const trimmedValue = value.trim();
+      const existing = await enumOptionRepo.findOne({
+        where: { category, value: trimmedValue },
+      });
+      if (!existing) {
+        await enumOptionRepo.save({
+          category,
+          value: trimmedValue,
+          label: trimmedValue,
+          parentValue: parentValueMap?.get(trimmedValue),
+          sortOrder: sortOrder++,
+          status: 1,
+        });
+        count++;
+      }
+    }
+    return count;
+  };
+
+  const syncResult = {
+    projectPhase: await syncCategory('projectPhase', projectPhases),
+    majorCategory: await syncCategory('majorCategory', majorCategories),
+    minorCategory: await syncCategory('minorCategory', minorCategories, minorToMajorMap),
+    region: await syncCategory('region', regions),
+    ownerOrg: await syncCategory('ownerOrg', ownerOrgs),
+  };
+
+  console.log('枚举选项同步完成:', syncResult);
 
   await dataSource.destroy();
   console.log('种子数据插入完成');

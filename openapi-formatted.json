@@ -1,0 +1,5238 @@
+{
+    "openapi": "3.0.0",
+    "paths": {
+        "/api/v1/enum-options": {
+            "get": {
+                "operationId": "EnumOptionController_getOptions",
+                "summary": "\u83b7\u53d6\u679a\u4e3e\u9009\u9879\u5217\u8868",
+                "parameters": [
+                    {
+                        "name": "category",
+                        "required": true,
+                        "in": "query",
+                        "description": "\u679a\u4e3e\u5206\u7c7b",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "parentValue",
+                        "required": false,
+                        "in": "query",
+                        "description": "\u7236\u7ea7\u503c\uff08\u7528\u4e8e\u7ea7\u8054\uff09",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": ""
+                    }
+                },
+                "tags": [
+                    "\u679a\u4e3e\u9009\u9879"
+                ],
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            },
+            "post": {
+                "operationId": "EnumOptionController_addOption",
+                "summary": "\u65b0\u589e\u679a\u4e3e\u9009\u9879",
+                "parameters": [],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/AddEnumOptionDto"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": ""
+                    }
+                },
+                "tags": [
+                    "\u679a\u4e3e\u9009\u9879"
+                ],
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/enum-options/categories": {
+            "get": {
+                "operationId": "EnumOptionController_getCategories",
+                "summary": "\u83b7\u53d6\u6240\u6709\u679a\u4e3e\u5206\u7c7b",
+                "parameters": [],
+                "responses": {
+                    "200": {
+                        "description": ""
+                    }
+                },
+                "tags": [
+                    "\u679a\u4e3e\u9009\u9879"
+                ],
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/enum-options/batch": {
+            "get": {
+                "operationId": "EnumOptionController_getBatchOptions",
+                "summary": "\u6279\u91cf\u83b7\u53d6\u591a\u4e2a\u5206\u7c7b\u7684\u9009\u9879",
+                "parameters": [
+                    {
+                        "name": "categories",
+                        "required": true,
+                        "in": "query",
+                        "description": "\u5206\u7c7b\u5217\u8868\uff0c\u9017\u53f7\u5206\u9694",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": ""
+                    }
+                },
+                "tags": [
+                    "\u679a\u4e3e\u9009\u9879"
+                ],
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/enum-options/generate-short-codes": {
+            "post": {
+                "operationId": "EnumOptionController_generateShortCodes",
+                "summary": "\u4e3a\u73b0\u6709\u9009\u9879\u751f\u6210\u7f29\u5199\u7f16\u7801",
+                "parameters": [],
+                "responses": {
+                    "201": {
+                        "description": ""
+                    }
+                },
+                "tags": [
+                    "\u679a\u4e3e\u9009\u9879"
+                ],
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/enum-options/{id}": {
+            "put": {
+                "operationId": "EnumOptionController_updateOption",
+                "summary": "\u66f4\u65b0\u679a\u4e3e\u9009\u9879",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "required": true,
+                        "in": "path",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/UpdateEnumOptionDto"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": ""
+                    }
+                },
+                "tags": [
+                    "\u679a\u4e3e\u9009\u9879"
+                ],
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            },
+            "delete": {
+                "operationId": "EnumOptionController_deleteOption",
+                "summary": "\u5220\u9664\u679a\u4e3e\u9009\u9879\uff08\u8f6f\u5220\u9664\uff09",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "required": true,
+                        "in": "path",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": ""
+                    }
+                },
+                "tags": [
+                    "\u679a\u4e3e\u9009\u9879"
+                ],
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/operation-logs/list": {
+            "get": {
+                "operationId": "OperationLogController_list",
+                "summary": "\u67e5\u8be2\u64cd\u4f5c\u65e5\u5fd7\u5217\u8868",
+                "parameters": [
+                    {
+                        "name": "page",
+                        "required": false,
+                        "in": "query",
+                        "schema": {
+                            "type": "number"
+                        }
+                    },
+                    {
+                        "name": "pageSize",
+                        "required": false,
+                        "in": "query",
+                        "schema": {
+                            "type": "number"
+                        }
+                    },
+                    {
+                        "name": "userId",
+                        "required": false,
+                        "in": "query",
+                        "schema": {
+                            "type": "number"
+                        }
+                    },
+                    {
+                        "name": "module",
+                        "required": false,
+                        "in": "query",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "action",
+                        "required": false,
+                        "in": "query",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "startDate",
+                        "required": false,
+                        "in": "query",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "endDate",
+                        "required": false,
+                        "in": "query",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": ""
+                    }
+                },
+                "tags": [
+                    "\u64cd\u4f5c\u65e5\u5fd7"
+                ],
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/permissions/all": {
+            "get": {
+                "operationId": "PermissionController_getAllPermissions",
+                "summary": "\u83b7\u53d6\u6240\u6709\u6743\u9650\uff08\u6309\u6a21\u5757\u5206\u7ec4\uff09",
+                "parameters": [],
+                "responses": {
+                    "200": {
+                        "description": ""
+                    }
+                },
+                "tags": [
+                    "\u6743\u9650\u7ba1\u7406"
+                ],
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/permissions/roles": {
+            "get": {
+                "operationId": "PermissionController_getAllRoles",
+                "summary": "\u83b7\u53d6\u6240\u6709\u89d2\u8272",
+                "parameters": [],
+                "responses": {
+                    "200": {
+                        "description": ""
+                    }
+                },
+                "tags": [
+                    "\u6743\u9650\u7ba1\u7406"
+                ],
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/healthz": {
+            "get": {
+                "operationId": "HealthController_healthCheck",
+                "summary": "\u5065\u5eb7\u68c0\u67e5",
+                "parameters": [],
+                "responses": {
+                    "200": {
+                        "description": ""
+                    }
+                },
+                "tags": [
+                    "health"
+                ]
+            }
+        },
+        "/api/v1/ready": {
+            "get": {
+                "operationId": "HealthController_readyCheck",
+                "summary": "\u5c31\u7eea\u68c0\u67e5",
+                "parameters": [],
+                "responses": {
+                    "200": {
+                        "description": ""
+                    }
+                },
+                "tags": [
+                    "health"
+                ]
+            }
+        },
+        "/api/v1/meta/tables": {
+            "get": {
+                "operationId": "MetaController_getTables",
+                "summary": "\u83b7\u53d6\u6240\u6709\u8868\u4fe1\u606f",
+                "parameters": [],
+                "responses": {
+                    "200": {
+                        "description": ""
+                    }
+                },
+                "tags": [
+                    "meta"
+                ]
+            }
+        },
+        "/api/v1/meta/tables/{tableName}": {
+            "get": {
+                "operationId": "MetaController_getTableDetail",
+                "summary": "\u83b7\u53d6\u8868\u8be6\u60c5\uff08\u5b57\u6bb5\u3001\u7d22\u5f15\u3001\u5916\u952e\uff09",
+                "parameters": [
+                    {
+                        "name": "tableName",
+                        "required": true,
+                        "in": "path",
+                        "description": "\u8868\u540d",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": ""
+                    }
+                },
+                "tags": [
+                    "meta"
+                ]
+            }
+        },
+        "/api/v1/meta/dict.xlsx": {
+            "get": {
+                "operationId": "MetaController_exportDataDict",
+                "summary": "\u5bfc\u51fa\u6570\u636e\u5b57\u5178 Excel",
+                "parameters": [],
+                "responses": {
+                    "200": {
+                        "description": ""
+                    }
+                },
+                "tags": [
+                    "meta"
+                ]
+            }
+        },
+        "/api/v1/auth/login": {
+            "post": {
+                "operationId": "AuthController_login",
+                "summary": "\u7528\u6237\u767b\u5f55",
+                "parameters": [
+                    {
+                        "name": "user-agent",
+                        "required": true,
+                        "in": "header",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/LoginDto"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": ""
+                    }
+                },
+                "tags": [
+                    "\u8ba4\u8bc1"
+                ]
+            }
+        },
+        "/api/v1/auth/register": {
+            "post": {
+                "operationId": "AuthController_register",
+                "summary": "\u7528\u6237\u6ce8\u518c",
+                "parameters": [],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/RegisterDto"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": ""
+                    }
+                },
+                "tags": [
+                    "\u8ba4\u8bc1"
+                ]
+            }
+        },
+        "/api/v1/auth/profile": {
+            "get": {
+                "operationId": "AuthController_getProfile",
+                "summary": "\u83b7\u53d6\u5f53\u524d\u7528\u6237\u4fe1\u606f",
+                "parameters": [],
+                "responses": {
+                    "200": {
+                        "description": ""
+                    }
+                },
+                "tags": [
+                    "\u8ba4\u8bc1"
+                ],
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            },
+            "put": {
+                "operationId": "AuthController_updateProfile",
+                "summary": "\u66f4\u65b0\u4e2a\u4eba\u4fe1\u606f",
+                "parameters": [],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/UpdateProfileDto"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": ""
+                    }
+                },
+                "tags": [
+                    "\u8ba4\u8bc1"
+                ],
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/auth/change-password": {
+            "post": {
+                "operationId": "AuthController_changePassword",
+                "summary": "\u4fee\u6539\u5bc6\u7801",
+                "parameters": [],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/ChangePasswordDto"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": ""
+                    }
+                },
+                "tags": [
+                    "\u8ba4\u8bc1"
+                ],
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/auth/reset-admin": {
+            "post": {
+                "operationId": "AuthController_resetAdminPassword",
+                "summary": "\u91cd\u7f6e\u7ba1\u7406\u5458\u5bc6\u7801\uff08\u7d27\u6025\u6062\u590d\u7528\uff09",
+                "parameters": [],
+                "responses": {
+                    "201": {
+                        "description": ""
+                    }
+                },
+                "tags": [
+                    "\u8ba4\u8bc1"
+                ]
+            }
+        },
+        "/api/v1/files/upload": {
+            "post": {
+                "operationId": "FileUploadController_uploadFile",
+                "summary": "\u4e0a\u4f20\u6587\u4ef6",
+                "parameters": [
+                    {
+                        "name": "subDir",
+                        "required": false,
+                        "in": "query",
+                        "description": "\u5b50\u76ee\u5f55",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "file": {
+                                        "type": "string",
+                                        "format": "binary"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": ""
+                    }
+                },
+                "tags": [
+                    "files"
+                ],
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/files/{id}/info": {
+            "get": {
+                "operationId": "FileAssetController_getInfo",
+                "summary": "\u83b7\u53d6\u6587\u4ef6\u4fe1\u606f",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "required": true,
+                        "in": "path",
+                        "schema": {
+                            "type": "number"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": ""
+                    }
+                },
+                "tags": [
+                    "\u6587\u4ef6\u8d44\u4ea7"
+                ],
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/files/{id}/preview": {
+            "get": {
+                "operationId": "FileAssetController_preview",
+                "summary": "\u9884\u89c8\u6587\u4ef6\uff08PDF/\u56fe\u7247\u7528 inline\uff0c\u5176\u4ed6\u4e0b\u8f7d\uff09",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "required": true,
+                        "in": "path",
+                        "schema": {
+                            "type": "number"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": ""
+                    }
+                },
+                "tags": [
+                    "\u6587\u4ef6\u8d44\u4ea7"
+                ],
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/files/{id}/download": {
+            "get": {
+                "operationId": "FileAssetController_download",
+                "summary": "\u4e0b\u8f7d\u6587\u4ef6",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "required": true,
+                        "in": "path",
+                        "schema": {
+                            "type": "number"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": ""
+                    }
+                },
+                "tags": [
+                    "\u6587\u4ef6\u8d44\u4ea7"
+                ],
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/files/check/{sha256}": {
+            "get": {
+                "operationId": "FileAssetController_checkExists",
+                "summary": "\u68c0\u67e5\u6587\u4ef6\u662f\u5426\u5df2\u5b58\u5728",
+                "parameters": [
+                    {
+                        "name": "sha256",
+                        "required": true,
+                        "in": "path",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": ""
+                    }
+                },
+                "tags": [
+                    "\u6587\u4ef6\u8d44\u4ea7"
+                ],
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/doc-types": {
+            "post": {
+                "operationId": "DocTypeController_create",
+                "summary": "\u521b\u5efa\u6587\u4ef6\u7c7b\u578b",
+                "parameters": [],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/CreateDocTypeDto"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": ""
+                    }
+                },
+                "tags": [
+                    "doc-type"
+                ]
+            }
+        },
+        "/api/v1/doc-types/list": {
+            "get": {
+                "operationId": "DocTypeController_findAll",
+                "summary": "\u83b7\u53d6\u6587\u4ef6\u7c7b\u578b\u5217\u8868",
+                "parameters": [
+                    {
+                        "name": "page",
+                        "required": false,
+                        "in": "query",
+                        "description": "\u9875\u7801",
+                        "schema": {
+                            "default": 1,
+                            "example": 1,
+                            "type": "number"
+                        }
+                    },
+                    {
+                        "name": "pageSize",
+                        "required": false,
+                        "in": "query",
+                        "description": "\u6bcf\u9875\u6570\u91cf",
+                        "schema": {
+                            "default": 10,
+                            "example": 10,
+                            "type": "number"
+                        }
+                    },
+                    {
+                        "name": "keyword",
+                        "required": false,
+                        "in": "query",
+                        "description": "\u5173\u952e\u8bcd\u641c\u7d22",
+                        "schema": {
+                            "example": "\u5408\u540c",
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "status",
+                        "required": false,
+                        "in": "query",
+                        "description": "\u72b6\u6001\uff1a1-\u542f\u7528\uff0c0-\u505c\u7528",
+                        "schema": {
+                            "example": 1,
+                            "enum": [
+                                0,
+                                1
+                            ],
+                            "type": "number"
+                        }
+                    },
+                    {
+                        "name": "code",
+                        "required": false,
+                        "in": "query",
+                        "description": "\u6587\u4ef6\u7c7b\u578b\u7f16\u7801",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "projectPhase",
+                        "required": false,
+                        "in": "query",
+                        "description": "\u6240\u5c5e\u9879\u76ee\u9636\u6bb5",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "majorCategory",
+                        "required": false,
+                        "in": "query",
+                        "description": "\u6240\u5c5e\u5927\u7c7b",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "minorCategory",
+                        "required": false,
+                        "in": "query",
+                        "description": "\u6240\u5c5e\u5c0f\u7c7b",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "projectType",
+                        "required": false,
+                        "in": "query",
+                        "description": "\u9002\u7528\u9879\u76ee\u7c7b\u578b",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": ""
+                    }
+                },
+                "tags": [
+                    "doc-type"
+                ]
+            }
+        },
+        "/api/v1/doc-types/all": {
+            "get": {
+                "operationId": "DocTypeController_findAllActive",
+                "summary": "\u83b7\u53d6\u6240\u6709\u542f\u7528\u7684\u6587\u4ef6\u7c7b\u578b",
+                "parameters": [],
+                "responses": {
+                    "200": {
+                        "description": ""
+                    }
+                },
+                "tags": [
+                    "doc-type"
+                ]
+            }
+        },
+        "/api/v1/doc-types/filter-options": {
+            "get": {
+                "operationId": "DocTypeController_getFilterOptions",
+                "summary": "\u83b7\u53d6\u7b5b\u9009\u9009\u9879\uff08\u4ece\u6570\u636e\u5e93\u52a8\u6001\u83b7\u53d6\uff09",
+                "parameters": [],
+                "responses": {
+                    "200": {
+                        "description": ""
+                    }
+                },
+                "tags": [
+                    "doc-type"
+                ]
+            }
+        },
+        "/api/v1/doc-types/sync-enum-options": {
+            "post": {
+                "operationId": "DocTypeController_syncEnumOptions",
+                "summary": "\u540c\u6b65\u679a\u4e3e\u9009\u9879",
+                "description": "\u4ece\u73b0\u6709\u6587\u4ef6\u7c7b\u578b\u6570\u636e\u4e2d\u63d0\u53d6\u679a\u4e3e\u503c\uff0c\u540c\u6b65\u5230\u679a\u4e3e\u9009\u9879\u8868",
+                "parameters": [],
+                "responses": {
+                    "201": {
+                        "description": ""
+                    }
+                },
+                "tags": [
+                    "doc-type"
+                ]
+            }
+        },
+        "/api/v1/doc-types/regenerate-codes": {
+            "post": {
+                "operationId": "DocTypeController_regenerateCodes",
+                "summary": "\u91cd\u65b0\u751f\u6210\u6240\u6709\u7f16\u7801",
+                "description": "\u6839\u636e\u65b0\u7684\u7f16\u7801\u89c4\u5219\u91cd\u65b0\u751f\u6210\u6240\u6709\u6587\u4ef6\u7c7b\u578b\u7684\u7f16\u7801",
+                "parameters": [],
+                "responses": {
+                    "201": {
+                        "description": ""
+                    }
+                },
+                "tags": [
+                    "doc-type"
+                ]
+            }
+        },
+        "/api/v1/doc-types/template": {
+            "get": {
+                "operationId": "DocTypeController_downloadTemplate",
+                "summary": "\u4e0b\u8f7dExcel\u5bfc\u5165\u6a21\u677f",
+                "parameters": [],
+                "responses": {
+                    "200": {
+                        "description": ""
+                    }
+                },
+                "tags": [
+                    "doc-type"
+                ]
+            }
+        },
+        "/api/v1/doc-types/export": {
+            "get": {
+                "operationId": "DocTypeController_exportExcel",
+                "summary": "\u5bfc\u51fa\u6570\u636e\u5230Excel",
+                "parameters": [
+                    {
+                        "name": "page",
+                        "required": false,
+                        "in": "query",
+                        "description": "\u9875\u7801",
+                        "schema": {
+                            "default": 1,
+                            "example": 1,
+                            "type": "number"
+                        }
+                    },
+                    {
+                        "name": "pageSize",
+                        "required": false,
+                        "in": "query",
+                        "description": "\u6bcf\u9875\u6570\u91cf",
+                        "schema": {
+                            "default": 10,
+                            "example": 10,
+                            "type": "number"
+                        }
+                    },
+                    {
+                        "name": "keyword",
+                        "required": false,
+                        "in": "query",
+                        "description": "\u5173\u952e\u8bcd\u641c\u7d22",
+                        "schema": {
+                            "example": "\u5408\u540c",
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "status",
+                        "required": false,
+                        "in": "query",
+                        "description": "\u72b6\u6001\uff1a1-\u542f\u7528\uff0c0-\u505c\u7528",
+                        "schema": {
+                            "example": 1,
+                            "enum": [
+                                0,
+                                1
+                            ],
+                            "type": "number"
+                        }
+                    },
+                    {
+                        "name": "code",
+                        "required": false,
+                        "in": "query",
+                        "description": "\u6587\u4ef6\u7c7b\u578b\u7f16\u7801",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "projectPhase",
+                        "required": false,
+                        "in": "query",
+                        "description": "\u6240\u5c5e\u9879\u76ee\u9636\u6bb5",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "majorCategory",
+                        "required": false,
+                        "in": "query",
+                        "description": "\u6240\u5c5e\u5927\u7c7b",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "minorCategory",
+                        "required": false,
+                        "in": "query",
+                        "description": "\u6240\u5c5e\u5c0f\u7c7b",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "projectType",
+                        "required": false,
+                        "in": "query",
+                        "description": "\u9002\u7528\u9879\u76ee\u7c7b\u578b",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": ""
+                    }
+                },
+                "tags": [
+                    "doc-type"
+                ]
+            }
+        },
+        "/api/v1/doc-types/import": {
+            "post": {
+                "operationId": "DocTypeController_importExcel",
+                "summary": "Excel\u6279\u91cf\u5bfc\u5165",
+                "description": "\u652f\u6301 upsert\uff08\u9ed8\u8ba4\uff09\u3001insertOnly\u3001updateOnly \u4e09\u79cd\u6a21\u5f0f\uff0cdryRun=true \u65f6\u53ea\u6821\u9a8c\u4e0d\u843d\u5e93",
+                "parameters": [],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "file": {
+                                        "type": "string",
+                                        "format": "binary"
+                                    },
+                                    "mode": {
+                                        "type": "string",
+                                        "enum": [
+                                            "upsert",
+                                            "insertOnly",
+                                            "updateOnly"
+                                        ],
+                                        "default": "upsert"
+                                    },
+                                    "dryRun": {
+                                        "type": "boolean",
+                                        "default": false
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": ""
+                    }
+                },
+                "tags": [
+                    "doc-type"
+                ]
+            }
+        },
+        "/api/v1/doc-types/full/{idOrCode}": {
+            "get": {
+                "operationId": "DocTypeController_getFullInfo",
+                "summary": "\u83b7\u53d6\u6587\u4ef6\u7c7b\u578b\u5b8c\u6574\u4fe1\u606f",
+                "description": "\u6839\u636e\u6587\u4ef6\u7c7b\u578bID\u6216\u7f16\u7801\uff0c\u8fd4\u56de\u6587\u4ef6\u7c7b\u578b\u4fe1\u606f\u3001\u5173\u952e\u4fe1\u606f\u5b57\u6bb5\u5217\u8868\u3001\u6587\u4ef6\u6a21\u677f/\u793a\u4f8b\u5217\u8868",
+                "parameters": [
+                    {
+                        "name": "idOrCode",
+                        "required": true,
+                        "in": "path",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": ""
+                    }
+                },
+                "tags": [
+                    "doc-type"
+                ]
+            }
+        },
+        "/api/v1/doc-types/{id}": {
+            "get": {
+                "operationId": "DocTypeController_findOne",
+                "summary": "\u83b7\u53d6\u6587\u4ef6\u7c7b\u578b\u8be6\u60c5",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "required": true,
+                        "in": "path",
+                        "schema": {
+                            "type": "number"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": ""
+                    }
+                },
+                "tags": [
+                    "doc-type"
+                ]
+            },
+            "put": {
+                "operationId": "DocTypeController_update",
+                "summary": "\u66f4\u65b0\u6587\u4ef6\u7c7b\u578b",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "required": true,
+                        "in": "path",
+                        "schema": {
+                            "type": "number"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/UpdateDocTypeDto"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": ""
+                    }
+                },
+                "tags": [
+                    "doc-type"
+                ]
+            },
+            "delete": {
+                "operationId": "DocTypeController_remove",
+                "summary": "\u5220\u9664/\u505c\u7528\u6587\u4ef6\u7c7b\u578b",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "required": true,
+                        "in": "path",
+                        "schema": {
+                            "type": "number"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": ""
+                    }
+                },
+                "tags": [
+                    "doc-type"
+                ]
+            }
+        },
+        "/api/v1/doc-types/batch/enable": {
+            "post": {
+                "operationId": "DocTypeController_batchEnable",
+                "summary": "\u6279\u91cf\u542f\u7528",
+                "parameters": [],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/BatchIdsDto"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": ""
+                    }
+                },
+                "tags": [
+                    "doc-type"
+                ]
+            }
+        },
+        "/api/v1/doc-types/batch/disable": {
+            "post": {
+                "operationId": "DocTypeController_batchDisable",
+                "summary": "\u6279\u91cf\u505c\u7528",
+                "parameters": [],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/BatchIdsDto"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": ""
+                    }
+                },
+                "tags": [
+                    "doc-type"
+                ]
+            }
+        },
+        "/api/v1/doc-types/batch/delete": {
+            "post": {
+                "operationId": "DocTypeController_batchDelete",
+                "summary": "\u6279\u91cf\u5220\u9664",
+                "parameters": [],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/BatchIdsDto"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": ""
+                    }
+                },
+                "tags": [
+                    "doc-type"
+                ]
+            }
+        },
+        "/api/v1/doc-field-defs": {
+            "post": {
+                "operationId": "DocFieldDefController_create",
+                "summary": "\u521b\u5efa\u5173\u952e\u4fe1\u606f\u5b57\u6bb5",
+                "parameters": [],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/CreateDocFieldDefDto"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": ""
+                    }
+                },
+                "tags": [
+                    "\u5173\u952e\u4fe1\u606f\u5b57\u6bb5"
+                ]
+            }
+        },
+        "/api/v1/doc-field-defs/list": {
+            "get": {
+                "operationId": "DocFieldDefController_findAll",
+                "summary": "\u83b7\u53d6\u5173\u952e\u4fe1\u606f\u5b57\u6bb5\u5217\u8868",
+                "parameters": [
+                    {
+                        "name": "page",
+                        "required": false,
+                        "in": "query",
+                        "description": "\u9875\u7801",
+                        "schema": {
+                            "default": 1,
+                            "example": 1,
+                            "type": "number"
+                        }
+                    },
+                    {
+                        "name": "pageSize",
+                        "required": false,
+                        "in": "query",
+                        "description": "\u6bcf\u9875\u6570\u91cf",
+                        "schema": {
+                            "default": 10,
+                            "example": 10,
+                            "type": "number"
+                        }
+                    },
+                    {
+                        "name": "keyword",
+                        "required": false,
+                        "in": "query",
+                        "description": "\u5173\u952e\u8bcd\u641c\u7d22",
+                        "schema": {
+                            "example": "\u5408\u540c",
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "status",
+                        "required": false,
+                        "in": "query",
+                        "description": "\u72b6\u6001",
+                        "schema": {
+                            "example": 1,
+                            "enum": [
+                                0,
+                                1
+                            ],
+                            "type": "number"
+                        }
+                    },
+                    {
+                        "name": "docTypeIds",
+                        "required": false,
+                        "in": "query",
+                        "description": "\u6587\u4ef6\u7c7b\u578bID\uff08\u652f\u6301\u591a\u9009\uff0c\u9017\u53f7\u5206\u9694\uff09",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    {
+                        "name": "fieldCode",
+                        "required": false,
+                        "in": "query",
+                        "description": "\u5b57\u6bb5\u7f16\u7801",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "fieldCategory",
+                        "required": false,
+                        "in": "query",
+                        "description": "\u5b57\u6bb5\u7c7b\u522b",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": ""
+                    }
+                },
+                "tags": [
+                    "\u5173\u952e\u4fe1\u606f\u5b57\u6bb5"
+                ]
+            }
+        },
+        "/api/v1/doc-field-defs/by-doc-type/{docTypeId}": {
+            "get": {
+                "operationId": "DocFieldDefController_findByDocType",
+                "summary": "\u6839\u636e\u6587\u4ef6\u7c7b\u578bID\u83b7\u53d6\u5b57\u6bb5\u5217\u8868",
+                "parameters": [
+                    {
+                        "name": "docTypeId",
+                        "required": true,
+                        "in": "path",
+                        "schema": {
+                            "type": "number"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": ""
+                    }
+                },
+                "tags": [
+                    "\u5173\u952e\u4fe1\u606f\u5b57\u6bb5"
+                ]
+            }
+        },
+        "/api/v1/doc-field-defs/template": {
+            "get": {
+                "operationId": "DocFieldDefController_downloadTemplate",
+                "summary": "\u4e0b\u8f7dExcel\u5bfc\u5165\u6a21\u677f",
+                "parameters": [],
+                "responses": {
+                    "200": {
+                        "description": ""
+                    }
+                },
+                "tags": [
+                    "\u5173\u952e\u4fe1\u606f\u5b57\u6bb5"
+                ]
+            }
+        },
+        "/api/v1/doc-field-defs/export": {
+            "get": {
+                "operationId": "DocFieldDefController_exportExcel",
+                "summary": "\u5bfc\u51fa\u6570\u636e\u5230Excel",
+                "parameters": [
+                    {
+                        "name": "page",
+                        "required": false,
+                        "in": "query",
+                        "description": "\u9875\u7801",
+                        "schema": {
+                            "default": 1,
+                            "example": 1,
+                            "type": "number"
+                        }
+                    },
+                    {
+                        "name": "pageSize",
+                        "required": false,
+                        "in": "query",
+                        "description": "\u6bcf\u9875\u6570\u91cf",
+                        "schema": {
+                            "default": 10,
+                            "example": 10,
+                            "type": "number"
+                        }
+                    },
+                    {
+                        "name": "keyword",
+                        "required": false,
+                        "in": "query",
+                        "description": "\u5173\u952e\u8bcd\u641c\u7d22",
+                        "schema": {
+                            "example": "\u5408\u540c",
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "status",
+                        "required": false,
+                        "in": "query",
+                        "description": "\u72b6\u6001",
+                        "schema": {
+                            "example": 1,
+                            "enum": [
+                                0,
+                                1
+                            ],
+                            "type": "number"
+                        }
+                    },
+                    {
+                        "name": "docTypeIds",
+                        "required": false,
+                        "in": "query",
+                        "description": "\u6587\u4ef6\u7c7b\u578bID\uff08\u652f\u6301\u591a\u9009\uff0c\u9017\u53f7\u5206\u9694\uff09",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    {
+                        "name": "fieldCode",
+                        "required": false,
+                        "in": "query",
+                        "description": "\u5b57\u6bb5\u7f16\u7801",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "fieldCategory",
+                        "required": false,
+                        "in": "query",
+                        "description": "\u5b57\u6bb5\u7c7b\u522b",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": ""
+                    }
+                },
+                "tags": [
+                    "\u5173\u952e\u4fe1\u606f\u5b57\u6bb5"
+                ]
+            }
+        },
+        "/api/v1/doc-field-defs/import": {
+            "post": {
+                "operationId": "DocFieldDefController_importExcel",
+                "summary": "Excel\u6279\u91cf\u5bfc\u5165",
+                "parameters": [],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "file": {
+                                        "type": "string",
+                                        "format": "binary"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": ""
+                    }
+                },
+                "tags": [
+                    "\u5173\u952e\u4fe1\u606f\u5b57\u6bb5"
+                ]
+            }
+        },
+        "/api/v1/doc-field-defs/{id}": {
+            "get": {
+                "operationId": "DocFieldDefController_findOne",
+                "summary": "\u83b7\u53d6\u5173\u952e\u4fe1\u606f\u5b57\u6bb5\u8be6\u60c5",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "required": true,
+                        "in": "path",
+                        "schema": {
+                            "type": "number"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": ""
+                    }
+                },
+                "tags": [
+                    "\u5173\u952e\u4fe1\u606f\u5b57\u6bb5"
+                ]
+            },
+            "put": {
+                "operationId": "DocFieldDefController_update",
+                "summary": "\u66f4\u65b0\u5173\u952e\u4fe1\u606f\u5b57\u6bb5",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "required": true,
+                        "in": "path",
+                        "schema": {
+                            "type": "number"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/UpdateDocFieldDefDto"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": ""
+                    }
+                },
+                "tags": [
+                    "\u5173\u952e\u4fe1\u606f\u5b57\u6bb5"
+                ]
+            },
+            "delete": {
+                "operationId": "DocFieldDefController_remove",
+                "summary": "\u5220\u9664/\u505c\u7528\u5173\u952e\u4fe1\u606f\u5b57\u6bb5",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "required": true,
+                        "in": "path",
+                        "schema": {
+                            "type": "number"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": ""
+                    }
+                },
+                "tags": [
+                    "\u5173\u952e\u4fe1\u606f\u5b57\u6bb5"
+                ]
+            }
+        },
+        "/api/v1/doc-field-defs/batch/enable": {
+            "post": {
+                "operationId": "DocFieldDefController_batchEnable",
+                "summary": "\u6279\u91cf\u542f\u7528",
+                "parameters": [],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/BatchIdsDto"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": ""
+                    }
+                },
+                "tags": [
+                    "\u5173\u952e\u4fe1\u606f\u5b57\u6bb5"
+                ]
+            }
+        },
+        "/api/v1/doc-field-defs/batch/disable": {
+            "post": {
+                "operationId": "DocFieldDefController_batchDisable",
+                "summary": "\u6279\u91cf\u505c\u7528",
+                "parameters": [],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/BatchIdsDto"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": ""
+                    }
+                },
+                "tags": [
+                    "\u5173\u952e\u4fe1\u606f\u5b57\u6bb5"
+                ]
+            }
+        },
+        "/api/v1/doc-field-defs/batch/delete": {
+            "post": {
+                "operationId": "DocFieldDefController_batchDelete",
+                "summary": "\u6279\u91cf\u5220\u9664",
+                "parameters": [],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/BatchIdsDto"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": ""
+                    }
+                },
+                "tags": [
+                    "\u5173\u952e\u4fe1\u606f\u5b57\u6bb5"
+                ]
+            }
+        },
+        "/api/v1/doc-template-samples": {
+            "post": {
+                "operationId": "DocTemplateSampleController_create",
+                "summary": "\u521b\u5efa\u6587\u4ef6\u6a21\u677f/\u793a\u4f8b",
+                "parameters": [],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/CreateDocTemplateSampleDto"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": ""
+                    }
+                },
+                "tags": [
+                    "doc-template-sample"
+                ]
+            }
+        },
+        "/api/v1/doc-template-samples/list": {
+            "get": {
+                "operationId": "DocTemplateSampleController_findAll",
+                "summary": "\u83b7\u53d6\u6587\u4ef6\u6a21\u677f/\u793a\u4f8b\u5217\u8868",
+                "parameters": [
+                    {
+                        "name": "page",
+                        "required": false,
+                        "in": "query",
+                        "description": "\u9875\u7801",
+                        "schema": {
+                            "default": 1,
+                            "example": 1,
+                            "type": "number"
+                        }
+                    },
+                    {
+                        "name": "pageSize",
+                        "required": false,
+                        "in": "query",
+                        "description": "\u6bcf\u9875\u6570\u91cf",
+                        "schema": {
+                            "default": 10,
+                            "example": 10,
+                            "type": "number"
+                        }
+                    },
+                    {
+                        "name": "keyword",
+                        "required": false,
+                        "in": "query",
+                        "description": "\u5173\u952e\u8bcd\u641c\u7d22",
+                        "schema": {
+                            "example": "\u5408\u540c",
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "status",
+                        "required": false,
+                        "in": "query",
+                        "description": "\u72b6\u6001",
+                        "schema": {
+                            "example": 1,
+                            "enum": [
+                                0,
+                                1
+                            ],
+                            "type": "number"
+                        }
+                    },
+                    {
+                        "name": "docTypeIds",
+                        "required": false,
+                        "in": "query",
+                        "description": "\u6587\u4ef6\u7c7b\u578bID\uff08\u652f\u6301\u591a\u9009\uff0c\u9017\u53f7\u5206\u9694\uff09",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": ""
+                    }
+                },
+                "tags": [
+                    "doc-template-sample"
+                ]
+            }
+        },
+        "/api/v1/doc-template-samples/{id}": {
+            "get": {
+                "operationId": "DocTemplateSampleController_findOne",
+                "summary": "\u83b7\u53d6\u6587\u4ef6\u6a21\u677f/\u793a\u4f8b\u8be6\u60c5",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "required": true,
+                        "in": "path",
+                        "schema": {
+                            "type": "number"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": ""
+                    }
+                },
+                "tags": [
+                    "doc-template-sample"
+                ]
+            },
+            "put": {
+                "operationId": "DocTemplateSampleController_update",
+                "summary": "\u66f4\u65b0\u6587\u4ef6\u6a21\u677f/\u793a\u4f8b",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "required": true,
+                        "in": "path",
+                        "schema": {
+                            "type": "number"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/UpdateDocTemplateSampleDto"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": ""
+                    }
+                },
+                "tags": [
+                    "doc-template-sample"
+                ]
+            },
+            "delete": {
+                "operationId": "DocTemplateSampleController_remove",
+                "summary": "\u5220\u9664/\u505c\u7528\u6587\u4ef6\u6a21\u677f/\u793a\u4f8b",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "required": true,
+                        "in": "path",
+                        "schema": {
+                            "type": "number"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": ""
+                    }
+                },
+                "tags": [
+                    "doc-template-sample"
+                ]
+            }
+        },
+        "/api/v1/doc-template-samples/batch/enable": {
+            "post": {
+                "operationId": "DocTemplateSampleController_batchEnable",
+                "summary": "\u6279\u91cf\u542f\u7528",
+                "parameters": [],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/BatchIdsDto"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": ""
+                    }
+                },
+                "tags": [
+                    "doc-template-sample"
+                ]
+            }
+        },
+        "/api/v1/doc-template-samples/batch/disable": {
+            "post": {
+                "operationId": "DocTemplateSampleController_batchDisable",
+                "summary": "\u6279\u91cf\u505c\u7528",
+                "parameters": [],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/BatchIdsDto"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": ""
+                    }
+                },
+                "tags": [
+                    "doc-template-sample"
+                ]
+            }
+        },
+        "/api/v1/doc-template-samples/batch/delete": {
+            "post": {
+                "operationId": "DocTemplateSampleController_batchDelete",
+                "summary": "\u6279\u91cf\u5220\u9664",
+                "parameters": [],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/BatchIdsDto"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": ""
+                    }
+                },
+                "tags": [
+                    "doc-template-sample"
+                ]
+            }
+        },
+        "/api/v1/audit-rules": {
+            "post": {
+                "operationId": "AuditRuleController_create",
+                "summary": "\u521b\u5efa\u5ba1\u8ba1\u89c4\u5219",
+                "parameters": [],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/CreateAuditRuleDto"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": ""
+                    }
+                },
+                "tags": [
+                    "audit-rule"
+                ]
+            }
+        },
+        "/api/v1/audit-rules/list": {
+            "get": {
+                "operationId": "AuditRuleController_findAll",
+                "summary": "\u83b7\u53d6\u5ba1\u8ba1\u89c4\u5219\u5217\u8868",
+                "parameters": [
+                    {
+                        "name": "page",
+                        "required": false,
+                        "in": "query",
+                        "description": "\u9875\u7801",
+                        "schema": {
+                            "default": 1,
+                            "example": 1,
+                            "type": "number"
+                        }
+                    },
+                    {
+                        "name": "pageSize",
+                        "required": false,
+                        "in": "query",
+                        "description": "\u6bcf\u9875\u6570\u91cf",
+                        "schema": {
+                            "default": 10,
+                            "example": 10,
+                            "type": "number"
+                        }
+                    },
+                    {
+                        "name": "keyword",
+                        "required": false,
+                        "in": "query",
+                        "description": "\u5173\u952e\u8bcd\u641c\u7d22",
+                        "schema": {
+                            "example": "\u5408\u540c",
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "status",
+                        "required": false,
+                        "in": "query",
+                        "description": "\u72b6\u6001\uff1a1-\u542f\u7528\uff0c0-\u505c\u7528",
+                        "schema": {
+                            "example": 1,
+                            "enum": [
+                                0,
+                                1
+                            ],
+                            "type": "number"
+                        }
+                    },
+                    {
+                        "name": "auditType",
+                        "required": false,
+                        "in": "query",
+                        "description": "\u5ba1\u8ba1\u7c7b\u578b",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "phase",
+                        "required": false,
+                        "in": "query",
+                        "description": "\u9636\u6bb5",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "verifySection",
+                        "required": false,
+                        "in": "query",
+                        "description": "\u67e5\u8bc1\u677f\u5757",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": ""
+                    }
+                },
+                "tags": [
+                    "audit-rule"
+                ]
+            }
+        },
+        "/api/v1/audit-rules/all": {
+            "get": {
+                "operationId": "AuditRuleController_findAllActive",
+                "summary": "\u83b7\u53d6\u6240\u6709\u542f\u7528\u7684\u5ba1\u8ba1\u89c4\u5219",
+                "parameters": [],
+                "responses": {
+                    "200": {
+                        "description": ""
+                    }
+                },
+                "tags": [
+                    "audit-rule"
+                ]
+            }
+        },
+        "/api/v1/audit-rules/template": {
+            "get": {
+                "operationId": "AuditRuleController_downloadTemplate",
+                "summary": "\u4e0b\u8f7dExcel\u5bfc\u5165\u6a21\u677f",
+                "parameters": [],
+                "responses": {
+                    "200": {
+                        "description": ""
+                    }
+                },
+                "tags": [
+                    "audit-rule"
+                ]
+            }
+        },
+        "/api/v1/audit-rules/export": {
+            "get": {
+                "operationId": "AuditRuleController_exportExcel",
+                "summary": "\u5bfc\u51fa\u6570\u636e\u5230Excel",
+                "parameters": [
+                    {
+                        "name": "page",
+                        "required": false,
+                        "in": "query",
+                        "description": "\u9875\u7801",
+                        "schema": {
+                            "default": 1,
+                            "example": 1,
+                            "type": "number"
+                        }
+                    },
+                    {
+                        "name": "pageSize",
+                        "required": false,
+                        "in": "query",
+                        "description": "\u6bcf\u9875\u6570\u91cf",
+                        "schema": {
+                            "default": 10,
+                            "example": 10,
+                            "type": "number"
+                        }
+                    },
+                    {
+                        "name": "keyword",
+                        "required": false,
+                        "in": "query",
+                        "description": "\u5173\u952e\u8bcd\u641c\u7d22",
+                        "schema": {
+                            "example": "\u5408\u540c",
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "status",
+                        "required": false,
+                        "in": "query",
+                        "description": "\u72b6\u6001\uff1a1-\u542f\u7528\uff0c0-\u505c\u7528",
+                        "schema": {
+                            "example": 1,
+                            "enum": [
+                                0,
+                                1
+                            ],
+                            "type": "number"
+                        }
+                    },
+                    {
+                        "name": "auditType",
+                        "required": false,
+                        "in": "query",
+                        "description": "\u5ba1\u8ba1\u7c7b\u578b",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "phase",
+                        "required": false,
+                        "in": "query",
+                        "description": "\u9636\u6bb5",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "verifySection",
+                        "required": false,
+                        "in": "query",
+                        "description": "\u67e5\u8bc1\u677f\u5757",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": ""
+                    }
+                },
+                "tags": [
+                    "audit-rule"
+                ]
+            }
+        },
+        "/api/v1/audit-rules/field-by-code/{fieldCode}": {
+            "get": {
+                "operationId": "AuditRuleController_getFieldByCode",
+                "summary": "\u6839\u636e\u5b57\u6bb5\u7f16\u7801\u83b7\u53d6\u5b57\u6bb5\u4fe1\u606f",
+                "parameters": [
+                    {
+                        "name": "fieldCode",
+                        "required": true,
+                        "in": "path",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": ""
+                    }
+                },
+                "tags": [
+                    "audit-rule"
+                ]
+            }
+        },
+        "/api/v1/audit-rules/import": {
+            "post": {
+                "operationId": "AuditRuleController_importExcel",
+                "summary": "Excel\u6279\u91cf\u5bfc\u5165",
+                "parameters": [],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "file": {
+                                        "type": "string",
+                                        "format": "binary"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": ""
+                    }
+                },
+                "tags": [
+                    "audit-rule"
+                ]
+            }
+        },
+        "/api/v1/audit-rules/{id}": {
+            "get": {
+                "operationId": "AuditRuleController_findOne",
+                "summary": "\u83b7\u53d6\u5ba1\u8ba1\u89c4\u5219\u8be6\u60c5",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "required": true,
+                        "in": "path",
+                        "schema": {
+                            "type": "number"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": ""
+                    }
+                },
+                "tags": [
+                    "audit-rule"
+                ]
+            },
+            "put": {
+                "operationId": "AuditRuleController_update",
+                "summary": "\u66f4\u65b0\u5ba1\u8ba1\u89c4\u5219",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "required": true,
+                        "in": "path",
+                        "schema": {
+                            "type": "number"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/UpdateAuditRuleDto"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": ""
+                    }
+                },
+                "tags": [
+                    "audit-rule"
+                ]
+            },
+            "delete": {
+                "operationId": "AuditRuleController_remove",
+                "summary": "\u5220\u9664/\u505c\u7528\u5ba1\u8ba1\u89c4\u5219",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "required": true,
+                        "in": "path",
+                        "schema": {
+                            "type": "number"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": ""
+                    }
+                },
+                "tags": [
+                    "audit-rule"
+                ]
+            }
+        },
+        "/api/v1/audit-rules/batch/enable": {
+            "post": {
+                "operationId": "AuditRuleController_batchEnable",
+                "summary": "\u6279\u91cf\u542f\u7528",
+                "parameters": [],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/BatchIdsDto"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": ""
+                    }
+                },
+                "tags": [
+                    "audit-rule"
+                ]
+            }
+        },
+        "/api/v1/audit-rules/batch/disable": {
+            "post": {
+                "operationId": "AuditRuleController_batchDisable",
+                "summary": "\u6279\u91cf\u505c\u7528",
+                "parameters": [],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/BatchIdsDto"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": ""
+                    }
+                },
+                "tags": [
+                    "audit-rule"
+                ]
+            }
+        },
+        "/api/v1/audit-rules/batch/delete": {
+            "post": {
+                "operationId": "AuditRuleController_batchDelete",
+                "summary": "\u6279\u91cf\u5220\u9664",
+                "parameters": [],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/BatchIdsDto"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": ""
+                    }
+                },
+                "tags": [
+                    "audit-rule"
+                ]
+            }
+        },
+        "/api/v1/audit-rule-field-links": {
+            "post": {
+                "operationId": "AuditRuleFieldLinkController_create",
+                "summary": "\u521b\u5efa\u89c4\u5219\u5b57\u6bb5\u5173\u8054",
+                "parameters": [],
+                "responses": {
+                    "201": {
+                        "description": ""
+                    }
+                },
+                "tags": [
+                    "audit-rule-field-link"
+                ]
+            }
+        },
+        "/api/v1/audit-rule-field-links/by-rule/{ruleId}": {
+            "get": {
+                "operationId": "AuditRuleFieldLinkController_findByRuleId",
+                "summary": "\u6839\u636e\u89c4\u5219ID\u83b7\u53d6\u5173\u8054\u5b57\u6bb5",
+                "parameters": [
+                    {
+                        "name": "ruleId",
+                        "required": true,
+                        "in": "path",
+                        "schema": {
+                            "type": "number"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": ""
+                    }
+                },
+                "tags": [
+                    "audit-rule-field-link"
+                ]
+            }
+        },
+        "/api/v1/audit-rule-field-links/{id}": {
+            "get": {
+                "operationId": "AuditRuleFieldLinkController_findOne",
+                "summary": "\u83b7\u53d6\u5173\u8054\u8be6\u60c5",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "required": true,
+                        "in": "path",
+                        "schema": {
+                            "type": "number"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": ""
+                    }
+                },
+                "tags": [
+                    "audit-rule-field-link"
+                ]
+            },
+            "put": {
+                "operationId": "AuditRuleFieldLinkController_update",
+                "summary": "\u66f4\u65b0\u5173\u8054",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "required": true,
+                        "in": "path",
+                        "schema": {
+                            "type": "number"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": ""
+                    }
+                },
+                "tags": [
+                    "audit-rule-field-link"
+                ]
+            },
+            "delete": {
+                "operationId": "AuditRuleFieldLinkController_remove",
+                "summary": "\u5220\u9664\u5173\u8054",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "required": true,
+                        "in": "path",
+                        "schema": {
+                            "type": "number"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": ""
+                    }
+                },
+                "tags": [
+                    "audit-rule-field-link"
+                ]
+            }
+        },
+        "/api/v1/audit-rule-law-links": {
+            "post": {
+                "operationId": "AuditRuleLawLinkController_create",
+                "summary": "\u521b\u5efa\u89c4\u5219\u6cd5\u89c4\u5173\u8054",
+                "parameters": [],
+                "responses": {
+                    "201": {
+                        "description": ""
+                    }
+                },
+                "tags": [
+                    "audit-rule-law-link"
+                ]
+            }
+        },
+        "/api/v1/audit-rule-law-links/by-rule/{ruleId}": {
+            "get": {
+                "operationId": "AuditRuleLawLinkController_findByRuleId",
+                "summary": "\u6839\u636e\u89c4\u5219ID\u83b7\u53d6\u5173\u8054\u6cd5\u89c4",
+                "parameters": [
+                    {
+                        "name": "ruleId",
+                        "required": true,
+                        "in": "path",
+                        "schema": {
+                            "type": "number"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": ""
+                    }
+                },
+                "tags": [
+                    "audit-rule-law-link"
+                ]
+            }
+        },
+        "/api/v1/audit-rule-law-links/{id}": {
+            "get": {
+                "operationId": "AuditRuleLawLinkController_findOne",
+                "summary": "\u83b7\u53d6\u5173\u8054\u8be6\u60c5",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "required": true,
+                        "in": "path",
+                        "schema": {
+                            "type": "number"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": ""
+                    }
+                },
+                "tags": [
+                    "audit-rule-law-link"
+                ]
+            },
+            "put": {
+                "operationId": "AuditRuleLawLinkController_update",
+                "summary": "\u66f4\u65b0\u5173\u8054",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "required": true,
+                        "in": "path",
+                        "schema": {
+                            "type": "number"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": ""
+                    }
+                },
+                "tags": [
+                    "audit-rule-law-link"
+                ]
+            },
+            "delete": {
+                "operationId": "AuditRuleLawLinkController_remove",
+                "summary": "\u5220\u9664\u5173\u8054",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "required": true,
+                        "in": "path",
+                        "schema": {
+                            "type": "number"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": ""
+                    }
+                },
+                "tags": [
+                    "audit-rule-law-link"
+                ]
+            }
+        },
+        "/api/v1/audit-rule-examples": {
+            "post": {
+                "operationId": "AuditRuleExampleController_create",
+                "summary": "\u521b\u5efa\u89c4\u5219\u6848\u4f8b",
+                "parameters": [],
+                "responses": {
+                    "201": {
+                        "description": ""
+                    }
+                },
+                "tags": [
+                    "audit-rule-example"
+                ]
+            }
+        },
+        "/api/v1/audit-rule-examples/by-rule/{ruleId}": {
+            "get": {
+                "operationId": "AuditRuleExampleController_findByRuleId",
+                "summary": "\u6839\u636e\u89c4\u5219ID\u83b7\u53d6\u6848\u4f8b",
+                "parameters": [
+                    {
+                        "name": "ruleId",
+                        "required": true,
+                        "in": "path",
+                        "schema": {
+                            "type": "number"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": ""
+                    }
+                },
+                "tags": [
+                    "audit-rule-example"
+                ]
+            }
+        },
+        "/api/v1/audit-rule-examples/{id}": {
+            "get": {
+                "operationId": "AuditRuleExampleController_findOne",
+                "summary": "\u83b7\u53d6\u6848\u4f8b\u8be6\u60c5",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "required": true,
+                        "in": "path",
+                        "schema": {
+                            "type": "number"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": ""
+                    }
+                },
+                "tags": [
+                    "audit-rule-example"
+                ]
+            },
+            "put": {
+                "operationId": "AuditRuleExampleController_update",
+                "summary": "\u66f4\u65b0\u6848\u4f8b",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "required": true,
+                        "in": "path",
+                        "schema": {
+                            "type": "number"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": ""
+                    }
+                },
+                "tags": [
+                    "audit-rule-example"
+                ]
+            },
+            "delete": {
+                "operationId": "AuditRuleExampleController_remove",
+                "summary": "\u5220\u9664\u6848\u4f8b",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "required": true,
+                        "in": "path",
+                        "schema": {
+                            "type": "number"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": ""
+                    }
+                },
+                "tags": [
+                    "audit-rule-example"
+                ]
+            }
+        },
+        "/api/v1/law-documents": {
+            "post": {
+                "operationId": "LawDocumentController_create",
+                "summary": "\u521b\u5efa\u6cd5\u89c4\u4e0e\u6807\u51c6",
+                "parameters": [],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/CreateLawDocumentDto"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": ""
+                    }
+                },
+                "tags": [
+                    "law-document"
+                ]
+            }
+        },
+        "/api/v1/law-documents/list": {
+            "get": {
+                "operationId": "LawDocumentController_findAll",
+                "summary": "\u83b7\u53d6\u6cd5\u89c4\u4e0e\u6807\u51c6\u5217\u8868",
+                "parameters": [
+                    {
+                        "name": "page",
+                        "required": false,
+                        "in": "query",
+                        "description": "\u9875\u7801",
+                        "schema": {
+                            "default": 1,
+                            "example": 1,
+                            "type": "number"
+                        }
+                    },
+                    {
+                        "name": "pageSize",
+                        "required": false,
+                        "in": "query",
+                        "description": "\u6bcf\u9875\u6570\u91cf",
+                        "schema": {
+                            "default": 10,
+                            "example": 10,
+                            "type": "number"
+                        }
+                    },
+                    {
+                        "name": "keyword",
+                        "required": false,
+                        "in": "query",
+                        "description": "\u5173\u952e\u8bcd\u641c\u7d22",
+                        "schema": {
+                            "example": "\u5408\u540c",
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "status",
+                        "required": false,
+                        "in": "query",
+                        "description": "\u72b6\u6001\uff1a1-\u542f\u7528\uff0c0-\u505c\u7528",
+                        "schema": {
+                            "example": 1,
+                            "enum": [
+                                0,
+                                1
+                            ],
+                            "type": "number"
+                        }
+                    },
+                    {
+                        "name": "lawCode",
+                        "required": false,
+                        "in": "query",
+                        "description": "\u6cd5\u89c4\u7f16\u53f7",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "lawCategory",
+                        "required": false,
+                        "in": "query",
+                        "description": "\u6587\u79cd\u7c7b\u522b",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "lawStatus",
+                        "required": false,
+                        "in": "query",
+                        "description": "\u5f53\u524d\u72b6\u6001",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": ""
+                    }
+                },
+                "tags": [
+                    "law-document"
+                ]
+            }
+        },
+        "/api/v1/law-documents/all": {
+            "get": {
+                "operationId": "LawDocumentController_findAllActive",
+                "summary": "\u83b7\u53d6\u6240\u6709\u542f\u7528\u7684\u6cd5\u89c4\u4e0e\u6807\u51c6",
+                "parameters": [],
+                "responses": {
+                    "200": {
+                        "description": ""
+                    }
+                },
+                "tags": [
+                    "law-document"
+                ]
+            }
+        },
+        "/api/v1/law-documents/template": {
+            "get": {
+                "operationId": "LawDocumentController_downloadTemplate",
+                "summary": "\u4e0b\u8f7dExcel\u5bfc\u5165\u6a21\u677f",
+                "parameters": [],
+                "responses": {
+                    "200": {
+                        "description": ""
+                    }
+                },
+                "tags": [
+                    "law-document"
+                ]
+            }
+        },
+        "/api/v1/law-documents/import": {
+            "post": {
+                "operationId": "LawDocumentController_importExcel",
+                "summary": "Excel\u6279\u91cf\u5bfc\u5165",
+                "parameters": [],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "file": {
+                                        "type": "string",
+                                        "format": "binary"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": ""
+                    }
+                },
+                "tags": [
+                    "law-document"
+                ]
+            }
+        },
+        "/api/v1/law-documents/{id}": {
+            "get": {
+                "operationId": "LawDocumentController_findOne",
+                "summary": "\u83b7\u53d6\u6cd5\u89c4\u4e0e\u6807\u51c6\u8be6\u60c5",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "required": true,
+                        "in": "path",
+                        "schema": {
+                            "type": "number"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": ""
+                    }
+                },
+                "tags": [
+                    "law-document"
+                ]
+            },
+            "put": {
+                "operationId": "LawDocumentController_update",
+                "summary": "\u66f4\u65b0\u6cd5\u89c4\u4e0e\u6807\u51c6",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "required": true,
+                        "in": "path",
+                        "schema": {
+                            "type": "number"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/UpdateLawDocumentDto"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": ""
+                    }
+                },
+                "tags": [
+                    "law-document"
+                ]
+            },
+            "delete": {
+                "operationId": "LawDocumentController_remove",
+                "summary": "\u5220\u9664/\u505c\u7528\u6cd5\u89c4\u4e0e\u6807\u51c6",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "required": true,
+                        "in": "path",
+                        "schema": {
+                            "type": "number"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": ""
+                    }
+                },
+                "tags": [
+                    "law-document"
+                ]
+            }
+        },
+        "/api/v1/law-documents/batch/enable": {
+            "post": {
+                "operationId": "LawDocumentController_batchEnable",
+                "summary": "\u6279\u91cf\u542f\u7528",
+                "parameters": [],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/BatchIdsDto"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": ""
+                    }
+                },
+                "tags": [
+                    "law-document"
+                ]
+            }
+        },
+        "/api/v1/law-documents/batch/disable": {
+            "post": {
+                "operationId": "LawDocumentController_batchDisable",
+                "summary": "\u6279\u91cf\u505c\u7528",
+                "parameters": [],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/BatchIdsDto"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": ""
+                    }
+                },
+                "tags": [
+                    "law-document"
+                ]
+            }
+        },
+        "/api/v1/law-documents/batch/delete": {
+            "post": {
+                "operationId": "LawDocumentController_batchDelete",
+                "summary": "\u6279\u91cf\u5220\u9664",
+                "parameters": [],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/BatchIdsDto"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": ""
+                    }
+                },
+                "tags": [
+                    "law-document"
+                ]
+            }
+        },
+        "/api/v1/law-clauses": {
+            "post": {
+                "operationId": "LawClauseController_create",
+                "summary": "\u521b\u5efa\u6cd5\u89c4\u6761\u6b3e",
+                "parameters": [],
+                "responses": {
+                    "201": {
+                        "description": ""
+                    }
+                },
+                "tags": [
+                    "law-clause"
+                ]
+            }
+        },
+        "/api/v1/law-clauses/list": {
+            "get": {
+                "operationId": "LawClauseController_findAll",
+                "summary": "\u83b7\u53d6\u6cd5\u89c4\u6761\u6b3e\u5217\u8868",
+                "parameters": [],
+                "responses": {
+                    "200": {
+                        "description": ""
+                    }
+                },
+                "tags": [
+                    "law-clause"
+                ]
+            }
+        },
+        "/api/v1/law-clauses/all": {
+            "get": {
+                "operationId": "LawClauseController_findAllActive",
+                "summary": "\u83b7\u53d6\u6240\u6709\u542f\u7528\u7684\u6cd5\u89c4\u6761\u6b3e",
+                "parameters": [],
+                "responses": {
+                    "200": {
+                        "description": ""
+                    }
+                },
+                "tags": [
+                    "law-clause"
+                ]
+            }
+        },
+        "/api/v1/law-clauses/by-law/{lawDocumentId}": {
+            "get": {
+                "operationId": "LawClauseController_findByLawDocument",
+                "summary": "\u6839\u636e\u6cd5\u89c4ID\u83b7\u53d6\u6761\u6b3e\u5217\u8868",
+                "parameters": [
+                    {
+                        "name": "lawDocumentId",
+                        "required": true,
+                        "in": "path",
+                        "schema": {
+                            "type": "number"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": ""
+                    }
+                },
+                "tags": [
+                    "law-clause"
+                ]
+            }
+        },
+        "/api/v1/law-clauses/template": {
+            "get": {
+                "operationId": "LawClauseController_downloadTemplate",
+                "summary": "\u4e0b\u8f7dExcel\u5bfc\u5165\u6a21\u677f",
+                "parameters": [],
+                "responses": {
+                    "200": {
+                        "description": ""
+                    }
+                },
+                "tags": [
+                    "law-clause"
+                ]
+            }
+        },
+        "/api/v1/law-clauses/import": {
+            "post": {
+                "operationId": "LawClauseController_importExcel",
+                "summary": "Excel\u6279\u91cf\u5bfc\u5165",
+                "parameters": [],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "file": {
+                                        "type": "string",
+                                        "format": "binary"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": ""
+                    }
+                },
+                "tags": [
+                    "law-clause"
+                ]
+            }
+        },
+        "/api/v1/law-clauses/{id}": {
+            "get": {
+                "operationId": "LawClauseController_findOne",
+                "summary": "\u83b7\u53d6\u6cd5\u89c4\u6761\u6b3e\u8be6\u60c5",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "required": true,
+                        "in": "path",
+                        "schema": {
+                            "type": "number"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": ""
+                    }
+                },
+                "tags": [
+                    "law-clause"
+                ]
+            },
+            "put": {
+                "operationId": "LawClauseController_update",
+                "summary": "\u66f4\u65b0\u6cd5\u89c4\u6761\u6b3e",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "required": true,
+                        "in": "path",
+                        "schema": {
+                            "type": "number"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": ""
+                    }
+                },
+                "tags": [
+                    "law-clause"
+                ]
+            },
+            "delete": {
+                "operationId": "LawClauseController_remove",
+                "summary": "\u5220\u9664/\u505c\u7528\u6cd5\u89c4\u6761\u6b3e",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "required": true,
+                        "in": "path",
+                        "schema": {
+                            "type": "number"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": ""
+                    }
+                },
+                "tags": [
+                    "law-clause"
+                ]
+            }
+        },
+        "/api/v1/law-clauses/batch/enable": {
+            "post": {
+                "operationId": "LawClauseController_batchEnable",
+                "summary": "\u6279\u91cf\u542f\u7528",
+                "parameters": [],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/BatchIdsDto"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": ""
+                    }
+                },
+                "tags": [
+                    "law-clause"
+                ]
+            }
+        },
+        "/api/v1/law-clauses/batch/disable": {
+            "post": {
+                "operationId": "LawClauseController_batchDisable",
+                "summary": "\u6279\u91cf\u505c\u7528",
+                "parameters": [],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/BatchIdsDto"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": ""
+                    }
+                },
+                "tags": [
+                    "law-clause"
+                ]
+            }
+        },
+        "/api/v1/law-clauses/batch/delete": {
+            "post": {
+                "operationId": "LawClauseController_batchDelete",
+                "summary": "\u6279\u91cf\u5220\u9664",
+                "parameters": [],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/BatchIdsDto"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": ""
+                    }
+                },
+                "tags": [
+                    "law-clause"
+                ]
+            }
+        },
+        "/api/v1/law-clause-doc-type-links": {
+            "post": {
+                "operationId": "LawClauseDocTypeLinkController_create",
+                "summary": "\u521b\u5efa\u6761\u6b3e\u4e0e\u6587\u4ef6\u7c7b\u578b\u5173\u8054",
+                "parameters": [],
+                "responses": {
+                    "201": {
+                        "description": ""
+                    }
+                },
+                "tags": [
+                    "law-clause-doc-type-link"
+                ]
+            }
+        },
+        "/api/v1/law-clause-doc-type-links/list": {
+            "get": {
+                "operationId": "LawClauseDocTypeLinkController_findAll",
+                "summary": "\u83b7\u53d6\u5173\u8054\u5217\u8868",
+                "parameters": [],
+                "responses": {
+                    "200": {
+                        "description": ""
+                    }
+                },
+                "tags": [
+                    "law-clause-doc-type-link"
+                ]
+            }
+        },
+        "/api/v1/law-clause-doc-type-links/{id}": {
+            "get": {
+                "operationId": "LawClauseDocTypeLinkController_findOne",
+                "summary": "\u83b7\u53d6\u5173\u8054\u8be6\u60c5",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "required": true,
+                        "in": "path",
+                        "schema": {
+                            "type": "number"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": ""
+                    }
+                },
+                "tags": [
+                    "law-clause-doc-type-link"
+                ]
+            },
+            "put": {
+                "operationId": "LawClauseDocTypeLinkController_update",
+                "summary": "\u66f4\u65b0\u5173\u8054",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "required": true,
+                        "in": "path",
+                        "schema": {
+                            "type": "number"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": ""
+                    }
+                },
+                "tags": [
+                    "law-clause-doc-type-link"
+                ]
+            },
+            "delete": {
+                "operationId": "LawClauseDocTypeLinkController_remove",
+                "summary": "\u5220\u9664\u5173\u8054",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "required": true,
+                        "in": "path",
+                        "schema": {
+                            "type": "number"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": ""
+                    }
+                },
+                "tags": [
+                    "law-clause-doc-type-link"
+                ]
+            }
+        },
+        "/api/v1/law-clause-doc-type-links/batch/enable": {
+            "post": {
+                "operationId": "LawClauseDocTypeLinkController_batchEnable",
+                "summary": "\u6279\u91cf\u542f\u7528\u5173\u8054",
+                "parameters": [],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/BatchIdsDto"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": ""
+                    }
+                },
+                "tags": [
+                    "law-clause-doc-type-link"
+                ]
+            }
+        },
+        "/api/v1/law-clause-doc-type-links/batch/disable": {
+            "post": {
+                "operationId": "LawClauseDocTypeLinkController_batchDisable",
+                "summary": "\u6279\u91cf\u505c\u7528\u5173\u8054",
+                "parameters": [],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/BatchIdsDto"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": ""
+                    }
+                },
+                "tags": [
+                    "law-clause-doc-type-link"
+                ]
+            }
+        },
+        "/api/v1/law-clause-doc-type-links/batch/delete": {
+            "post": {
+                "operationId": "LawClauseDocTypeLinkController_batchDelete",
+                "summary": "\u6279\u91cf\u5220\u9664\u5173\u8054",
+                "parameters": [],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/BatchIdsDto"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": ""
+                    }
+                },
+                "tags": [
+                    "law-clause-doc-type-link"
+                ]
+            }
+        },
+        "/api/v1/cost-rules": {
+            "post": {
+                "operationId": "CostRuleController_create",
+                "summary": "\u521b\u5efa\u5de5\u7a0b\u9020\u4ef7\u89c4\u5219",
+                "parameters": [],
+                "responses": {
+                    "201": {
+                        "description": ""
+                    }
+                },
+                "tags": [
+                    "cost-rule"
+                ]
+            }
+        },
+        "/api/v1/cost-rules/list": {
+            "get": {
+                "operationId": "CostRuleController_findAll",
+                "summary": "\u83b7\u53d6\u5de5\u7a0b\u9020\u4ef7\u89c4\u5219\u5217\u8868",
+                "parameters": [],
+                "responses": {
+                    "200": {
+                        "description": ""
+                    }
+                },
+                "tags": [
+                    "cost-rule"
+                ]
+            }
+        },
+        "/api/v1/cost-rules/{id}": {
+            "get": {
+                "operationId": "CostRuleController_findOne",
+                "summary": "\u83b7\u53d6\u5de5\u7a0b\u9020\u4ef7\u89c4\u5219\u8be6\u60c5",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "required": true,
+                        "in": "path",
+                        "schema": {
+                            "type": "number"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": ""
+                    }
+                },
+                "tags": [
+                    "cost-rule"
+                ]
+            },
+            "put": {
+                "operationId": "CostRuleController_update",
+                "summary": "\u66f4\u65b0\u5de5\u7a0b\u9020\u4ef7\u89c4\u5219",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "required": true,
+                        "in": "path",
+                        "schema": {
+                            "type": "number"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": ""
+                    }
+                },
+                "tags": [
+                    "cost-rule"
+                ]
+            },
+            "delete": {
+                "operationId": "CostRuleController_remove",
+                "summary": "\u5220\u9664/\u505c\u7528\u5de5\u7a0b\u9020\u4ef7\u89c4\u5219",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "required": true,
+                        "in": "path",
+                        "schema": {
+                            "type": "number"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": ""
+                    }
+                },
+                "tags": [
+                    "cost-rule"
+                ]
+            }
+        },
+        "/api/v1/cost-rules/batch/enable": {
+            "post": {
+                "operationId": "CostRuleController_batchEnable",
+                "summary": "\u6279\u91cf\u542f\u7528",
+                "parameters": [],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/BatchIdsDto"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": ""
+                    }
+                },
+                "tags": [
+                    "cost-rule"
+                ]
+            }
+        },
+        "/api/v1/cost-rules/batch/disable": {
+            "post": {
+                "operationId": "CostRuleController_batchDisable",
+                "summary": "\u6279\u91cf\u505c\u7528",
+                "parameters": [],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/BatchIdsDto"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": ""
+                    }
+                },
+                "tags": [
+                    "cost-rule"
+                ]
+            }
+        },
+        "/api/v1/cost-rules/batch/delete": {
+            "post": {
+                "operationId": "CostRuleController_batchDelete",
+                "summary": "\u6279\u91cf\u5220\u9664",
+                "parameters": [],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/BatchIdsDto"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": ""
+                    }
+                },
+                "tags": [
+                    "cost-rule"
+                ]
+            }
+        },
+        "/api/v1/biz-processes": {
+            "post": {
+                "operationId": "BizProcessController_create",
+                "summary": "\u521b\u5efa\u5de5\u7a0b\u54a8\u8be2\u4e1a\u52a1\u6d41\u7a0b",
+                "parameters": [],
+                "responses": {
+                    "201": {
+                        "description": ""
+                    }
+                },
+                "tags": [
+                    "biz-process"
+                ]
+            }
+        },
+        "/api/v1/biz-processes/list": {
+            "get": {
+                "operationId": "BizProcessController_findAll",
+                "summary": "\u83b7\u53d6\u5de5\u7a0b\u54a8\u8be2\u4e1a\u52a1\u6d41\u7a0b\u5217\u8868",
+                "parameters": [],
+                "responses": {
+                    "200": {
+                        "description": ""
+                    }
+                },
+                "tags": [
+                    "biz-process"
+                ]
+            }
+        },
+        "/api/v1/biz-processes/{id}": {
+            "get": {
+                "operationId": "BizProcessController_findOne",
+                "summary": "\u83b7\u53d6\u5de5\u7a0b\u54a8\u8be2\u4e1a\u52a1\u6d41\u7a0b\u8be6\u60c5",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "required": true,
+                        "in": "path",
+                        "schema": {
+                            "type": "number"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": ""
+                    }
+                },
+                "tags": [
+                    "biz-process"
+                ]
+            },
+            "put": {
+                "operationId": "BizProcessController_update",
+                "summary": "\u66f4\u65b0\u5de5\u7a0b\u54a8\u8be2\u4e1a\u52a1\u6d41\u7a0b",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "required": true,
+                        "in": "path",
+                        "schema": {
+                            "type": "number"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": ""
+                    }
+                },
+                "tags": [
+                    "biz-process"
+                ]
+            },
+            "delete": {
+                "operationId": "BizProcessController_remove",
+                "summary": "\u5220\u9664/\u505c\u7528\u5de5\u7a0b\u54a8\u8be2\u4e1a\u52a1\u6d41\u7a0b",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "required": true,
+                        "in": "path",
+                        "schema": {
+                            "type": "number"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": ""
+                    }
+                },
+                "tags": [
+                    "biz-process"
+                ]
+            }
+        },
+        "/api/v1/biz-processes/batch/enable": {
+            "post": {
+                "operationId": "BizProcessController_batchEnable",
+                "summary": "\u6279\u91cf\u542f\u7528",
+                "parameters": [],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/BatchIdsDto"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": ""
+                    }
+                },
+                "tags": [
+                    "biz-process"
+                ]
+            }
+        },
+        "/api/v1/biz-processes/batch/disable": {
+            "post": {
+                "operationId": "BizProcessController_batchDisable",
+                "summary": "\u6279\u91cf\u505c\u7528",
+                "parameters": [],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/BatchIdsDto"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": ""
+                    }
+                },
+                "tags": [
+                    "biz-process"
+                ]
+            }
+        },
+        "/api/v1/biz-processes/batch/delete": {
+            "post": {
+                "operationId": "BizProcessController_batchDelete",
+                "summary": "\u6279\u91cf\u5220\u9664",
+                "parameters": [],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/BatchIdsDto"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": ""
+                    }
+                },
+                "tags": [
+                    "biz-process"
+                ]
+            }
+        },
+        "/api/v1/case-libraries": {
+            "post": {
+                "operationId": "CaseLibraryController_create",
+                "summary": "\u521b\u5efa\u5de5\u7a0b\u6848\u4f8b",
+                "parameters": [],
+                "responses": {
+                    "201": {
+                        "description": ""
+                    }
+                },
+                "tags": [
+                    "case-library"
+                ]
+            }
+        },
+        "/api/v1/case-libraries/list": {
+            "get": {
+                "operationId": "CaseLibraryController_findAll",
+                "summary": "\u83b7\u53d6\u5de5\u7a0b\u6848\u4f8b\u5217\u8868",
+                "parameters": [],
+                "responses": {
+                    "200": {
+                        "description": ""
+                    }
+                },
+                "tags": [
+                    "case-library"
+                ]
+            }
+        },
+        "/api/v1/case-libraries/{id}": {
+            "get": {
+                "operationId": "CaseLibraryController_findOne",
+                "summary": "\u83b7\u53d6\u5de5\u7a0b\u6848\u4f8b\u8be6\u60c5",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "required": true,
+                        "in": "path",
+                        "schema": {
+                            "type": "number"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": ""
+                    }
+                },
+                "tags": [
+                    "case-library"
+                ]
+            },
+            "put": {
+                "operationId": "CaseLibraryController_update",
+                "summary": "\u66f4\u65b0\u5de5\u7a0b\u6848\u4f8b",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "required": true,
+                        "in": "path",
+                        "schema": {
+                            "type": "number"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": ""
+                    }
+                },
+                "tags": [
+                    "case-library"
+                ]
+            },
+            "delete": {
+                "operationId": "CaseLibraryController_remove",
+                "summary": "\u5220\u9664/\u505c\u7528\u5de5\u7a0b\u6848\u4f8b",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "required": true,
+                        "in": "path",
+                        "schema": {
+                            "type": "number"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": ""
+                    }
+                },
+                "tags": [
+                    "case-library"
+                ]
+            }
+        },
+        "/api/v1/case-libraries/batch/enable": {
+            "post": {
+                "operationId": "CaseLibraryController_batchEnable",
+                "summary": "\u6279\u91cf\u542f\u7528",
+                "parameters": [],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/BatchIdsDto"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": ""
+                    }
+                },
+                "tags": [
+                    "case-library"
+                ]
+            }
+        },
+        "/api/v1/case-libraries/batch/disable": {
+            "post": {
+                "operationId": "CaseLibraryController_batchDisable",
+                "summary": "\u6279\u91cf\u505c\u7528",
+                "parameters": [],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/BatchIdsDto"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": ""
+                    }
+                },
+                "tags": [
+                    "case-library"
+                ]
+            }
+        },
+        "/api/v1/case-libraries/batch/delete": {
+            "post": {
+                "operationId": "CaseLibraryController_batchDelete",
+                "summary": "\u6279\u91cf\u5220\u9664",
+                "parameters": [],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/BatchIdsDto"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": ""
+                    }
+                },
+                "tags": [
+                    "case-library"
+                ]
+            }
+        },
+        "/api/v1/knowledge-snippets": {
+            "post": {
+                "operationId": "KnowledgeSnippetController_create",
+                "summary": "\u521b\u5efa\u5de5\u7a0b\u788e\u7247\u77e5\u8bc6",
+                "parameters": [],
+                "responses": {
+                    "201": {
+                        "description": ""
+                    }
+                },
+                "tags": [
+                    "knowledge-snippet"
+                ]
+            }
+        },
+        "/api/v1/knowledge-snippets/list": {
+            "get": {
+                "operationId": "KnowledgeSnippetController_findAll",
+                "summary": "\u83b7\u53d6\u5de5\u7a0b\u788e\u7247\u77e5\u8bc6\u5217\u8868",
+                "parameters": [],
+                "responses": {
+                    "200": {
+                        "description": ""
+                    }
+                },
+                "tags": [
+                    "knowledge-snippet"
+                ]
+            }
+        },
+        "/api/v1/knowledge-snippets/{id}": {
+            "get": {
+                "operationId": "KnowledgeSnippetController_findOne",
+                "summary": "\u83b7\u53d6\u5de5\u7a0b\u788e\u7247\u77e5\u8bc6\u8be6\u60c5",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "required": true,
+                        "in": "path",
+                        "schema": {
+                            "type": "number"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": ""
+                    }
+                },
+                "tags": [
+                    "knowledge-snippet"
+                ]
+            },
+            "put": {
+                "operationId": "KnowledgeSnippetController_update",
+                "summary": "\u66f4\u65b0\u5de5\u7a0b\u788e\u7247\u77e5\u8bc6",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "required": true,
+                        "in": "path",
+                        "schema": {
+                            "type": "number"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": ""
+                    }
+                },
+                "tags": [
+                    "knowledge-snippet"
+                ]
+            },
+            "delete": {
+                "operationId": "KnowledgeSnippetController_remove",
+                "summary": "\u5220\u9664/\u505c\u7528\u5de5\u7a0b\u788e\u7247\u77e5\u8bc6",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "required": true,
+                        "in": "path",
+                        "schema": {
+                            "type": "number"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": ""
+                    }
+                },
+                "tags": [
+                    "knowledge-snippet"
+                ]
+            }
+        },
+        "/api/v1/knowledge-snippets/batch/enable": {
+            "post": {
+                "operationId": "KnowledgeSnippetController_batchEnable",
+                "summary": "\u6279\u91cf\u542f\u7528",
+                "parameters": [],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/BatchIdsDto"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": ""
+                    }
+                },
+                "tags": [
+                    "knowledge-snippet"
+                ]
+            }
+        },
+        "/api/v1/knowledge-snippets/batch/disable": {
+            "post": {
+                "operationId": "KnowledgeSnippetController_batchDisable",
+                "summary": "\u6279\u91cf\u505c\u7528",
+                "parameters": [],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/BatchIdsDto"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": ""
+                    }
+                },
+                "tags": [
+                    "knowledge-snippet"
+                ]
+            }
+        },
+        "/api/v1/knowledge-snippets/batch/delete": {
+            "post": {
+                "operationId": "KnowledgeSnippetController_batchDelete",
+                "summary": "\u6279\u91cf\u5220\u9664",
+                "parameters": [],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/BatchIdsDto"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": ""
+                    }
+                },
+                "tags": [
+                    "knowledge-snippet"
+                ]
+            }
+        },
+        "/api/v1/monitor-metrics": {
+            "post": {
+                "operationId": "MonitorMetricController_create",
+                "summary": "\u521b\u5efa\u5de5\u7a0b\u6570\u636e\u76d1\u6d4b\u6307\u6807",
+                "parameters": [],
+                "responses": {
+                    "201": {
+                        "description": ""
+                    }
+                },
+                "tags": [
+                    "monitor-metric"
+                ]
+            }
+        },
+        "/api/v1/monitor-metrics/list": {
+            "get": {
+                "operationId": "MonitorMetricController_findAll",
+                "summary": "\u83b7\u53d6\u5de5\u7a0b\u6570\u636e\u76d1\u6d4b\u6307\u6807\u5217\u8868",
+                "parameters": [],
+                "responses": {
+                    "200": {
+                        "description": ""
+                    }
+                },
+                "tags": [
+                    "monitor-metric"
+                ]
+            }
+        },
+        "/api/v1/monitor-metrics/{id}": {
+            "get": {
+                "operationId": "MonitorMetricController_findOne",
+                "summary": "\u83b7\u53d6\u5de5\u7a0b\u6570\u636e\u76d1\u6d4b\u6307\u6807\u8be6\u60c5",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "required": true,
+                        "in": "path",
+                        "schema": {
+                            "type": "number"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": ""
+                    }
+                },
+                "tags": [
+                    "monitor-metric"
+                ]
+            },
+            "put": {
+                "operationId": "MonitorMetricController_update",
+                "summary": "\u66f4\u65b0\u5de5\u7a0b\u6570\u636e\u76d1\u6d4b\u6307\u6807",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "required": true,
+                        "in": "path",
+                        "schema": {
+                            "type": "number"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": ""
+                    }
+                },
+                "tags": [
+                    "monitor-metric"
+                ]
+            },
+            "delete": {
+                "operationId": "MonitorMetricController_remove",
+                "summary": "\u5220\u9664/\u505c\u7528\u5de5\u7a0b\u6570\u636e\u76d1\u6d4b\u6307\u6807",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "required": true,
+                        "in": "path",
+                        "schema": {
+                            "type": "number"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": ""
+                    }
+                },
+                "tags": [
+                    "monitor-metric"
+                ]
+            }
+        },
+        "/api/v1/monitor-metrics/batch/enable": {
+            "post": {
+                "operationId": "MonitorMetricController_batchEnable",
+                "summary": "\u6279\u91cf\u542f\u7528",
+                "parameters": [],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/BatchIdsDto"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": ""
+                    }
+                },
+                "tags": [
+                    "monitor-metric"
+                ]
+            }
+        },
+        "/api/v1/monitor-metrics/batch/disable": {
+            "post": {
+                "operationId": "MonitorMetricController_batchDisable",
+                "summary": "\u6279\u91cf\u505c\u7528",
+                "parameters": [],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/BatchIdsDto"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": ""
+                    }
+                },
+                "tags": [
+                    "monitor-metric"
+                ]
+            }
+        },
+        "/api/v1/monitor-metrics/batch/delete": {
+            "post": {
+                "operationId": "MonitorMetricController_batchDelete",
+                "summary": "\u6279\u91cf\u5220\u9664",
+                "parameters": [],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/BatchIdsDto"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": ""
+                    }
+                },
+                "tags": [
+                    "monitor-metric"
+                ]
+            }
+        },
+        "/api/v1/files/download/{subDir}/{filename}": {
+            "get": {
+                "operationId": "FileUploadController_downloadFile",
+                "summary": "\u4e0b\u8f7d\u6587\u4ef6",
+                "parameters": [
+                    {
+                        "name": "subDir",
+                        "required": true,
+                        "in": "path",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "filename",
+                        "required": true,
+                        "in": "path",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": ""
+                    }
+                },
+                "tags": [
+                    "files"
+                ],
+                "security": [
+                    {
+                        "bearer": []
+                    }
+                ]
+            }
+        }
+    },
+    "info": {
+        "title": "\u5de5\u7a0b\u54a8\u8be2\u5168\u4e1a\u52a1\u6570\u636e\u5e93\u5e73\u53f0 API",
+        "description": "\n## \u6982\u8ff0\n\u5de5\u7a0b\u54a8\u8be2\u5168\u4e1a\u52a1\u6570\u636e\u5e93\u5e73\u53f0\u540e\u7aef\u63a5\u53e3\u6587\u6863 v1.0\n\n## \u8ba4\u8bc1\n\u6240\u6709\u63a5\u53e3\uff08\u9664\u767b\u5f55\u3001\u6ce8\u518c\u3001\u5065\u5eb7\u68c0\u67e5\u5916\uff09\u5747\u9700\u8981 JWT \u8ba4\u8bc1\u3002\n\u8bf7\u5728\u8bf7\u6c42\u5934\u4e2d\u6dfb\u52a0\uff1a`Authorization: Bearer <token>`\n\n## \u54cd\u5e94\u683c\u5f0f\n- \u6210\u529f\uff1a`{ data: T, meta?: { page, pageSize, total, totalPages } }`\n- \u5931\u8d25\uff1a`{ code: string, message: string, traceId: string, details?: any }`\n\n## \u5206\u9875\n- \u9ed8\u8ba4 page=1, pageSize=10\n- \u6700\u5927 pageSize=1000\n    ",
+        "version": "1.0",
+        "contact": {}
+    },
+    "tags": [
+        {
+            "name": "health",
+            "description": "\u5065\u5eb7\u68c0\u67e5"
+        },
+        {
+            "name": "meta",
+            "description": "\u6570\u636e\u5e93\u7ed3\u6784"
+        },
+        {
+            "name": "\u8ba4\u8bc1",
+            "description": "\u7528\u6237\u8ba4\u8bc1"
+        },
+        {
+            "name": "doc-type",
+            "description": "\u6587\u4ef6\u7c7b\u578b"
+        },
+        {
+            "name": "doc-field-def",
+            "description": "\u5173\u952e\u4fe1\u606f\u5b57\u6bb5"
+        },
+        {
+            "name": "doc-template-sample",
+            "description": "\u6587\u4ef6\u6a21\u677f/\u793a\u4f8b"
+        },
+        {
+            "name": "audit-rule",
+            "description": "\u5ba1\u8ba1\u89c4\u5219"
+        },
+        {
+            "name": "law-document",
+            "description": "\u6cd5\u89c4\u4e0e\u6807\u51c6"
+        },
+        {
+            "name": "law-clause",
+            "description": "\u6cd5\u89c4\u6761\u6b3e"
+        },
+        {
+            "name": "files",
+            "description": "\u6587\u4ef6\u4e0a\u4f20"
+        }
+    ],
+    "servers": [],
+    "components": {
+        "securitySchemes": {
+            "JWT": {
+                "scheme": "bearer",
+                "bearerFormat": "JWT",
+                "type": "http",
+                "description": "\u8f93\u5165 JWT Token \u8fdb\u884c\u8ba4\u8bc1"
+            }
+        },
+        "schemas": {
+            "AddEnumOptionDto": {
+                "type": "object",
+                "properties": {
+                    "category": {
+                        "type": "string",
+                        "description": "\u679a\u4e3e\u5206\u7c7b"
+                    },
+                    "value": {
+                        "type": "string",
+                        "description": "\u679a\u4e3e\u503c"
+                    },
+                    "parentValue": {
+                        "type": "string",
+                        "description": "\u7236\u7ea7\u503c"
+                    },
+                    "label": {
+                        "type": "string",
+                        "description": "\u663e\u793a\u6807\u7b7e"
+                    }
+                },
+                "required": [
+                    "category",
+                    "value"
+                ]
+            },
+            "UpdateEnumOptionDto": {
+                "type": "object",
+                "properties": {
+                    "value": {
+                        "type": "string",
+                        "description": "\u679a\u4e3e\u503c"
+                    },
+                    "label": {
+                        "type": "string",
+                        "description": "\u663e\u793a\u6807\u7b7e"
+                    },
+                    "shortCode": {
+                        "type": "string",
+                        "description": "\u7f29\u5199\u7f16\u7801"
+                    },
+                    "parentValue": {
+                        "type": "string",
+                        "description": "\u7236\u7ea7\u503c"
+                    }
+                }
+            },
+            "LoginDto": {
+                "type": "object",
+                "properties": {
+                    "username": {
+                        "type": "string",
+                        "description": "\u7528\u6237\u540d",
+                        "example": "admin"
+                    },
+                    "password": {
+                        "type": "string",
+                        "description": "\u5bc6\u7801",
+                        "example": "admin123"
+                    }
+                },
+                "required": [
+                    "username",
+                    "password"
+                ]
+            },
+            "RegisterDto": {
+                "type": "object",
+                "properties": {
+                    "username": {
+                        "type": "string",
+                        "description": "\u7528\u6237\u540d",
+                        "example": "newuser"
+                    },
+                    "password": {
+                        "type": "string",
+                        "description": "\u5bc6\u7801",
+                        "example": "password123"
+                    },
+                    "nickname": {
+                        "type": "string",
+                        "description": "\u6635\u79f0"
+                    },
+                    "email": {
+                        "type": "string",
+                        "description": "\u90ae\u7bb1"
+                    }
+                },
+                "required": [
+                    "username",
+                    "password"
+                ]
+            },
+            "UpdateProfileDto": {
+                "type": "object",
+                "properties": {
+                    "nickname": {
+                        "type": "string",
+                        "description": "\u6635\u79f0"
+                    },
+                    "email": {
+                        "type": "string",
+                        "description": "\u90ae\u7bb1"
+                    },
+                    "phone": {
+                        "type": "string",
+                        "description": "\u624b\u673a\u53f7"
+                    },
+                    "avatar": {
+                        "type": "string",
+                        "description": "\u5934\u50cfURL"
+                    }
+                }
+            },
+            "ChangePasswordDto": {
+                "type": "object",
+                "properties": {
+                    "oldPassword": {
+                        "type": "string",
+                        "description": "\u65e7\u5bc6\u7801",
+                        "example": "admin123"
+                    },
+                    "newPassword": {
+                        "type": "string",
+                        "description": "\u65b0\u5bc6\u7801",
+                        "example": "newpassword123"
+                    }
+                },
+                "required": [
+                    "oldPassword",
+                    "newPassword"
+                ]
+            },
+            "CreateDocTypeDto": {
+                "type": "object",
+                "properties": {
+                    "code": {
+                        "type": "string",
+                        "description": "\u6587\u4ef6\u7c7b\u578b\u7f16\u7801\uff08\u7559\u7a7a\u81ea\u52a8\u751f\u6210\uff09",
+                        "example": "DT-202601-000001"
+                    },
+                    "name": {
+                        "type": "string",
+                        "description": "\u6587\u4ef6\u7c7b\u578b\u540d\u79f0",
+                        "example": "\u65bd\u5de5\u5408\u540c"
+                    },
+                    "projectPhase": {
+                        "type": "string",
+                        "description": "\u6240\u5c5e\u9879\u76ee\u9636\u6bb5",
+                        "example": "\u62db\u6295\u6807\u9636\u6bb5"
+                    },
+                    "majorCategory": {
+                        "type": "string",
+                        "description": "\u6240\u5c5e\u5927\u7c7b",
+                        "example": "\u5408\u540c\u7c7b"
+                    },
+                    "minorCategory": {
+                        "type": "string",
+                        "description": "\u6240\u5c5e\u5c0f\u7c7b",
+                        "example": "\u65bd\u5de5\u5408\u540c"
+                    },
+                    "fileFeature": {
+                        "type": "string",
+                        "description": "\u6587\u4ef6\u7279\u5f81\u4fe1\u606f\uff08\u7528\u4e8eLLM\u8bc6\u522b\uff09",
+                        "example": "\u5305\u542b\u7532\u65b9\u4e59\u65b9\u4fe1\u606f\u3001\u5408\u540c\u91d1\u989d\u3001\u5de5\u671f\u7b49\u5173\u952e\u6761\u6b3e"
+                    },
+                    "projectType": {
+                        "type": "string",
+                        "description": "\u9002\u7528\u9879\u76ee\u7c7b\u578b\uff08\u9017\u53f7\u5206\u9694\uff09",
+                        "example": "\u623f\u5efa\u5de5\u7a0b,\u5e02\u653f\u5de5\u7a0b"
+                    },
+                    "region": {
+                        "type": "string",
+                        "description": "\u9002\u7528\u5730\u533a",
+                        "example": "\u5168\u56fd"
+                    },
+                    "ownerOrg": {
+                        "type": "string",
+                        "description": "\u9002\u7528\u4e1a\u4e3b",
+                        "example": "\u653f\u5e9c\u6295\u8d44\u9879\u76ee"
+                    },
+                    "bizDescription": {
+                        "type": "string",
+                        "description": "\u4e1a\u52a1\u8bf4\u660e/\u4f7f\u7528\u573a\u666f",
+                        "example": "\u7528\u4e8e\u5ba1\u8ba1\u65bd\u5de5\u5408\u540c\u7684\u5408\u89c4\u6027\u548c\u91d1\u989d\u51c6\u786e\u6027"
+                    },
+                    "remark": {
+                        "type": "string",
+                        "description": "\u5907\u6ce8",
+                        "example": "\u9700\u8981\u5173\u6ce8\u5408\u540c\u53d8\u66f4\u60c5\u51b5"
+                    }
+                },
+                "required": [
+                    "name"
+                ]
+            },
+            "UpdateDocTypeDto": {
+                "type": "object",
+                "properties": {
+                    "code": {
+                        "type": "string",
+                        "description": "\u6587\u4ef6\u7c7b\u578b\u7f16\u7801\uff08\u7559\u7a7a\u81ea\u52a8\u751f\u6210\uff09",
+                        "example": "DT-202601-000001"
+                    },
+                    "name": {
+                        "type": "string",
+                        "description": "\u6587\u4ef6\u7c7b\u578b\u540d\u79f0",
+                        "example": "\u65bd\u5de5\u5408\u540c"
+                    },
+                    "projectPhase": {
+                        "type": "string",
+                        "description": "\u6240\u5c5e\u9879\u76ee\u9636\u6bb5",
+                        "example": "\u62db\u6295\u6807\u9636\u6bb5"
+                    },
+                    "majorCategory": {
+                        "type": "string",
+                        "description": "\u6240\u5c5e\u5927\u7c7b",
+                        "example": "\u5408\u540c\u7c7b"
+                    },
+                    "minorCategory": {
+                        "type": "string",
+                        "description": "\u6240\u5c5e\u5c0f\u7c7b",
+                        "example": "\u65bd\u5de5\u5408\u540c"
+                    },
+                    "fileFeature": {
+                        "type": "string",
+                        "description": "\u6587\u4ef6\u7279\u5f81\u4fe1\u606f\uff08\u7528\u4e8eLLM\u8bc6\u522b\uff09",
+                        "example": "\u5305\u542b\u7532\u65b9\u4e59\u65b9\u4fe1\u606f\u3001\u5408\u540c\u91d1\u989d\u3001\u5de5\u671f\u7b49\u5173\u952e\u6761\u6b3e"
+                    },
+                    "projectType": {
+                        "type": "string",
+                        "description": "\u9002\u7528\u9879\u76ee\u7c7b\u578b\uff08\u9017\u53f7\u5206\u9694\uff09",
+                        "example": "\u623f\u5efa\u5de5\u7a0b,\u5e02\u653f\u5de5\u7a0b"
+                    },
+                    "region": {
+                        "type": "string",
+                        "description": "\u9002\u7528\u5730\u533a",
+                        "example": "\u5168\u56fd"
+                    },
+                    "ownerOrg": {
+                        "type": "string",
+                        "description": "\u9002\u7528\u4e1a\u4e3b",
+                        "example": "\u653f\u5e9c\u6295\u8d44\u9879\u76ee"
+                    },
+                    "bizDescription": {
+                        "type": "string",
+                        "description": "\u4e1a\u52a1\u8bf4\u660e/\u4f7f\u7528\u573a\u666f",
+                        "example": "\u7528\u4e8e\u5ba1\u8ba1\u65bd\u5de5\u5408\u540c\u7684\u5408\u89c4\u6027\u548c\u91d1\u989d\u51c6\u786e\u6027"
+                    },
+                    "remark": {
+                        "type": "string",
+                        "description": "\u5907\u6ce8",
+                        "example": "\u9700\u8981\u5173\u6ce8\u5408\u540c\u53d8\u66f4\u60c5\u51b5"
+                    },
+                    "status": {
+                        "type": "number",
+                        "description": "\u72b6\u6001\uff1a1-\u542f\u7528\uff0c0-\u505c\u7528"
+                    },
+                    "rowVersion": {
+                        "type": "number",
+                        "description": "\u6570\u636e\u7248\u672c\u53f7\uff08\u4e50\u89c2\u9501\uff09"
+                    }
+                }
+            },
+            "BatchIdsDto": {
+                "type": "object",
+                "properties": {
+                    "ids": {
+                        "description": "ID\u6570\u7ec4",
+                        "type": "array",
+                        "items": {
+                            "type": "number"
+                        }
+                    }
+                },
+                "required": [
+                    "ids"
+                ]
+            },
+            "CreateDocFieldDefDto": {
+                "type": "object",
+                "properties": {
+                    "docTypeId": {
+                        "type": "number",
+                        "description": "\u6240\u5c5e\u6587\u4ef6\u7c7b\u578bID",
+                        "example": 1
+                    },
+                    "fieldCode": {
+                        "type": "string",
+                        "description": "\u5b57\u6bb5\u7f16\u7801\uff08\u7559\u7a7a\u81ea\u52a8\u751f\u6210\uff09",
+                        "example": "DT001-001"
+                    },
+                    "fieldName": {
+                        "type": "string",
+                        "description": "\u5b57\u6bb5\u540d\u79f0",
+                        "example": "\u5408\u540c\u91d1\u989d"
+                    },
+                    "fieldCategory": {
+                        "type": "string",
+                        "description": "\u5b57\u6bb5\u7c7b\u522b",
+                        "example": "\u91d1\u989d"
+                    },
+                    "requiredFlag": {
+                        "type": "number",
+                        "description": "\u662f\u5426\u5fc5\u586b\uff1a1-\u662f\uff0c0-\u5426",
+                        "example": 1
+                    },
+                    "valueSource": {
+                        "type": "string",
+                        "description": "\u53d6\u503c\u65b9\u5f0f\uff08\u5728\u6587\u4ef6\u4e2d\u7684\u4f4d\u7f6e\uff09",
+                        "example": "\u6b63\u6587\u7b2c\u4e09\u6761\u7b2c2\u6b3e"
+                    },
+                    "enumOptions": {
+                        "type": "string",
+                        "description": "\u679a\u4e3e\u503c\uff08\u5f53\u5b57\u6bb5\u7c7b\u522b\u4e3a\u679a\u4e3e\u65f6\u586b\u5199\uff09",
+                        "example": "\u662f,\u5426,\u5f85\u5b9a"
+                    },
+                    "exampleValue": {
+                        "type": "string",
+                        "description": "\u793a\u4f8b\u6570\u636e",
+                        "example": "1000000.00"
+                    },
+                    "fieldDescription": {
+                        "type": "string",
+                        "description": "\u5b57\u6bb5\u8bf4\u660e",
+                        "example": "\u65bd\u5de5\u5408\u540c\u7684\u603b\u91d1\u989d\uff0c\u4e0d\u542b\u53d8\u66f4\u91d1\u989d"
+                    },
+                    "anchorWord": {
+                        "type": "string",
+                        "description": "\u5b9a\u4f4d\u8bcd",
+                        "example": "\u5408\u540c\u4ef7\u6b3e,\u5408\u540c\u91d1\u989d,\u603b\u4ef7"
+                    },
+                    "outputFormat": {
+                        "type": "string",
+                        "description": "\u8f93\u51fa\u683c\u5f0f",
+                        "example": "\u91d1\u989d\uff08\u5143\uff09"
+                    },
+                    "extractMethod": {
+                        "type": "string",
+                        "description": "\u63d0\u53d6\u65b9\u6cd5",
+                        "example": "\u6b63\u5219\u5339\u914d"
+                    }
+                },
+                "required": [
+                    "docTypeId",
+                    "fieldName"
+                ]
+            },
+            "UpdateDocFieldDefDto": {
+                "type": "object",
+                "properties": {
+                    "docTypeId": {
+                        "type": "number",
+                        "description": "\u6240\u5c5e\u6587\u4ef6\u7c7b\u578bID",
+                        "example": 1
+                    },
+                    "fieldCode": {
+                        "type": "string",
+                        "description": "\u5b57\u6bb5\u7f16\u7801\uff08\u7559\u7a7a\u81ea\u52a8\u751f\u6210\uff09",
+                        "example": "DT001-001"
+                    },
+                    "fieldName": {
+                        "type": "string",
+                        "description": "\u5b57\u6bb5\u540d\u79f0",
+                        "example": "\u5408\u540c\u91d1\u989d"
+                    },
+                    "fieldCategory": {
+                        "type": "string",
+                        "description": "\u5b57\u6bb5\u7c7b\u522b",
+                        "example": "\u91d1\u989d"
+                    },
+                    "requiredFlag": {
+                        "type": "number",
+                        "description": "\u662f\u5426\u5fc5\u586b\uff1a1-\u662f\uff0c0-\u5426",
+                        "example": 1
+                    },
+                    "valueSource": {
+                        "type": "string",
+                        "description": "\u53d6\u503c\u65b9\u5f0f\uff08\u5728\u6587\u4ef6\u4e2d\u7684\u4f4d\u7f6e\uff09",
+                        "example": "\u6b63\u6587\u7b2c\u4e09\u6761\u7b2c2\u6b3e"
+                    },
+                    "enumOptions": {
+                        "type": "string",
+                        "description": "\u679a\u4e3e\u503c\uff08\u5f53\u5b57\u6bb5\u7c7b\u522b\u4e3a\u679a\u4e3e\u65f6\u586b\u5199\uff09",
+                        "example": "\u662f,\u5426,\u5f85\u5b9a"
+                    },
+                    "exampleValue": {
+                        "type": "string",
+                        "description": "\u793a\u4f8b\u6570\u636e",
+                        "example": "1000000.00"
+                    },
+                    "fieldDescription": {
+                        "type": "string",
+                        "description": "\u5b57\u6bb5\u8bf4\u660e",
+                        "example": "\u65bd\u5de5\u5408\u540c\u7684\u603b\u91d1\u989d\uff0c\u4e0d\u542b\u53d8\u66f4\u91d1\u989d"
+                    },
+                    "anchorWord": {
+                        "type": "string",
+                        "description": "\u5b9a\u4f4d\u8bcd",
+                        "example": "\u5408\u540c\u4ef7\u6b3e,\u5408\u540c\u91d1\u989d,\u603b\u4ef7"
+                    },
+                    "outputFormat": {
+                        "type": "string",
+                        "description": "\u8f93\u51fa\u683c\u5f0f",
+                        "example": "\u91d1\u989d\uff08\u5143\uff09"
+                    },
+                    "extractMethod": {
+                        "type": "string",
+                        "description": "\u63d0\u53d6\u65b9\u6cd5",
+                        "example": "\u6b63\u5219\u5339\u914d"
+                    }
+                }
+            },
+            "CreateDocTemplateSampleDto": {
+                "type": "object",
+                "properties": {
+                    "code": {
+                        "type": "string",
+                        "description": "\u7f16\u7801\uff08\u7559\u7a7a\u81ea\u52a8\u751f\u6210\uff09"
+                    },
+                    "docTypeId": {
+                        "type": "number",
+                        "description": "\u6240\u5c5e\u6587\u4ef6\u7c7b\u578bID"
+                    },
+                    "name": {
+                        "type": "string",
+                        "description": "\u540d\u79f0"
+                    },
+                    "fileName": {
+                        "type": "string",
+                        "description": "\u793a\u4f8b\u6587\u4ef6\u540d"
+                    },
+                    "filePath": {
+                        "type": "string",
+                        "description": "\u6587\u4ef6\u94fe\u63a5"
+                    },
+                    "description": {
+                        "type": "string",
+                        "description": "\u8bf4\u660e"
+                    }
+                },
+                "required": [
+                    "docTypeId",
+                    "name"
+                ]
+            },
+            "UpdateDocTemplateSampleDto": {
+                "type": "object",
+                "properties": {
+                    "code": {
+                        "type": "string",
+                        "description": "\u7f16\u7801\uff08\u7559\u7a7a\u81ea\u52a8\u751f\u6210\uff09"
+                    },
+                    "docTypeId": {
+                        "type": "number",
+                        "description": "\u6240\u5c5e\u6587\u4ef6\u7c7b\u578bID"
+                    },
+                    "name": {
+                        "type": "string",
+                        "description": "\u540d\u79f0"
+                    },
+                    "fileName": {
+                        "type": "string",
+                        "description": "\u793a\u4f8b\u6587\u4ef6\u540d"
+                    },
+                    "filePath": {
+                        "type": "string",
+                        "description": "\u6587\u4ef6\u94fe\u63a5"
+                    },
+                    "description": {
+                        "type": "string",
+                        "description": "\u8bf4\u660e"
+                    }
+                }
+            },
+            "CreateAuditRuleDto": {
+                "type": "object",
+                "properties": {
+                    "ruleCode": {
+                        "type": "string",
+                        "description": "\u89c4\u5219\u7f16\u7801\uff08\u7559\u7a7a\u81ea\u52a8\u751f\u6210\uff09"
+                    },
+                    "ruleName": {
+                        "type": "string",
+                        "description": "\u89c4\u5219\u540d\u79f0"
+                    },
+                    "auditType": {
+                        "type": "string",
+                        "description": "\u5ba1\u8ba1\u7c7b\u578b"
+                    },
+                    "phase": {
+                        "type": "string",
+                        "description": "\u9636\u6bb5"
+                    },
+                    "verifySection": {
+                        "type": "string",
+                        "description": "\u67e5\u8bc1\u677f\u5757"
+                    },
+                    "problemDesc": {
+                        "type": "string",
+                        "description": "\u95ee\u9898\u63cf\u8ff0"
+                    },
+                    "compareMethod": {
+                        "type": "string",
+                        "description": "\u6bd4\u5bf9\u65b9\u5f0f"
+                    },
+                    "compareMethodLlm": {
+                        "type": "string",
+                        "description": "\u6bd4\u5bf9\u65b9\u5f0f-LLM\u7528"
+                    },
+                    "auditBasis": {
+                        "type": "string",
+                        "description": "\u5ba1\u8ba1\u4f9d\u636e\u5185\u5bb9"
+                    },
+                    "source1Code": {
+                        "type": "string",
+                        "description": "\u6570\u636e\u6e901\u7f16\u7801"
+                    },
+                    "source1Name": {
+                        "type": "string",
+                        "description": "\u6570\u636e\u6e901\u540d\u79f0"
+                    },
+                    "source2Code": {
+                        "type": "string",
+                        "description": "\u6570\u636e\u6e902\u7f16\u7801"
+                    },
+                    "source2Name": {
+                        "type": "string",
+                        "description": "\u6570\u636e\u6e902\u540d\u79f0"
+                    },
+                    "source3Code": {
+                        "type": "string",
+                        "description": "\u6570\u636e\u6e903\u7f16\u7801"
+                    },
+                    "source3Name": {
+                        "type": "string",
+                        "description": "\u6570\u636e\u6e903\u540d\u79f0"
+                    },
+                    "source4Code": {
+                        "type": "string",
+                        "description": "\u6570\u636e\u6e904\u7f16\u7801"
+                    },
+                    "source4Name": {
+                        "type": "string",
+                        "description": "\u6570\u636e\u6e904\u540d\u79f0"
+                    },
+                    "source5Code": {
+                        "type": "string",
+                        "description": "\u6570\u636e\u6e905\u7f16\u7801"
+                    },
+                    "source5Name": {
+                        "type": "string",
+                        "description": "\u6570\u636e\u6e905\u540d\u79f0"
+                    },
+                    "lawClauseCode": {
+                        "type": "string",
+                        "description": "\u6cd5\u6761\u7f16\u7801"
+                    },
+                    "remark": {
+                        "type": "string",
+                        "description": "\u5907\u6ce8"
+                    }
+                },
+                "required": [
+                    "ruleName"
+                ]
+            },
+            "UpdateAuditRuleDto": {
+                "type": "object",
+                "properties": {
+                    "ruleCode": {
+                        "type": "string",
+                        "description": "\u89c4\u5219\u7f16\u7801\uff08\u7559\u7a7a\u81ea\u52a8\u751f\u6210\uff09"
+                    },
+                    "ruleName": {
+                        "type": "string",
+                        "description": "\u89c4\u5219\u540d\u79f0"
+                    },
+                    "auditType": {
+                        "type": "string",
+                        "description": "\u5ba1\u8ba1\u7c7b\u578b"
+                    },
+                    "phase": {
+                        "type": "string",
+                        "description": "\u9636\u6bb5"
+                    },
+                    "verifySection": {
+                        "type": "string",
+                        "description": "\u67e5\u8bc1\u677f\u5757"
+                    },
+                    "problemDesc": {
+                        "type": "string",
+                        "description": "\u95ee\u9898\u63cf\u8ff0"
+                    },
+                    "compareMethod": {
+                        "type": "string",
+                        "description": "\u6bd4\u5bf9\u65b9\u5f0f"
+                    },
+                    "compareMethodLlm": {
+                        "type": "string",
+                        "description": "\u6bd4\u5bf9\u65b9\u5f0f-LLM\u7528"
+                    },
+                    "auditBasis": {
+                        "type": "string",
+                        "description": "\u5ba1\u8ba1\u4f9d\u636e\u5185\u5bb9"
+                    },
+                    "source1Code": {
+                        "type": "string",
+                        "description": "\u6570\u636e\u6e901\u7f16\u7801"
+                    },
+                    "source1Name": {
+                        "type": "string",
+                        "description": "\u6570\u636e\u6e901\u540d\u79f0"
+                    },
+                    "source2Code": {
+                        "type": "string",
+                        "description": "\u6570\u636e\u6e902\u7f16\u7801"
+                    },
+                    "source2Name": {
+                        "type": "string",
+                        "description": "\u6570\u636e\u6e902\u540d\u79f0"
+                    },
+                    "source3Code": {
+                        "type": "string",
+                        "description": "\u6570\u636e\u6e903\u7f16\u7801"
+                    },
+                    "source3Name": {
+                        "type": "string",
+                        "description": "\u6570\u636e\u6e903\u540d\u79f0"
+                    },
+                    "source4Code": {
+                        "type": "string",
+                        "description": "\u6570\u636e\u6e904\u7f16\u7801"
+                    },
+                    "source4Name": {
+                        "type": "string",
+                        "description": "\u6570\u636e\u6e904\u540d\u79f0"
+                    },
+                    "source5Code": {
+                        "type": "string",
+                        "description": "\u6570\u636e\u6e905\u7f16\u7801"
+                    },
+                    "source5Name": {
+                        "type": "string",
+                        "description": "\u6570\u636e\u6e905\u540d\u79f0"
+                    },
+                    "lawClauseCode": {
+                        "type": "string",
+                        "description": "\u6cd5\u6761\u7f16\u7801"
+                    },
+                    "remark": {
+                        "type": "string",
+                        "description": "\u5907\u6ce8"
+                    },
+                    "status": {
+                        "type": "number",
+                        "description": "\u72b6\u6001\uff1a1-\u542f\u7528\uff0c0-\u505c\u7528"
+                    }
+                }
+            },
+            "CreateLawDocumentDto": {
+                "type": "object",
+                "properties": {
+                    "lawCode": {
+                        "type": "string",
+                        "description": "\u6cd5\u89c4\u7f16\u53f7",
+                        "example": "GB50500-2013"
+                    },
+                    "lawName": {
+                        "type": "string",
+                        "description": "\u6cd5\u89c4\u540d\u79f0",
+                        "example": "\u5efa\u8bbe\u5de5\u7a0b\u5de5\u7a0b\u91cf\u6e05\u5355\u8ba1\u4ef7\u89c4\u8303"
+                    },
+                    "lawCategory": {
+                        "type": "string",
+                        "description": "\u6587\u79cd\u7c7b\u522b",
+                        "example": "\u56fd\u5bb6\u6807\u51c6"
+                    },
+                    "issueOrg": {
+                        "type": "string",
+                        "description": "\u53d1\u5e03\u5355\u4f4d",
+                        "example": "\u4f4f\u623f\u548c\u57ce\u4e61\u5efa\u8bbe\u90e8"
+                    },
+                    "issueDate": {
+                        "type": "string",
+                        "description": "\u53d1\u5e03\u65e5\u671f",
+                        "example": "2013-04-01"
+                    },
+                    "effectiveDate": {
+                        "type": "string",
+                        "description": "\u5b9e\u65bd\u65e5\u671f",
+                        "example": "2013-07-01"
+                    },
+                    "expiryDate": {
+                        "type": "string",
+                        "description": "\u5931\u6548\u65e5\u671f",
+                        "example": null
+                    },
+                    "regionScope": {
+                        "type": "string",
+                        "description": "\u9002\u7528\u5730\u533a\u8303\u56f4",
+                        "example": "\u5168\u56fd"
+                    },
+                    "industryScope": {
+                        "type": "string",
+                        "description": "\u9002\u7528\u884c\u4e1a\u8303\u56f4",
+                        "example": "\u5efa\u8bbe\u5de5\u7a0b"
+                    },
+                    "lawStatus": {
+                        "type": "string",
+                        "description": "\u5f53\u524d\u72b6\u6001",
+                        "example": "\u73b0\u884c"
+                    },
+                    "filePath": {
+                        "type": "string",
+                        "description": "\u539f\u6587\u6587\u4ef6\u4f4d\u7f6e",
+                        "example": "/uploads/laws/GB50500-2013.pdf"
+                    },
+                    "summary": {
+                        "type": "string",
+                        "description": "\u6458\u8981/\u8981\u70b9\u8bf4\u660e",
+                        "example": "\u89c4\u5b9a\u4e86\u5efa\u8bbe\u5de5\u7a0b\u5de5\u7a0b\u91cf\u6e05\u5355\u7684\u7f16\u5236\u65b9\u6cd5\u548c\u8ba1\u4ef7\u89c4\u5219"
+                    },
+                    "remark": {
+                        "type": "string",
+                        "description": "\u5907\u6ce8",
+                        "example": "\u66ff\u4ee3GB50500-2008"
+                    }
+                },
+                "required": [
+                    "lawCode",
+                    "lawName"
+                ]
+            },
+            "UpdateLawDocumentDto": {
+                "type": "object",
+                "properties": {
+                    "lawCode": {
+                        "type": "string",
+                        "description": "\u6cd5\u89c4\u7f16\u53f7",
+                        "example": "GB50500-2013"
+                    },
+                    "lawName": {
+                        "type": "string",
+                        "description": "\u6cd5\u89c4\u540d\u79f0",
+                        "example": "\u5efa\u8bbe\u5de5\u7a0b\u5de5\u7a0b\u91cf\u6e05\u5355\u8ba1\u4ef7\u89c4\u8303"
+                    },
+                    "lawCategory": {
+                        "type": "string",
+                        "description": "\u6587\u79cd\u7c7b\u522b",
+                        "example": "\u56fd\u5bb6\u6807\u51c6"
+                    },
+                    "issueOrg": {
+                        "type": "string",
+                        "description": "\u53d1\u5e03\u5355\u4f4d",
+                        "example": "\u4f4f\u623f\u548c\u57ce\u4e61\u5efa\u8bbe\u90e8"
+                    },
+                    "issueDate": {
+                        "type": "string",
+                        "description": "\u53d1\u5e03\u65e5\u671f",
+                        "example": "2013-04-01"
+                    },
+                    "effectiveDate": {
+                        "type": "string",
+                        "description": "\u5b9e\u65bd\u65e5\u671f",
+                        "example": "2013-07-01"
+                    },
+                    "expiryDate": {
+                        "type": "string",
+                        "description": "\u5931\u6548\u65e5\u671f",
+                        "example": null
+                    },
+                    "regionScope": {
+                        "type": "string",
+                        "description": "\u9002\u7528\u5730\u533a\u8303\u56f4",
+                        "example": "\u5168\u56fd"
+                    },
+                    "industryScope": {
+                        "type": "string",
+                        "description": "\u9002\u7528\u884c\u4e1a\u8303\u56f4",
+                        "example": "\u5efa\u8bbe\u5de5\u7a0b"
+                    },
+                    "lawStatus": {
+                        "type": "string",
+                        "description": "\u5f53\u524d\u72b6\u6001",
+                        "example": "\u73b0\u884c"
+                    },
+                    "filePath": {
+                        "type": "string",
+                        "description": "\u539f\u6587\u6587\u4ef6\u4f4d\u7f6e",
+                        "example": "/uploads/laws/GB50500-2013.pdf"
+                    },
+                    "summary": {
+                        "type": "string",
+                        "description": "\u6458\u8981/\u8981\u70b9\u8bf4\u660e",
+                        "example": "\u89c4\u5b9a\u4e86\u5efa\u8bbe\u5de5\u7a0b\u5de5\u7a0b\u91cf\u6e05\u5355\u7684\u7f16\u5236\u65b9\u6cd5\u548c\u8ba1\u4ef7\u89c4\u5219"
+                    },
+                    "remark": {
+                        "type": "string",
+                        "description": "\u5907\u6ce8",
+                        "example": "\u66ff\u4ee3GB50500-2008"
+                    },
+                    "status": {
+                        "type": "number",
+                        "description": "\u72b6\u6001\uff1a1-\u542f\u7528\uff0c0-\u505c\u7528"
+                    }
+                }
+            }
+        }
+    }
+}

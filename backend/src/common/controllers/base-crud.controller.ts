@@ -10,6 +10,7 @@ import {
   ParseIntPipe,
   UseInterceptors,
   UploadedFile,
+  BadRequestException,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import {
@@ -78,6 +79,24 @@ export abstract class BaseCrudController<T extends ObjectLiteral> {
   })
   @UseInterceptors(FileInterceptor('file'))
   async importExcel(@UploadedFile() file: Express.Multer.File) {
+    if (!file) {
+      throw new BadRequestException('请选择要导入的Excel文件');
+    }
+    if (!file.buffer) {
+      throw new BadRequestException('文件内容为空');
+    }
+    // 检查文件类型
+    const validTypes = [
+      'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+      'application/vnd.ms-excel',
+    ];
+    if (
+      !validTypes.includes(file.mimetype) &&
+      !file.originalname?.endsWith('.xlsx') &&
+      !file.originalname?.endsWith('.xls')
+    ) {
+      throw new BadRequestException('请上传Excel文件（.xlsx或.xls格式）');
+    }
     return this.service.importFromExcel(file.buffer);
   }
 

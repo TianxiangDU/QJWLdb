@@ -1,4 +1,4 @@
-import { Injectable, ConflictException, NotFoundException } from '@nestjs/common';
+import { Injectable, ConflictException, NotFoundException, BadRequestException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { AuditRule } from './entities/audit-rule.entity';
@@ -260,11 +260,20 @@ export class AuditRuleService {
 
   async importFromExcel(buffer: Buffer): Promise<{ success: number; failed: number; errors: string[] }> {
     const workbook = new ExcelJS.Workbook();
-    await workbook.xlsx.load(buffer as unknown as ArrayBuffer);
+    
+    try {
+      await workbook.xlsx.load(buffer as unknown as ArrayBuffer);
+    } catch (error) {
+      throw new BadRequestException(`Excel文件解析失败：${error.message}。请确保上传的是有效的xlsx格式文件。`);
+    }
 
     const sheet = workbook.getWorksheet(1);
     if (!sheet) {
-      throw new Error('Excel文件格式错误');
+      throw new BadRequestException('Excel文件中没有找到工作表');
+    }
+    
+    if (sheet.rowCount < 2) {
+      throw new BadRequestException('Excel文件中没有数据行');
     }
 
     let success = 0;

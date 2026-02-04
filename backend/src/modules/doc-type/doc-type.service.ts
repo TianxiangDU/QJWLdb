@@ -286,6 +286,9 @@ export class DocTypeService {
         enumOptions: f.enumOptions,
         exampleValue: f.exampleValue,
         fieldDescription: f.fieldDescription,
+        anchorWord: f.anchorWord,
+        outputFormat: f.outputFormat,
+        extractMethod: f.extractMethod,
       })),
       templates: templates.map((t: any) => ({
         id: t.id,
